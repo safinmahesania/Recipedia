@@ -1,123 +1,82 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:recipedia/Admin/recipes/update_or_delete_recipe.dart';
-import 'package:recipedia/Admin/recipes/view_recipe_details.dart';
+import '../../constants/app_colors.dart';
 
+/// Reusable list-style recipe row: thumbnail + title + meta.
+/// One card, used by the list view, favorites, and scan results.
 class RecipeCard extends StatelessWidget {
-  final String id;
-  final String title;
-  final String description;
-  final int rating;
-  final String cookTime;
-  final String thumbnailUrl;
-  final String category;
-  final String diet;
-  final String course;
-  final String ingredients;
-  final bool isAdmin;
+  final Map<String, dynamic> recipe;
+  final VoidCallback? onTap;
 
-  const RecipeCard({
-    super.key,
-    required this.isAdmin,
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.cookTime,
-    required this.rating,
-    required this.thumbnailUrl,
-    required this.diet,
-    required this.course,
-    required this.ingredients,
-    required this.category,
-  });
+  const RecipeCard({Key? key, required this.recipe, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final title    = recipe['title'] ?? '';
+    final imageUrl = recipe['image_url'] as String?;
+    final cookTime = recipe['cook_time'] as String?;
+    final diet     = recipe['diet'] as String?;
+
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            transitionDuration: const Duration(seconds: 1),
-            transitionsBuilder: (context, animation, animationTime, child) {
-              animation = CurvedAnimation(
-                  parent: animation, curve: Curves.fastLinearToSlowEaseIn);
-              return ScaleTransition(
-                scale: animation,
-                alignment: Alignment.center,
-                child: child,
-              );
-            },
-            pageBuilder: (context, animation, animationTime) {
-              return isAdmin
-                  ? UpdateOrDeleteRecipe(
-                      id: id,
-                      title: title,
-                      description: description,
-                      cookTime: cookTime,
-                      rating: rating,
-                      diet: diet,
-                      course: course,
-                      thumbnailUrl: thumbnailUrl,
-                      ingredients: ingredients,
-                      category: category,
-                    )
-                  : ViewRecipeDetails(
-                      ID: id,
-                      title: title,
-                      description: description,
-                      cookTime: cookTime,
-                      diet: diet,
-                      course: course,
-                      rating: rating,
-                      thumbnailUrl: thumbnailUrl,
-                      ingredients: ingredients,
-                    );
-            },
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(30.0),
-              child: Image.network(
-                thumbnailUrl,
-                width: size.width * 1,
-                height: 200,
-                fit: BoxFit.cover,
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                width: 64, height: 64,
+                child: (imageUrl != null && imageUrl.isNotEmpty)
+                    ? CachedNetworkImage(
+                        imageUrl: imageUrl, fit: BoxFit.cover,
+                        placeholder: (_, __) => Container(color: AppColors.primaryTint),
+                        errorWidget: (_, __, ___) => _placeholder(),
+                      )
+                    : _placeholder(),
               ),
             ),
-            const SizedBox(
-              height: 12.5,
-            ),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      maxLines: 1, overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w500,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 4),
+                  Row(children: [
+                    if (cookTime != null) ...[
+                      const Icon(Icons.schedule, size: 13, color: AppColors.textSecondary),
+                      const SizedBox(width: 3),
+                      Text(cookTime, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    ],
+                    if (diet != null) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                        decoration: BoxDecoration(
+                            color: AppColors.accentTint,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Text(diet,
+                            style: const TextStyle(fontSize: 11, color: AppColors.accentDark)),
+                      ),
+                    ],
+                  ]),
+                ],
               ),
-              maxLines: 1,
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(
-              height: 05,
-            ),
-            Text(
-              diet,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.black54,
-              ),
-              maxLines: 1,
-              textAlign: TextAlign.left,
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _placeholder() => Container(
+        color: AppColors.primaryTint,
+        child: const Icon(Icons.restaurant_menu, color: AppColors.primary, size: 22),
+      );
 }
