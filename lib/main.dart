@@ -1,51 +1,34 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'Database/databaseHelper.dart';
-import 'Others/app_splash_screen.dart';
-import 'WidgetsAndUtils/notification.dart';
-import 'WidgetsAndUtils/shared_preferences.dart';
+import 'constants/app_colors.dart';
+import 'services/supabase_client.dart';
+import 'views/recipes/recipe_list_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await initSupabase();
+  runApp(const RecipediaApp());
+}
 
-  await SharedPreference().sharedPrefInit();
+class RecipediaApp extends StatelessWidget {
+  const RecipediaApp({Key? key}) : super(key: key);
 
-  NotificationService().initAwesomeNotification();
-  NotificationService().requestPermission();
-
-  DatabaseHelper dbHelper = DatabaseHelper();
-  // initialize the local database
-  await dbHelper.db;
-  await dbHelper.syncDataFromFirestore();
-  //await dbHelper.syncDataFromFirestore();
-  //await dbHelper.syncFavoriteRecipesDataFromFirestore();
-
-  MaterialColor myColor = const MaterialColor(0XFFFF4F5A, <int, Color>{
-    50: Color(0XFFFF4F5A),
-    100: Color(0XFFFF4F5A),
-    200: Color(0XFFFF4F5A),
-    300: Color(0XFFFF4F5A),
-    400: Color(0XFFFF4F5A),
-    500: Color(0XFFFF4F5A),
-    600: Color(0XFFFF4F5A),
-    700: Color(0XFFFF4F5A),
-    800: Color(0XFFFF4F5A),
-    900: Color(0XFFFF4F5A),
-  });
-
-  runApp(
-    GetMaterialApp(
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: 'Recipedia',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: myColor,
+        useMaterial3: true,
+        primaryColor: AppColors.primary,
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         fontFamily: 'Helvetica',
       ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: 'AppSplashScreen',
-      routes: {
-        'AppSplashScreen': (context) => const AppSplashScreen(),
-      },
-    ),
-  );
+      // TEMP: boot straight into the migrated recipe list so the app runs
+      // while the remaining screens are still being migrated. Swap to the
+      // splash/login route once those are done.
+      home: RecipeListView(),
+    );
+  }
 }
