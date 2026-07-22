@@ -1,0 +1,65 @@
+import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/auth_service.dart';
+import '../constants/app_strings.dart';
+
+/// The "C" in MVC. Holds state + orchestrates the service.
+/// The view only reads isLoading and calls these methods.
+/// (GetX, because `get` is already in pubspec — swap for Riverpod/Provider if you prefer.)
+class AuthController extends GetxController {
+  final AuthService _service = AuthService();
+  final isLoading = false.obs;
+
+  Future<void> login(String email, String password) async {
+    try {
+      isLoading.value = true;
+      final res = await _service.signIn(email, password);
+      if (res.user == null) {
+        _error(AppStrings.loginFailed);
+        return;
+      }
+      // Role decides the route — no hardcoded email/password branch.
+      if (await _service.isAdmin()) {
+        Get.offAllNamed('/admin');
+      } else {
+        Get.offAllNamed('/home');
+      }
+    } on AuthException catch (e) {
+      _error(e.message);
+    } catch (_) {
+      _error(AppStrings.somethingWentWrong);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> loginWithGoogle() => _oauth(_service.signInWithGoogle);
+  Future<void> loginWithApple() => _oauth(_service.signInWithApple);
+
+  Future<void> _oauth(Future<bool> Function() fn) async {
+    try {
+      isLoading.value = true;
+      await fn();
+    } on AuthException catch (e) {
+      _error(e.message);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> forgotPassword(String email) async {
+    try {
+      await _service.resetPassword(email);
+      Get.snackbar(AppStrings.appName, AppStrings.resetLinkSent);
+    } on AuthException catch (e) {
+      _error(e.message);
+    }
+  }
+
+  Future<void> logout() async {
+    await _service.signOut();
+    Get.offAllNamed('/login');
+  }
+
+  void _error(String msg) => Get.snackbar(AppStrings.error, msg);
+}
