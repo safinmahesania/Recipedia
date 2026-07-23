@@ -15,4 +15,8 @@ class AppStrings {
   static const recipeRejected     = 'Recipe rejected.';
   static const recipeDeleted      = 'Recipe deleted.';
   static const recipeSaved        = 'Recipe saved.';
+
+  // reviews / reports
+  static const reviewSaved        = 'Thanks for your review!';
+  static const reportSent         = 'Report submitted. Thank you.';
 }

@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../constants/app_colors.dart';
+import '../../controllers/review_controller.dart';
 import '../../services/recipe_service.dart';
+import 'review_rating_view.dart';
 
 /// Recipe detail screen — image, meta, ingredients, instructions.
 /// UI only; pulls one recipe (with ingredients) from RecipeService.
@@ -90,6 +93,24 @@ class RecipeDetailsView extends StatelessWidget {
                       Text(r['instructions'] ?? '',
                           style: const TextStyle(
                               color: AppColors.textSecondary, height: 1.5)),
+                      const SizedBox(height: 24),
+                      OutlinedButton.icon(
+                        onPressed: () => Get.to(() => ReviewRatingView(
+                            recipeId: recipeId, recipeTitle: r['title'] ?? '')),
+                        icon: const Icon(Icons.star_border, size: 18),
+                        label: const Text('Reviews & rating'),
+                        style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: const BorderSide(color: AppColors.primary)),
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton.icon(
+                        onPressed: () => _reportDialog(context, recipeId),
+                        icon: const Icon(Icons.flag_outlined, size: 16,
+                            color: AppColors.textSecondary),
+                        label: const Text('Report this recipe',
+                            style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                      ),
                     ],
                   ),
                 ),
@@ -97,6 +118,31 @@ class RecipeDetailsView extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+
+  void _reportDialog(BuildContext context, String recipeId) {
+    final reason = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Report recipe'),
+        content: TextField(
+          controller: reason,
+          maxLines: 3,
+          decoration: const InputDecoration(hintText: "What's wrong with this recipe?"),
+        ),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              Get.put(ReviewController()).report('recipe', recipeId, reason.text.trim());
+            },
+            child: const Text('Report', style: TextStyle(color: AppColors.error)),
+          ),
+        ],
       ),
     );
   }
