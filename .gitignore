@@ -18,7 +18,7 @@ android/key.properties
 # ---------- Migration working files ----------
 recipes.json
 tools/recipes.json
-tools/node_modules/
+node_modules/
 tools/package-lock.json
 tools/package.json
 
