@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/auth_service.dart';
 import '../constants/app_strings.dart';
 import '../views/auth/login_view.dart';
-import '../views/recipes/recipe_list_view.dart';
+import '../views/home/main_shell.dart';
 
 /// The "C": auth state + orchestration. Views only call these + read isLoading.
 class AuthController extends GetxController {
@@ -18,8 +18,7 @@ class AuthController extends GetxController {
         _error(AppStrings.loginFailed);
         return;
       }
-      // TEMP landing: recipe list (home/admin screens migrate later).
-      Get.offAll(() => RecipeListView());
+      Get.offAll(() => const MainShell());
     } on AuthException catch (e) {
       _error(e.message);
     } catch (_) {

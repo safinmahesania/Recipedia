@@ -8,19 +8,24 @@ import 'recipe_details_view.dart';
 /// List-style recipe screen: search bar on top, tappable rows below.
 /// UI only — all data/state comes from RecipeController.
 class RecipeListView extends StatelessWidget {
-  RecipeListView({Key? key}) : super(key: key);
+  /// When embedded in MainShell the shell owns the chrome, so the
+  /// screen-level AppBar is suppressed.
+  final bool showAppBar;
+  RecipeListView({Key? key, this.showAppBar = true}) : super(key: key);
 
   final RecipeController c = Get.put(RecipeController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recipes',
-            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Recipes',
+                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
+              backgroundColor: Colors.white,
+              elevation: 0,
+            )
+          : null,
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),

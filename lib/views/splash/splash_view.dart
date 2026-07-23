@@ -5,7 +5,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_strings.dart';
 import '../../services/auth_service.dart';
 import '../auth/login_view.dart';
-import '../recipes/recipe_list_view.dart';
+import '../home/main_shell.dart';
 
 /// Splash: brief brand screen, then route by Supabase session.
 /// No stored credentials — Supabase persists the session itself.
@@ -25,8 +25,7 @@ class _SplashViewState extends State<SplashView> {
 
   void _route() {
     final loggedIn = AuthService().currentUser != null;
-    // TEMP landing: recipe list until home_view is migrated.
-    Get.offAll(() => loggedIn ? RecipeListView() : LoginView());
+    Get.offAll(() => loggedIn ? const MainShell() : LoginView());
   }
 
   @override
