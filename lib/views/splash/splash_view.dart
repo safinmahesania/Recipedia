@@ -1,123 +1,50 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../RegistrationAndLogin/login_or_signup.dart';
-import '../Tabs/home_screen.dart';
-import '../WidgetsAndUtils/shared_preferences.dart';
+import 'package:get/get.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_strings.dart';
+import '../../services/auth_service.dart';
+import '../auth/login_view.dart';
+import '../recipes/recipe_list_view.dart';
 
-class AppSplashScreen extends StatefulWidget {
-  const AppSplashScreen({Key? key}) : super(key: key);
+/// Splash: brief brand screen, then route by Supabase session.
+/// No stored credentials — Supabase persists the session itself.
+class SplashView extends StatefulWidget {
+  const SplashView({Key? key}) : super(key: key);
 
   @override
-  State<AppSplashScreen> createState() => _AppSplashScreenState();
+  State<SplashView> createState() => _SplashViewState();
 }
 
-class _AppSplashScreenState extends State<AppSplashScreen> {
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  String password = '';
-  String email = '';
-
-  void getDataAndCheck() async {
-    bool emailPresent = await SharedPreference().checkValuePresent('email');
-    bool passwordPresent =
-        await SharedPreference().checkValuePresent('password');
-    email = (await SharedPreference().getCred('email')) ?? '';
-    password = (await SharedPreference().getCred('password')) ?? '';
-    Timer(const Duration(seconds: 3), () {
-      if (emailPresent == true && passwordPresent == true) {
-        firebaseAuth
-            .signInWithEmailAndPassword(email: email, password: password)
-            .then((user) async {
-          Navigator.pushAndRemoveUntil(
-            context,
-            PageRouteBuilder(
-              transitionDuration: const Duration(seconds: 1),
-              transitionsBuilder: (context, animation, animationTime, child) {
-                animation = CurvedAnimation(
-                    parent: animation, curve: Curves.fastLinearToSlowEaseIn);
-                return ScaleTransition(
-                  scale: animation,
-                  alignment: Alignment.center,
-                  child: child,
-                );
-              },
-              pageBuilder: (context, animation, animationTime) {
-                return const HomeScreen();
-              },
-            ),
-            (route) => false,
-          );
-        }).catchError((e) {
-          SharedPreference().reset();
-          Navigator.pushAndRemoveUntil(
-            context,
-            PageRouteBuilder(
-              transitionDuration: const Duration(seconds: 1),
-              transitionsBuilder: (context, animation, animationTime, child) {
-                animation = CurvedAnimation(
-                    parent: animation, curve: Curves.fastLinearToSlowEaseIn);
-                return ScaleTransition(
-                  scale: animation,
-                  alignment: Alignment.center,
-                  child: child,
-                );
-              },
-              pageBuilder: (context, animation, animationTime) {
-                return const LoginOrSignUp();
-              },
-            ),
-            (route) => false,
-          );
-        });
-      } else {
-        SharedPreference().reset();
-        Navigator.pushAndRemoveUntil(
-          context,
-          PageRouteBuilder(
-            transitionDuration: const Duration(seconds: 1),
-            transitionsBuilder: (context, animation, animationTime, child) {
-              animation = CurvedAnimation(
-                  parent: animation, curve: Curves.fastLinearToSlowEaseIn);
-              return ScaleTransition(
-                scale: animation,
-                alignment: Alignment.center,
-                child: child,
-              );
-            },
-            pageBuilder: (context, animation, animationTime) {
-              return const LoginOrSignUp();
-            },
-          ),
-          (route) => false,
-        );
-      }
-    });
-  }
-
+class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    getDataAndCheck();
+    Timer(const Duration(seconds: 2), _route);
+  }
+
+  void _route() {
+    final loggedIn = AuthService().currentUser != null;
+    // TEMP landing: recipe list until home_view is migrated.
+    Get.offAll(() => loggedIn ? RecipeListView() : LoginView());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(color: Color(0XFFFF4F5A)
-          /*gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0XFFFF1C2A),
-              Color(0XFFFF4F5A),
-            ]),*/
-          ),
-      child: Center(
-          child: Image.asset(
-        'assets/logo-white.png',
-        height: 250.0,
-        width: 250.0,
-      )),
+    return const Scaffold(
+      backgroundColor: AppColors.primary,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.restaurant_menu, size: 72, color: Colors.white),
+            SizedBox(height: 16),
+            Text(AppStrings.appName,
+                style: TextStyle(
+                    fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
+          ],
+        ),
+      ),
     );
   }
 }
