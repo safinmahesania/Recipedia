@@ -1,10 +1,16 @@
 import 'supabase_client.dart';
 
 /// All recipe data goes through here — no UI, no navigation.
-/// Replaces the old sqflite databaseHelper: queries hit Supabase directly.
+/// Lists are paginated: at 1000+ recipes, fetching everything at once is
+/// slow and memory-hungry on device.
 class RecipeService {
-  /// Approved recipes, newest first. Optional category filter.
-  Future<List<Map<String, dynamic>>> getRecipes({String? categoryId}) async {
+  static const pageSize = 20;
+
+  /// One page of approved recipes, newest first. Optional category filter.
+  Future<List<Map<String, dynamic>>> getRecipes({
+    String? categoryId,
+    int page = 0,
+  }) async {
     var query = supabase
         .from('recipes')
         .select('*, categories(name)')
@@ -12,60 +18,75 @@ class RecipeService {
     if (categoryId != null) {
       query = query.eq('category_id', categoryId);
     }
-    return await query.order('created_at', ascending: false);
+    return await query
+        .order('created_at', ascending: false)
+        .range(page * pageSize, (page + 1) * pageSize - 1);
   }
 
   /// One recipe with its ingredients (name + role + quantity).
   Future<Map<String, dynamic>> getRecipeDetails(String recipeId) async {
     return await supabase
         .from('recipes')
-        .select('*, categories(name), recipe_ingredients(role, quantity, ingredients(name, is_pantry))')
+        .select(
+            '*, categories(name), recipe_ingredients(role, quantity, ingredients(name, is_pantry))')
         .eq('id', recipeId)
         .single();
   }
 
-  /// Text search over approved recipe titles.
-  Future<List<Map<String, dynamic>>> searchRecipes(String term) async {
+  /// Title search, paginated.
+  Future<List<Map<String, dynamic>>> searchRecipes(String term, {int page = 0}) async {
     return await supabase
         .from('recipes')
         .select('*, categories(name)')
         .eq('status', 'approved')
         .ilike('title', '%$term%')
-        .order('created_at', ascending: false);
+        .order('created_at', ascending: false)
+        .range(page * pageSize, (page + 1) * pageSize - 1);
   }
 
   Future<List<Map<String, dynamic>>> getCategories() async {
     return await supabase.from('categories').select().order('name');
   }
 
+  /// Distinct cuisines, for filtering (South Indian, Punjabi, ...).
+  Future<List<String>> getCuisines() async {
+    final rows = await supabase
+        .from('recipes')
+        .select('cuisine')
+        .eq('status', 'approved')
+        .not('cuisine', 'is', null);
+    final set = <String>{};
+    for (final r in List<Map<String, dynamic>>.from(rows)) {
+      final c = (r['cuisine'] as String?)?.trim();
+      if (c != null && c.isNotEmpty) set.add(c);
+    }
+    final list = set.toList()..sort();
+    return list;
+  }
+
+  Future<List<Map<String, dynamic>>> getRecipesByCuisine(String cuisine, {int page = 0}) async {
+    return await supabase
+        .from('recipes')
+        .select('*, categories(name)')
+        .eq('status', 'approved')
+        .eq('cuisine', cuisine)
+        .order('created_at', ascending: false)
+        .range(page * pageSize, (page + 1) * pageSize - 1);
+  }
+
   // ---------- SCAN MATCHING ----------
-  // Rule: a recipe matches if every one of its CORE ingredients was scanned.
-  // Pantry (is_pantry) and optional ingredients never block a match.
-  // So aloo + palak scanned -> "aloo palak" shows even if optional tomato wasn't.
+  /// Runs in Postgres (see match_recipes_by_ingredients).
+  /// A recipe matches when every CORE, non-pantry ingredient was scanned;
+  /// pantry and optional ingredients never block a match.
   Future<List<Map<String, dynamic>>> getRecipesByScannedIngredients(
       List<String> scannedNames) async {
     if (scannedNames.isEmpty) return [];
-    final scanned = scannedNames.map((e) => e.toLowerCase().trim()).toSet();
-
-    // Pull approved recipes + their non-pantry ingredients, then filter in Dart.
-    final rows = await supabase
-        .from('recipes')
-        .select('*, categories(name), recipe_ingredients(role, ingredients(name, is_pantry))')
-        .eq('status', 'approved');
-
-    return List<Map<String, dynamic>>.from(rows).where((recipe) {
-      final ris = (recipe['recipe_ingredients'] as List?) ?? [];
-      final core = ris.where((ri) {
-        final ing = ri['ingredients'] as Map<String, dynamic>?;
-        return ri['role'] == 'core' && ing != null && ing['is_pantry'] != true;
-      });
-      if (core.isEmpty) return false;
-      // every core ingredient must be in the scanned set
-      return core.every((ri) {
-        final name = (ri['ingredients']['name'] as String).toLowerCase().trim();
-        return scanned.contains(name);
-      });
-    }).toList();
+    final scanned = scannedNames.map((e) => e.toLowerCase().trim()).toList();
+    final rows = await supabase.rpc(
+      'match_recipes_by_ingredients',
+      params: {'scanned': scanned},
+    );
+    return List<Map<String, dynamic>>.from(rows as List);
   }
 
   // ---------- FAVORITES ----------

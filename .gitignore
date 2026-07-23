@@ -42,3 +42,21 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# Secrets — never commit
+dart_define.json
+tools/serviceAccountKey.json
+*serviceAccountKey*.json
+android/app/google-services.json
+.env
+.env.*
+
+# Migration working files
+tools/recipes.json
+tools/node_modules/
+tools/package-lock.json
+
+# Local Supabase
+supabase/.temp/
+supabase/.branches/
