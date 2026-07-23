@@ -1,62 +1,91 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
+# ==========================================================
+#  Recipedia — .gitignore
+#  Flutter app + Supabase migrations + Node migration tools
+# ==========================================================
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-/build/
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
-
-# Secrets — never commit
+# ---------- SECRETS — never commit ----------
 dart_define.json
-tools/serviceAccountKey.json
-*serviceAccountKey*.json
-android/app/google-services.json
 .env
 .env.*
+*serviceAccountKey*.json
+serviceAccountKey.json
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+**/*.keystore
+**/*.jks
+android/key.properties
 
-# Migration working files
+# ---------- Migration working files ----------
+recipes.json
 tools/recipes.json
 tools/node_modules/
 tools/package-lock.json
+tools/package.json
 
-# Local Supabase
+# ---------- Flutter / Dart ----------
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+/build/
+**/doc/api/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/ios/Flutter/.last_build_id
+migrate_working_dir/
+app.*.symbols
+app.*.map.json
+pubspec_overrides.yaml
+
+# ---------- Android ----------
+android/.gradle/
+android/build/
+android/app/build/
+android/captures/
+android/local.properties
+android/.cxx/
+/android/app/debug
+/android/app/profile
+/android/app/release
+*.apk
+*.aab
+
+# ---------- iOS ----------
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig
+**/Flutter/ephemeral/
+*.ipa
+
+# ---------- Web ----------
+web/build/
+
+# ---------- Supabase ----------
 supabase/.temp/
 supabase/.branches/
+
+# ---------- IDE ----------
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
+
+# ---------- OS / misc ----------
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.class
+*.pyc
+.history
+.atom/
+.buildlog/
+.svn/
