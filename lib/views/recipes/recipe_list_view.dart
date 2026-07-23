@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/app_colors.dart';
 import '../../controllers/recipe_controller.dart';
+import '../../shared/widgets/active_filters_bar.dart';
 import '../../shared/widgets/recipe_card.dart';
 import 'recipe_details_view.dart';
 
-/// List-style recipe screen: search on top, paginated rows below.
-/// UI only — all data/state comes from RecipeController.
+/// Recipe browser: search, filters, paginated rows.
 class RecipeListView extends StatefulWidget {
   /// When embedded in MainShell the shell owns the chrome, so the
   /// screen-level AppBar is suppressed.
@@ -50,70 +50,85 @@ class _RecipeListViewState extends State<RecipeListView> {
           : null,
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: TextField(
-                  onChanged: c.search,
-                  decoration: InputDecoration(
-                    hintText: 'Search recipes',
-                    prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
-                    filled: true,
-                    fillColor: AppColors.surface,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+              child: TextField(
+                onChanged: c.search,
+                decoration: InputDecoration(
+                  hintText: 'Search recipes',
+                  prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
+                  filled: true,
+                  fillColor: AppColors.surface,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
-              Expanded(
-                child: Obx(() {
-                  if (c.isLoading.value) {
-                    return const Center(
-                        child: CircularProgressIndicator(color: AppColors.primary));
-                  }
-                  if (c.recipes.isEmpty) {
-                    return const Center(
-                      child: Text('No recipes found',
-                          style: TextStyle(color: AppColors.textSecondary)),
-                    );
-                  }
-                  return ListView.separated(
-                    controller: _scroll,
-                    // one extra row for the "loading more" spinner
-                    itemCount: c.recipes.length + (c.hasMore.value ? 1 : 0),
-                    separatorBuilder: (_, __) =>
-                        const Divider(height: 1, color: AppColors.border),
-                    itemBuilder: (_, i) {
-                      if (i >= c.recipes.length) {
-                        return const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(
-                            child: SizedBox(
-                              width: 22, height: 22,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: AppColors.primary),
-                            ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: ActiveFiltersBar(),
+            ),
+            const SizedBox(height: 6),
+            Expanded(
+              child: Obx(() {
+                if (c.isLoading.value) {
+                  return const Center(
+                      child: CircularProgressIndicator(color: AppColors.primary));
+                }
+                if (c.recipes.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.search_off, size: 40, color: AppColors.border),
+                        const SizedBox(height: 10),
+                        const Text('No recipes match',
+                            style: TextStyle(color: AppColors.textSecondary)),
+                        if (c.activeFilterCount > 0)
+                          TextButton(
+                            onPressed: c.clearFilters,
+                            child: const Text('Clear filters',
+                                style: TextStyle(color: AppColors.primary)),
                           ),
-                        );
-                      }
-                      final recipe = c.recipes[i];
-                      return RecipeCard(
-                        recipe: recipe,
-                        onTap: () =>
-                            Get.to(() => RecipeDetailsView(recipeId: recipe['id'])),
-                      );
-                    },
+                      ],
+                    ),
                   );
-                }),
-              ),
-            ],
-          ),
+                }
+                return ListView.separated(
+                  controller: _scroll,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: c.recipes.length + (c.hasMore.value ? 1 : 0),
+                  separatorBuilder: (_, __) =>
+                      const Divider(height: 1, color: AppColors.border),
+                  itemBuilder: (_, i) {
+                    if (i >= c.recipes.length) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Center(
+                          child: SizedBox(
+                            width: 22, height: 22,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: AppColors.primary),
+                          ),
+                        ),
+                      );
+                    }
+                    final recipe = c.recipes[i];
+                    return RecipeCard(
+                      recipe: recipe,
+                      onTap: () =>
+                          Get.to(() => RecipeDetailsView(recipeId: recipe['id'])),
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
         ),
       ),
     );

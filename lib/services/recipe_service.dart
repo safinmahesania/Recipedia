@@ -6,18 +6,27 @@ import 'supabase_client.dart';
 class RecipeService {
   static const pageSize = 20;
 
-  /// One page of approved recipes, newest first. Optional category filter.
-  Future<List<Map<String, dynamic>>> getRecipes({
+  /// One page of approved recipes with any combination of filters applied.
+  /// Replaces the old separate getRecipes / searchRecipes / byCuisine methods.
+  Future<List<Map<String, dynamic>>> getFilteredRecipes({
     String? categoryId,
+    String? cuisine,
+    String? diet,
+    String? term,
     int page = 0,
   }) async {
     var query = supabase
         .from('recipes')
         .select('*, categories(name)')
         .eq('status', 'approved');
-    if (categoryId != null) {
-      query = query.eq('category_id', categoryId);
+
+    if (categoryId != null) query = query.eq('category_id', categoryId);
+    if (cuisine != null) query = query.eq('cuisine', cuisine);
+    if (diet != null) query = query.eq('diet', diet);
+    if (term != null && term.trim().isNotEmpty) {
+      query = query.ilike('title', '%${term.trim()}%');
     }
+
     return await query
         .order('created_at', ascending: false)
         .range(page * pageSize, (page + 1) * pageSize - 1);
@@ -33,45 +42,20 @@ class RecipeService {
         .single();
   }
 
-  /// Title search, paginated.
-  Future<List<Map<String, dynamic>>> searchRecipes(String term, {int page = 0}) async {
-    return await supabase
-        .from('recipes')
-        .select('*, categories(name)')
-        .eq('status', 'approved')
-        .ilike('title', '%$term%')
-        .order('created_at', ascending: false)
-        .range(page * pageSize, (page + 1) * pageSize - 1);
-  }
-
   Future<List<Map<String, dynamic>>> getCategories() async {
     return await supabase.from('categories').select().order('name');
   }
 
-  /// Distinct cuisines, for filtering (South Indian, Punjabi, ...).
-  Future<List<String>> getCuisines() async {
-    final rows = await supabase
-        .from('recipes')
-        .select('cuisine')
-        .eq('status', 'approved')
-        .not('cuisine', 'is', null);
-    final set = <String>{};
-    for (final r in List<Map<String, dynamic>>.from(rows)) {
-      final c = (r['cuisine'] as String?)?.trim();
-      if (c != null && c.isNotEmpty) set.add(c);
-    }
-    final list = set.toList()..sort();
-    return list;
+  /// Distinct cuisines with counts, computed in Postgres.
+  Future<List<Map<String, dynamic>>> getCuisines() async {
+    final rows = await supabase.rpc('distinct_cuisines');
+    return List<Map<String, dynamic>>.from(rows as List);
   }
 
-  Future<List<Map<String, dynamic>>> getRecipesByCuisine(String cuisine, {int page = 0}) async {
-    return await supabase
-        .from('recipes')
-        .select('*, categories(name)')
-        .eq('status', 'approved')
-        .eq('cuisine', cuisine)
-        .order('created_at', ascending: false)
-        .range(page * pageSize, (page + 1) * pageSize - 1);
+  /// Distinct diets with counts, computed in Postgres.
+  Future<List<Map<String, dynamic>>> getDiets() async {
+    final rows = await supabase.rpc('distinct_diets');
+    return List<Map<String, dynamic>>.from(rows as List);
   }
 
   // ---------- SCAN MATCHING ----------

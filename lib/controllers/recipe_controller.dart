@@ -2,28 +2,40 @@ import 'dart:async';
 import 'package:get/get.dart';
 import '../services/recipe_service.dart';
 
-/// Recipe list state with pagination and debounced search.
+/// Recipe list state: combined filters, pagination, debounced search.
 class RecipeController extends GetxController {
   final RecipeService _service = RecipeService();
 
-  final isLoading = false.obs;      // first page
-  final isLoadingMore = false.obs;  // subsequent pages
+  final isLoading = false.obs;
+  final isLoadingMore = false.obs;
   final hasMore = true.obs;
   final recipes = <Map<String, dynamic>>[].obs;
-  final categories = <Map<String, dynamic>>[].obs;
-  final cuisines = <String>[].obs;
 
-  String? _categoryId;
-  String? _cuisine;
-  String _term = '';
+  // filter options
+  final categories = <Map<String, dynamic>>[].obs;
+  final cuisines = <Map<String, dynamic>>[].obs;
+  final diets = <Map<String, dynamic>>[].obs;
+
+  // active filters
+  final categoryId = RxnString();
+  final categoryName = RxnString();
+  final cuisine = RxnString();
+  final diet = RxnString();
+  final searchTerm = ''.obs;
+
   int _page = 0;
   Timer? _debounce;
+
+  /// How many filters are currently applied — drives the badge on the button.
+  int get activeFilterCount =>
+      (categoryId.value != null ? 1 : 0) +
+      (cuisine.value != null ? 1 : 0) +
+      (diet.value != null ? 1 : 0);
 
   @override
   void onInit() {
     super.onInit();
-    loadCategories();
-    loadCuisines();
+    loadFilterOptions();
     loadRecipes();
   }
 
@@ -33,19 +45,14 @@ class RecipeController extends GetxController {
     super.onClose();
   }
 
-  Future<void> loadCategories() async {
+  Future<void> loadFilterOptions() async {
     categories.value = await _service.getCategories();
-  }
-
-  Future<void> loadCuisines() async {
     cuisines.value = await _service.getCuisines();
+    diets.value = await _service.getDiets();
   }
 
-  /// Loads page 0 for the current filters.
-  Future<void> loadRecipes({String? categoryId, String? cuisine}) async {
-    _categoryId = categoryId;
-    _cuisine = cuisine;
-    _term = '';
+  /// Reload from page 0 with the current filters.
+  Future<void> loadRecipes() async {
     _page = 0;
     hasMore.value = true;
     try {
@@ -57,7 +64,6 @@ class RecipeController extends GetxController {
     }
   }
 
-  /// Call when the list nears its end.
   Future<void> loadMore() async {
     if (isLoading.value || isLoadingMore.value || !hasMore.value) return;
     try {
@@ -75,30 +81,46 @@ class RecipeController extends GetxController {
     }
   }
 
-  Future<List<Map<String, dynamic>>> _fetchPage(int page) {
-    if (_term.isNotEmpty) return _service.searchRecipes(_term, page: page);
-    if (_cuisine != null) return _service.getRecipesByCuisine(_cuisine!, page: page);
-    return _service.getRecipes(categoryId: _categoryId, page: page);
+  Future<List<Map<String, dynamic>>> _fetchPage(int page) => _service.getFilteredRecipes(
+        categoryId: categoryId.value,
+        cuisine: cuisine.value,
+        diet: diet.value,
+        term: searchTerm.value,
+        page: page,
+      );
+
+  // ---------- filter actions ----------
+  void setCategory(String? id, String? name) {
+    categoryId.value = id;
+    categoryName.value = name;
+    loadRecipes();
+  }
+
+  void setCuisine(String? value) {
+    cuisine.value = value;
+    loadRecipes();
+  }
+
+  void setDiet(String? value) {
+    diet.value = value;
+    loadRecipes();
+  }
+
+  void clearFilters() {
+    categoryId.value = null;
+    categoryName.value = null;
+    cuisine.value = null;
+    diet.value = null;
+    loadRecipes();
   }
 
   /// Debounced so typing doesn't fire a query per keystroke.
   void search(String term) {
     _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 350), () => _runSearch(term));
-  }
-
-  Future<void> _runSearch(String term) async {
-    _term = term.trim();
-    _page = 0;
-    hasMore.value = true;
-    if (_term.isEmpty) return loadRecipes(categoryId: _categoryId, cuisine: _cuisine);
-    try {
-      isLoading.value = true;
-      recipes.value = await _service.searchRecipes(_term);
-      hasMore.value = recipes.length >= RecipeService.pageSize;
-    } finally {
-      isLoading.value = false;
-    }
+    _debounce = Timer(const Duration(milliseconds: 350), () {
+      searchTerm.value = term.trim();
+      loadRecipes();
+    });
   }
 
   Future<void> loadFromScan(List<String> scannedNames) async {
