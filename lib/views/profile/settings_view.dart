@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/app_colors.dart';
 import '../../controllers/auth_controller.dart';
+import '../../controllers/profile_controller.dart';
+import '../admin/admin_portal_view.dart';
 import 'about_view.dart';
 import 'faq_view.dart';
 
@@ -12,6 +14,7 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthController auth = Get.put(AuthController());
+    final ProfileController profile = Get.put(ProfileController());
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -24,6 +27,11 @@ class SettingsView extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          // Admin entry — only rendered for admins (RLS also enforces this server-side).
+          Obx(() => profile.profile.value?.isAdmin == true
+              ? _tile(Icons.admin_panel_settings_outlined, 'Admin Portal',
+                  () => Get.to(() => const AdminPortalView()))
+              : const SizedBox.shrink()),
           _tile(Icons.info_outline, 'About Us', () => Get.to(() => const AboutView())),
           _tile(Icons.help_outline, 'FAQs', () => Get.to(() => const FaqView())),
           const Divider(height: 1, color: AppColors.border),

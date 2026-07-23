@@ -8,4 +8,11 @@ class AppStrings {
   static const somethingWentWrong = 'Something went wrong. Please try again.';
   static const resetLinkSent      = 'Password reset link sent to your email.';
   static const verifyEmailSent    = 'Account created! Check your email to verify, then log in.';
+
+  // admin
+  static const adminPortal        = 'Admin Portal';
+  static const recipeApproved     = 'Recipe approved.';
+  static const recipeRejected     = 'Recipe rejected.';
+  static const recipeDeleted      = 'Recipe deleted.';
+  static const recipeSaved        = 'Recipe saved.';
 }
