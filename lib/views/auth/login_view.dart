@@ -50,7 +50,7 @@ class LoginView extends StatelessWidget {
                     onTap: () => auth.login(email.text.trim(), password.text),
                   )),
               const SizedBox(height: 20),
-              Row(children: const [
+              const Row(children: [
                 Expanded(child: Divider(color: AppColors.border)),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('or', style: TextStyle(color: AppColors.textSecondary))),
                 Expanded(child: Divider(color: AppColors.border)),

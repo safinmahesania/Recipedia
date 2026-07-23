@@ -77,7 +77,7 @@ class ManageRecipeView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
       decoration: BoxDecoration(
-          color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(8)),
+          color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
       child: Text(status, style: TextStyle(fontSize: 11, color: color)),
     );
   }
