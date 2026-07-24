@@ -21,7 +21,18 @@ class FavoritesView extends StatelessWidget {
         title: const Text('Favorites',
             style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
       ),
-      body: Obx(() {
+      body: Column(children: [
+        // shown when the list came from cache instead of the network
+        Obx(() => c.isOffline.value
+            ? Container(
+                width: double.infinity,
+                color: AppColors.primaryTint,
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: const Text('Offline — showing saved recipes',
+                    style: TextStyle(fontSize: 12, color: AppColors.primary)),
+              )
+            : const SizedBox.shrink()),
+        Expanded(child: Obx(() {
         if (c.isLoading.value) {
           return const Center(child: CircularProgressIndicator(color: AppColors.primary));
         }
@@ -49,7 +60,8 @@ class FavoritesView extends StatelessWidget {
             );
           },
         );
-      }),
+        })),
+      ]),
     );
   }
 }

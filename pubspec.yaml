@@ -20,10 +20,13 @@ dependencies:
 
   # media
   cached_network_image: ^3.2.3
-  image_picker: ^1.2.3
+  image_picker: ^0.8.7
 
   # sharing (FR11)
-  share_plus: ^13.2.1
+  share_plus: ^7.0.2
+
+  # offline cache (FR19)
+  shared_preferences: ^2.2.0
 
   # NOTE: add when the scan model ships (C5 — on-device TFLite)
   # tflite_flutter: ^0.10.4
@@ -35,7 +38,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true

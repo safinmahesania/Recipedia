@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import '../../constants/app_colors.dart';
 import '../../controllers/favorites_controller.dart';
 import '../../controllers/review_controller.dart';
+import '../../controllers/recent_controller.dart';
+import '../../services/cache_service.dart';
 import '../../services/recipe_service.dart';
 import '../../services/share_service.dart';
 import 'review_rating_view.dart';
@@ -14,6 +16,21 @@ class RecipeDetailsView extends StatelessWidget {
   final String recipeId;
   const RecipeDetailsView({Key? key, required this.recipeId}) : super(key: key);
 
+  /// Fetch from network, cache on success; fall back to cache when offline.
+  Future<Map<String, dynamic>> _load() async {
+    final cache = CacheService();
+    try {
+      final r = await RecipeService().getRecipeDetails(recipeId);
+      await cache.saveRecipe(recipeId, r);
+      Get.put(RecentController()).track(r);
+      return r;
+    } catch (e) {
+      final cached = await cache.getRecipe(recipeId);
+      if (cached != null) return cached;
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final favorites = Get.put(FavoritesController());
@@ -21,7 +38,7 @@ class RecipeDetailsView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder<Map<String, dynamic>>(
-        future: RecipeService().getRecipeDetails(recipeId),
+        future: _load(),
         builder: (context, snap) {
           if (snap.hasError) {
             return const Center(
