@@ -20,6 +20,7 @@ class ScanController extends GetxController {
   final ingredients = <String>[].obs;
   final results = <Map<String, dynamic>>[].obs;
   final searched = false.obs;
+  final suggestions = <String>[].obs;
 
   bool get modelReady => _scan.isModelAvailable;
 
@@ -44,10 +45,22 @@ class ScanController extends GetxController {
     }
   }
 
+  /// Autocomplete against real ingredient names in the database.
+  Future<void> suggest(String query) async {
+    if (query.trim().length < 2) {
+      suggestions.clear();
+      return;
+    }
+    suggestions.value = await _scan.suggestIngredients(query);
+  }
+
+  void clearSuggestions() => suggestions.clear();
+
   void addIngredient(String name) {
     final clean = name.toLowerCase().trim();
     if (clean.isEmpty || ingredients.contains(clean)) return;
     ingredients.add(clean);
+    suggestions.clear();
   }
 
   void removeIngredient(String name) => ingredients.remove(name);

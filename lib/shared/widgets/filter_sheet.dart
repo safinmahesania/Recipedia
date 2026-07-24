@@ -76,7 +76,7 @@ class FilterSheet extends StatelessWidget {
                           .map((d) => _Opt(d['value'] as String, d['recipe_count'] as int))
                           .toList(),
                       selected: c.diet.value,
-                      onTap: (v) => c.setDiet(v),
+                      onTap: (o) => c.setDiet(o?.label),
                     )),
                 const SizedBox(height: 24),
                 _section('Course'),
@@ -85,7 +85,7 @@ class FilterSheet extends StatelessWidget {
                           .map((cat) => _Opt(cat['name'] as String, null, id: cat['id'] as String))
                           .toList(),
                       selected: c.categoryName.value,
-                      onTap: (v, {String? id}) => c.setCategory(id, v),
+                      onTap: (o) => c.setCategory(o?.id, o?.label),
                     )),
                 const SizedBox(height: 24),
                 _section('Cuisine'),
@@ -94,7 +94,7 @@ class FilterSheet extends StatelessWidget {
                           .map((cu) => _Opt(cu['value'] as String, cu['recipe_count'] as int))
                           .toList(),
                       selected: c.cuisine.value,
-                      onTap: (v) => c.setCuisine(v),
+                      onTap: (o) => c.setCuisine(o?.label),
                     )),
               ],
             ),
@@ -111,10 +111,12 @@ class FilterSheet extends StatelessWidget {
                 fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
       );
 
+  /// One callback shape for every section: passes the tapped option,
+  /// or null when the user taps the selected chip to clear it.
   Widget _chips({
     required List<_Opt> options,
     required String? selected,
-    required Function(String?, {String? id}) onTap,
+    required void Function(_Opt?) onTap,
   }) {
     if (options.isEmpty) {
       return const Text('—', style: TextStyle(color: AppColors.textSecondary));
@@ -126,7 +128,7 @@ class FilterSheet extends StatelessWidget {
         final isSelected = selected == o.label;
         return GestureDetector(
           // tapping the selected chip clears that filter
-          onTap: () => onTap(isSelected ? null : o.label, id: isSelected ? null : o.id),
+          onTap: () => onTap(isSelected ? null : o),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(

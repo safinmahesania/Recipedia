@@ -10,35 +10,35 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.8
 
   # backend
   supabase_flutter: ^2.5.0
 
   # state / navigation
-  get: ^4.6.5
+  get: ^4.6.6
 
   # media
-  cached_network_image: ^3.2.3
-  image_picker: ^0.8.7
+  cached_network_image: ^3.4.0
+  image_picker: ^1.1.0
 
   # sharing (FR11)
-  share_plus: ^7.0.2
+  share_plus: ^13.2.0
 
   # offline cache (FR19)
-  shared_preferences: ^2.2.0
+  shared_preferences: ^2.5.0
 
   # NOTE: add when the scan model ships (C5 — on-device TFLite)
-  # tflite_flutter: ^0.10.4
+  # tflite_flutter: ^0.11.0
   #
   # NOTE: add when push notifications are implemented (FR6, P1)
-  # firebase_core: ^2.8.0
-  # firebase_messaging: ^14.0.0
+  # firebase_core: ^3.0.0
+  # firebase_messaging: ^15.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true

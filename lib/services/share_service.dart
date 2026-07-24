@@ -51,6 +51,12 @@ class ShareService {
 
   Future<void> shareRecipe(Map<String, dynamic> recipe) async {
     final title = recipe['title'] ?? 'Recipe';
-    await Share.share(buildMessage(recipe), subject: '$title — Recipedia');
+    // share_plus 13+: the old static Share.share() is deprecated.
+    await SharePlus.instance.share(
+      ShareParams(
+        text: buildMessage(recipe),
+        subject: '$title — Recipedia',
+      ),
+    );
   }
 }

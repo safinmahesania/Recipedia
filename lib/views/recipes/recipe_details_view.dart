@@ -76,7 +76,19 @@ class RecipeDetailsView extends StatelessWidget {
                 ],
                 flexibleSpace: FlexibleSpaceBar(
                   background: (imageUrl != null && imageUrl.isNotEmpty)
-                      ? CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.cover)
+                      ? CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) =>
+                              Container(color: AppColors.primaryTint),
+                          // many source images 404 or block hotlinking —
+                          // fall back instead of showing a broken box
+                          errorWidget: (_, __, ___) => Container(
+                            color: AppColors.primaryTint,
+                            child: const Icon(Icons.restaurant_menu,
+                                size: 48, color: AppColors.primary),
+                          ),
+                        )
                       : Container(
                           color: AppColors.primaryTint,
                           child: const Icon(Icons.restaurant_menu,

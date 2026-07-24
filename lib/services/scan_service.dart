@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'supabase_client.dart';
 
 /// On-device ingredient detection (C5: self-trained TFLite, no paid API).
 ///
@@ -17,6 +18,23 @@ class ScanService {
   Future<List<String>> detect(File image) async {
     if (!isModelAvailable) return [];
     return _runModel(image);
+  }
+
+  /// Ingredient names that actually exist in the database, for autocomplete.
+  /// Typing free text is unreliable — "potato" vs "aloo" — so the user picks
+  /// from real names instead of guessing.
+  Future<List<String>> suggestIngredients(String query) async {
+    final q = query.toLowerCase().trim();
+    if (q.length < 2) return [];
+    final rows = await supabase
+        .from('ingredients')
+        .select('name')
+        .ilike('name', '%$q%')
+        .eq('is_pantry', false)
+        .limit(10);
+    return List<Map<String, dynamic>>.from(rows)
+        .map((r) => r['name'] as String)
+        .toList();
   }
 
   Future<List<String>> _runModel(File image) async {

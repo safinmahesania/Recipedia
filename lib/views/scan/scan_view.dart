@@ -118,12 +118,13 @@ class ScanView extends StatelessWidget {
               Expanded(
                 child: TextField(
                   controller: manual,
+                  onChanged: c.suggest,
                   onSubmitted: (v) {
                     c.addIngredient(v);
                     manual.clear();
                   },
                   decoration: InputDecoration(
-                    hintText: 'e.g. aloo',
+                    hintText: 'e.g. potato',
                     filled: true,
                     fillColor: AppColors.surface,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -141,6 +142,36 @@ class ScanView extends StatelessWidget {
                 },
               ),
             ]),
+            // autocomplete — pick a name that actually exists in the data,
+            // so "potato" does not miss recipes stored as "aloo"
+            Obx(() {
+              if (c.suggestions.isEmpty) return const SizedBox.shrink();
+              return Container(
+                margin: const EdgeInsets.only(top: 8),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: c.suggestions
+                      .map((name) => ListTile(
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            title: Text(name,
+                                style: const TextStyle(
+                                    fontSize: 14, color: AppColors.textPrimary)),
+                            trailing: const Icon(Icons.add,
+                                size: 18, color: AppColors.primary),
+                            onTap: () {
+                              c.addIngredient(name);
+                              manual.clear();
+                            },
+                          ))
+                      .toList(),
+                ),
+              );
+            }),
+
             const SizedBox(height: 10),
 
             // chips
