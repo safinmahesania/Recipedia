@@ -221,17 +221,61 @@ class ScanView extends StatelessWidget {
                   ),
                 );
               }
+              final ready = c.results
+                  .where((r) => (r['missing_count'] ?? 0) == 0)
+                  .toList();
+              final almost = c.results
+                  .where((r) => (r['missing_count'] ?? 0) > 0)
+                  .toList();
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${c.results.length} recipe(s) found',
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
-                  const SizedBox(height: 4),
-                  ...c.results.map((r) => RecipeCard(
-                        recipe: r,
-                        onTap: () => Get.to(() => RecipeDetailsView(recipeId: r['id'])),
-                      )),
+                  if (ready.isNotEmpty) ...[
+                    const Text('You can make these now',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500,
+                            color: AppColors.textPrimary)),
+                    const SizedBox(height: 4),
+                    ...ready.map((r) => RecipeCard(
+                          recipe: r,
+                          onTap: () =>
+                              Get.to(() => RecipeDetailsView(recipeId: r['id'])),
+                        )),
+                    const SizedBox(height: 20),
+                  ],
+                  if (almost.isNotEmpty) ...[
+                    const Text('Almost there',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500,
+                            color: AppColors.textPrimary)),
+                    const Text('A few ingredients short',
+                        style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    const SizedBox(height: 6),
+                    ...almost.map((r) {
+                      final missing =
+                          (r['missing_names'] as List?)?.cast<String>() ?? [];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RecipeCard(
+                            recipe: r,
+                            onTap: () => Get.to(
+                                () => RecipeDetailsView(recipeId: r['id'])),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 76, bottom: 8),
+                            child: Text(
+                              'Missing: ${missing.take(4).join(', ')}'
+                              '${missing.length > 4 ? ' +${missing.length - 4}' : ''}',
+                              style: const TextStyle(
+                                  fontSize: 11, color: AppColors.warning),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
                 ],
               );
             }),
