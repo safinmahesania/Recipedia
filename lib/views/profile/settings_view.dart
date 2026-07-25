@@ -4,10 +4,11 @@ import '../../constants/app_colors.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/profile_controller.dart';
 import '../admin/admin_portal_view.dart';
+import '../submissions/my_submissions_view.dart';
 import 'about_view.dart';
 import 'faq_view.dart';
 
-/// Settings: about, FAQ, logout.
+/// Settings: submissions, admin (admins only), about, FAQ, logout.
 class SettingsView extends StatelessWidget {
   const SettingsView({Key? key}) : super(key: key);
 
@@ -27,11 +28,18 @@ class SettingsView extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          // Admin entry — only rendered for admins (RLS also enforces this server-side).
+          // available to every user (FR34/36)
+          _tile(Icons.edit_note, 'My submissions',
+              () => Get.to(() => const MySubmissionsView())),
+
+          // admins are normal users too — this is just an extra entry for them.
+          // Shown only for role=admin; RLS enforces the same server-side.
           Obx(() => profile.profile.value?.isAdmin == true
               ? _tile(Icons.admin_panel_settings_outlined, 'Admin Portal',
                   () => Get.to(() => const AdminPortalView()))
               : const SizedBox.shrink()),
+
+          const Divider(height: 1, color: AppColors.border),
           _tile(Icons.info_outline, 'About Us', () => Get.to(() => const AboutView())),
           _tile(Icons.help_outline, 'FAQs', () => Get.to(() => const FaqView())),
           const Divider(height: 1, color: AppColors.border),

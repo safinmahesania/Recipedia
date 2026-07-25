@@ -19,4 +19,8 @@ class AppStrings {
   // reviews / reports
   static const reviewSaved        = 'Thanks for your review!';
   static const reportSent         = 'Report submitted. Thank you.';
+
+  // submissions
+  static const submissionSent     = 'Submitted for review!';
+  static const submissionDeleted  = 'Submission deleted.';
 }
