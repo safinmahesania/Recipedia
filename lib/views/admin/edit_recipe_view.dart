@@ -6,6 +6,7 @@ import '../../controllers/admin_controller.dart';
 import '../../services/admin_service.dart';
 import '../../services/auth_service.dart';
 import '../../shared/widgets/app_text_field.dart';
+import '../../shared/widgets/duration_field.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// Add (recipe == null) or edit an existing recipe.
@@ -112,7 +113,13 @@ class _EditRecipeViewState extends State<EditRecipeView> {
           children: [
             AppTextField(label: 'Title', hint: 'Recipe name', controller: title),
             const SizedBox(height: 14),
-            AppTextField(label: 'Cook time', hint: '30 min', controller: cookTime),
+            const Text('Cook time',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary)),
+            const SizedBox(height: 6),
+            DurationField(
+              initial: cookTime.text,
+              onChanged: (v) => cookTime.text = v,
+            ),
             const SizedBox(height: 14),
             AppTextField(label: 'Diet', hint: 'Vegetarian', controller: diet),
             const SizedBox(height: 14),

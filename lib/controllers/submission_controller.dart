@@ -98,6 +98,7 @@ class SubmissionController extends GetxController {
       return true;
     } catch (e) {
       Get.snackbar(AppStrings.error, 'Could not save: $e');
+      print('Could not save: $e');
       return false;
     } finally {
       isSaving.value = false;

@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../constants/app_colors.dart';
 import '../../controllers/submission_controller.dart';
 import '../../services/image_service.dart';
+import '../../shared/widgets/duration_field.dart';
 import '../../shared/widgets/primary_button.dart';
 
 /// Submit a new recipe, or edit one of your own (FR34/36).
@@ -44,7 +45,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
       title.text = e['title'] ?? '';
       instructions.text = e['instructions'] ?? '';
       imageUrl.text = e['image_url'] ?? '';
-      cookTime.text = e['cook_time'] ?? '';
+      cookTime.text = (e['cook_time'] ?? '').toString();
       _diet = e['diet'];
       _categoryId = e['category_id'];
     }
@@ -84,7 +85,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
       coreCsv: core.text,
       optionalCsv: optional.text,
       imageUrl: finalUrl,
-      cookTime: cookTime.text,
+      cookTime: cookTime.text.trim().isEmpty ? null : cookTime.text.trim(),
       diet: _diet,
       categoryId: _categoryId,
       existingId: widget.existing?['id'],
@@ -182,7 +183,10 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
               const SizedBox(height: 16),
 
               _label('Cook time'),
-              _field(cookTime, 'e.g. 30 min'),
+              DurationField(
+                initial: cookTime.text,
+                onChanged: (v) => cookTime.text = v,
+              ),
               const SizedBox(height: 16),
 
               // ---------- ingredients ----------
