@@ -4,23 +4,29 @@ import '../../theme/app_tokens.dart';
 import 'match_meter.dart';
 import 'recipe_image.dart';
 
-/// Horizontal recipe row — the workhorse. Used by the recipe list, favorites,
-/// scan results, and Home's "almost there" section.
+/// Horizontal recipe row — the workhorse across browse, saved, scan and Home.
 ///
-/// The public API is unchanged (`recipe` map + `onTap`) so every existing
-/// caller keeps compiling. When the map carries `matched_count` /
-/// `missing_count` / `missing_names` from the scan RPC, the match meter shows
-/// automatically; otherwise the card falls back to plain meta.
+/// The public API is unchanged (`recipe` map + `onTap`) so every caller keeps
+/// compiling. Optional data lights up extra rows:
+///   * matched_count / missing_count / missing_names  -> match meter
+///   * diet, categories.name, cuisine, cook_time      -> meta chips
+///   * onToggleFavorite                               -> heart button
 class RecipeCard extends StatelessWidget {
   final Map<String, dynamic> recipe;
   final VoidCallback? onTap;
   final Widget? trailing;
+
+  /// Shows a heart in the top-right when provided.
+  final VoidCallback? onToggleFavorite;
+  final bool isFavorite;
 
   const RecipeCard({
     super.key,
     required this.recipe,
     this.onTap,
     this.trailing,
+    this.onToggleFavorite,
+    this.isFavorite = false,
   });
 
   @override
@@ -30,10 +36,11 @@ class RecipeCard extends StatelessWidget {
 
     final id = (recipe['id'] ?? '').toString();
     final title = (recipe['title'] ?? '') as String;
-    final imageUrl = recipe['image_url'] as String?;
-    final cookTime = recipe['cook_time'] as String?;
-    final cuisine = recipe['cuisine'] as String?;
-    final diet = recipe['diet'] as String?;
+    final cookTime = (recipe['cook_time'] ?? '') as String?;
+    final cuisine = (recipe['cuisine'] ?? '') as String?;
+    final diet = (recipe['diet'] ?? '') as String?;
+    final category =
+        ((recipe['categories'] as Map?)?['name'] ?? '') as String?;
 
     final matched = (recipe['matched_count'] as num?)?.toInt();
     final missing = (recipe['missing_count'] as num?)?.toInt();
@@ -42,12 +49,6 @@ class RecipeCard extends StatelessWidget {
             const <String>[];
     final hasMatch = matched != null && missing != null;
     final hasAllergen = recipe['has_allergen'] == true;
-
-    final meta = [
-      if (cookTime != null && cookTime.isNotEmpty) cookTime,
-      if (cuisine != null && cuisine.isNotEmpty) cuisine,
-      if (!hasMatch && diet != null && diet.isNotEmpty) diet,
-    ].join(' · ');
 
     return InkWell(
       onTap: onTap,
@@ -64,9 +65,9 @@ class RecipeCard extends StatelessWidget {
           children: [
             RecipeImage(
               seed: id,
-              imageUrl: imageUrl,
-              width: AppSizes.thumbSize,
-              height: AppSizes.thumbSize,
+              imageUrl: recipe['image_url'] as String?,
+              width: 84,
+              height: 84,
               radius: AppSizes.radiusSm,
             ),
             const SizedBox(width: AppSizes.smd),
@@ -74,31 +75,85 @@ class RecipeCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: text.titleMedium),
-                  if (meta.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: Text(meta,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: text.labelSmall
-                              ?.copyWith(color: t.textSecondary)),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: text.titleMedium),
+                      ),
+                      if (onToggleFavorite != null)
+                        GestureDetector(
+                          onTap: onToggleFavorite,
+                          behavior: HitTestBehavior.opaque,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: AppSizes.sm),
+                            child: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              size: AppSizes.iconMd,
+                              color:
+                                  isFavorite ? t.brand : t.textTertiary,
+                              semanticLabel:
+                                  isFavorite ? 'Remove from saved' : 'Save',
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  if (cookTime != null && cookTime.isNotEmpty) ...[
+                    const SizedBox(height: AppSizes.xs + 1),
+                    Row(
+                      children: [
+                        Icon(Icons.schedule,
+                            size: AppSizes.iconXs + 1,
+                            color: t.textSecondary),
+                        const SizedBox(width: 4),
+                        Text(cookTime,
+                            style: text.labelSmall
+                                ?.copyWith(color: t.textSecondary)),
+                        if (cuisine != null && cuisine.isNotEmpty) ...[
+                          Text('  ·  ',
+                              style: text.labelSmall
+                                  ?.copyWith(color: t.textTertiary)),
+                          Flexible(
+                            child: Text(cuisine,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: text.labelSmall
+                                    ?.copyWith(color: t.textSecondary)),
+                          ),
+                        ],
+                      ],
                     ),
+                  ],
                   if (hasMatch) ...[
                     const SizedBox(height: AppSizes.sm),
                     MatchMeter(matched: matched, missing: missing),
                     const SizedBox(height: AppSizes.sm),
-                    Row(
+                    Wrap(
+                      spacing: AppSizes.xs,
+                      runSpacing: AppSizes.xs,
                       children: [
                         MatchLabel(
                             missing: missing, missingNames: missingNames),
-                        if (hasAllergen) ...[
-                          const SizedBox(width: AppSizes.xs),
-                          _AllergenFlag(),
-                        ],
+                        if (hasAllergen) const _AllergenFlag(),
+                      ],
+                    ),
+                  ] else if ((diet != null && diet.isNotEmpty) ||
+                      (category != null && category.isNotEmpty)) ...[
+                    const SizedBox(height: AppSizes.sm),
+                    Wrap(
+                      spacing: AppSizes.xs,
+                      runSpacing: AppSizes.xs,
+                      children: [
+                        if (diet != null && diet.isNotEmpty)
+                          _MetaChip(label: diet, tone: _Tone.accent),
+                        if (category != null && category.isNotEmpty)
+                          _MetaChip(label: category, tone: _Tone.neutral),
                       ],
                     ),
                   ],
@@ -111,6 +166,36 @@ class RecipeCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+enum _Tone { accent, neutral }
+
+class _MetaChip extends StatelessWidget {
+  final String label;
+  final _Tone tone;
+  const _MetaChip({required this.label, required this.tone});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final accent = tone == _Tone.accent;
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.sm, vertical: AppSizes.xxs),
+      decoration: BoxDecoration(
+        color: accent ? t.accentTint : t.surface,
+        borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+        border: accent ? null : Border.all(color: t.border),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: accent ? t.onAccentTint : t.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }
@@ -167,8 +252,8 @@ class RecipeTile extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: AppSizes.xs + 1),
                 child: Text(cookTime,
-                    style: text.labelSmall?.copyWith(
-                        color: t.textSecondary, fontSize: 11)),
+                    style: text.labelSmall
+                        ?.copyWith(color: t.textSecondary, fontSize: 11)),
               ),
           ],
         ),
@@ -178,6 +263,8 @@ class RecipeTile extends StatelessWidget {
 }
 
 class _AllergenFlag extends StatelessWidget {
+  const _AllergenFlag();
+
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
@@ -195,10 +282,8 @@ class _AllergenFlag extends StatelessWidget {
               size: AppSizes.iconXs, color: t.onErrorTint),
           const SizedBox(width: 3),
           Text('Allergen',
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(color: t.onErrorTint, fontWeight: FontWeight.w600)),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: t.onErrorTint, fontWeight: FontWeight.w600)),
         ],
       ),
     );
