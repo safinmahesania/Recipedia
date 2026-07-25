@@ -6,7 +6,7 @@ import 'edit_recipe_view.dart';
 
 /// Admin recipe list: add, edit, delete.
 class ManageRecipeView extends StatelessWidget {
-  const ManageRecipeView({Key? key}) : super(key: key);
+  const ManageRecipeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +14,7 @@ class ManageRecipeView extends StatelessWidget {
     c.loadRecipes();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Recipes',

@@ -11,7 +11,7 @@ import '../recipes/recipe_details_view.dart';
 /// Detected items are shown as editable chips so a wrong guess is a one-tap
 /// fix rather than a dead end.
 class ScanView extends StatelessWidget {
-  const ScanView({Key? key}) : super(key: key);
+  const ScanView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +19,7 @@ class ScanView extends StatelessWidget {
     final manual = TextEditingController();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Find by ingredients',

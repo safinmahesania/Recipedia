@@ -8,8 +8,7 @@ import '../../shared/widgets/primary_button.dart';
 class ReviewRatingView extends StatefulWidget {
   final String recipeId;
   final String recipeTitle;
-  const ReviewRatingView({Key? key, required this.recipeId, this.recipeTitle = ''})
-      : super(key: key);
+  const ReviewRatingView({super.key, required this.recipeId, this.recipeTitle = ''});
 
   @override
   State<ReviewRatingView> createState() => _ReviewRatingViewState();
@@ -29,9 +28,7 @@ class _ReviewRatingViewState extends State<ReviewRatingView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Reviews',

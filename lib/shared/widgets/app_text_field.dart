@@ -1,46 +1,52 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
+import '../../theme/app_tokens.dart';
 
-/// Reusable labelled input. Used across all auth screens.
+/// Labelled input. Colours, radius, fill and focus ring all come from
+/// inputDecorationTheme, so this adapts to dark mode automatically.
 class AppTextField extends StatelessWidget {
   final String label;
   final String hint;
   final TextEditingController controller;
   final bool obscure;
   final TextInputType keyboardType;
+  final String? errorText;
+  final int maxLines;
+  final ValueChanged<String>? onChanged;
 
   const AppTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hint,
     required this.controller,
     this.obscure = false,
     this.keyboardType = TextInputType.text,
-  }) : super(key: key);
+    this.errorText,
+    this.maxLines = 1,
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
-            style: const TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary)),
-        const SizedBox(height: 6),
+            style: text.labelMedium?.copyWith(color: t.textSecondary)),
+        const SizedBox(height: AppSizes.xs + 2),
         TextField(
           controller: controller,
           obscureText: obscure,
           keyboardType: keyboardType,
+          maxLines: obscure ? 1 : maxLines,
+          onChanged: onChanged,
+          style: text.bodyLarge,
           decoration: InputDecoration(
             hintText: hint,
-            filled: true,
-            fillColor: AppColors.surface,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.primary)),
+            errorText: errorText,
           ),
         ),
       ],

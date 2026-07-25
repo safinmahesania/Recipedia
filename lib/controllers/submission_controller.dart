@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../constants/app_strings.dart';
 import '../services/auth_service.dart';
@@ -98,7 +99,7 @@ class SubmissionController extends GetxController {
       return true;
     } catch (e) {
       Get.snackbar(AppStrings.error, 'Could not save: $e');
-      print('Could not save: $e');
+      debugPrint('Could not save: $e');
       return false;
     } finally {
       isSaving.value = false;

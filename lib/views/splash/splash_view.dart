@@ -2,15 +2,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../constants/app_strings.dart';
 import '../../services/auth_service.dart';
 import '../auth/login_view.dart';
 import '../home/main_shell.dart';
 
-/// Splash: brief brand screen, then route by Supabase session.
-/// No stored credentials — Supabase persists the session itself.
+/// Splash: brief brand moment, then route by Supabase session.
+///
+/// This is the one screen that intentionally uses full-strength brand coral in
+/// both modes — it is the logo lockup, not UI chrome. White on #FF4F5A is
+/// 3.22:1, which passes AA for large text (the wordmark is 30px bold) and for
+/// non-text UI (the icon). Nothing smaller may sit on this background.
 class SplashView extends StatefulWidget {
-  const SplashView({Key? key}) : super(key: key);
+  const SplashView({super.key});
 
   @override
   State<SplashView> createState() => _SplashViewState();
@@ -24,23 +29,29 @@ class _SplashViewState extends State<SplashView> {
   }
 
   void _route() {
+    if (!mounted) return;
     final loggedIn = AuthService().currentUser != null;
-    Get.offAll(() => loggedIn ? const MainShell() : LoginView());
+    Get.offAll(() => loggedIn ? const MainShell() : const LoginView());
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.restaurant_menu, size: 72, color: Colors.white),
-            SizedBox(height: 16),
-            Text(AppStrings.appName,
-                style: TextStyle(
-                    fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
+            const Icon(Icons.restaurant_menu,
+                size: 72, color: Colors.white),
+            const SizedBox(height: AppSizes.md),
+            Text(
+              AppStrings.appName,
+              style: Theme.of(context)
+                  .textTheme
+                  .displayLarge
+                  ?.copyWith(color: Colors.white),
+            ),
           ],
         ),
       ),

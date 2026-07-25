@@ -4,7 +4,7 @@ import '../../constants/app_colors.dart';
 import '../../controllers/admin_controller.dart';
 
 class UsersView extends StatelessWidget {
-  const UsersView({Key? key}) : super(key: key);
+  const UsersView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +12,7 @@ class UsersView extends StatelessWidget {
     c.loadUsers();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Users',

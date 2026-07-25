@@ -3,14 +3,12 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_strings.dart';
 
 class AboutView extends StatelessWidget {
-  const AboutView({Key? key}) : super(key: key);
+  const AboutView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('About Us',

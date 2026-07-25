@@ -1,37 +1,70 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 
-/// Reusable brand button with a built-in loading state.
+/// Brand button with a built-in loading state.
+///
+/// Fixed: this used to fill with AppColors.primary (#FF4F5A) and put white
+/// text on it — 3.22:1, which fails WCAG AA for body text. It now defers
+/// entirely to filledButtonTheme, which fills with brandFill (#D93B46, 4.50:1)
+/// in light and full coral in dark. No colours are set here at all, so the
+/// button is correct in both modes and can never drift from the theme again.
 class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
   final bool loading;
 
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     this.loading = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 52,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        onPressed: loading ? null : onTap,
-        child: loading
-            ? const SizedBox(
-                width: 22, height: 22,
-                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-            : Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-      ),
+    final onFill = Theme.of(context).colorScheme.onPrimary;
+
+    return FilledButton(
+      onPressed: loading ? null : onTap,
+      child: loading
+          ? SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(color: onFill, strokeWidth: 2),
+            )
+          : Text(label),
     );
   }
+}
+
+/// Secondary action. Pairs with PrimaryButton in dialogs and forms.
+class SecondaryButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const SecondaryButton({super.key, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => OutlinedButton(
+        onPressed: onTap,
+        child: Text(label),
+      );
+}
+
+/// Compact variant for toolbars and cards.
+class SmallButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const SmallButton({super.key, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => FilledButton(
+        onPressed: onTap,
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(0, AppSizes.buttonHeightSm),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+        ),
+        child: Text(label),
+      );
 }

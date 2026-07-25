@@ -11,11 +11,11 @@ class DurationField extends StatefulWidget {
   final ValueChanged<String> onChanged;
 
   const DurationField({
-    Key? key,
+    super.key,
     this.initial,
     this.step = 5,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<DurationField> createState() => _DurationFieldState();

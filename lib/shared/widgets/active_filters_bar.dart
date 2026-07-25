@@ -1,74 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../controllers/recipe_controller.dart';
+import '../../theme/app_tokens.dart';
 import 'filter_sheet.dart';
 
 /// Filter button + chips showing what is currently applied.
-/// Sits above any recipe list.
+/// Belongs to the Recipes tab only — Home holds no filter state.
 class ActiveFiltersBar extends StatelessWidget {
-  const ActiveFiltersBar({Key? key}) : super(key: key);
+  const ActiveFiltersBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     final RecipeController c = Get.find<RecipeController>();
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
 
     return Obx(() {
-      final chips = <Widget>[];
+      final chips = <Widget>[
+        if (c.diet.value != null)
+          _FilterChip(label: c.diet.value!, onRemove: () => c.setDiet(null)),
+        if (c.categoryName.value != null)
+          _FilterChip(
+              label: c.categoryName.value!,
+              onRemove: () => c.setCategory(null, null)),
+        if (c.cuisine.value != null)
+          _FilterChip(
+              label: c.cuisine.value!, onRemove: () => c.setCuisine(null)),
+      ];
 
-      if (c.diet.value != null) {
-        chips.add(_chip(c.diet.value!, () => c.setDiet(null)));
-      }
-      if (c.categoryName.value != null) {
-        chips.add(_chip(c.categoryName.value!, () => c.setCategory(null, null)));
-      }
-      if (c.cuisine.value != null) {
-        chips.add(_chip(c.cuisine.value!, () => c.setCuisine(null)));
-      }
+      final active = c.activeFilterCount > 0;
+      // Active state fills with brandFill, not brand: white label text on
+      // #FF4F5A is 3.22:1 and fails AA.
+      final fill = active ? t.brandFill : t.surface;
+      final fg = active ? t.onBrandFill : t.textSecondary;
 
       return SizedBox(
         height: 40,
         child: Row(
           children: [
-            // filter button with count badge
             GestureDetector(
               onTap: () => FilterSheet.show(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.smd, vertical: AppSizes.sm),
                 decoration: BoxDecoration(
-                  color: c.activeFilterCount > 0 ? AppColors.primary : AppColors.surface,
-                  borderRadius: BorderRadius.circular(20),
+                  color: fill,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                  border: active ? null : Border.all(color: t.border),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.tune,
-                        size: 16,
-                        color: c.activeFilterCount > 0
-                            ? Colors.white
-                            : AppColors.textSecondary),
-                    const SizedBox(width: 6),
+                    Icon(Icons.tune, size: AppSizes.iconSm, color: fg),
+                    const SizedBox(width: AppSizes.xs + 2),
                     Text(
-                      c.activeFilterCount > 0
-                          ? 'Filters (${c.activeFilterCount})'
-                          : 'Filters',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: c.activeFilterCount > 0
-                            ? Colors.white
-                            : AppColors.textSecondary,
-                      ),
+                      active ? 'Filters (${c.activeFilterCount})' : 'Filters',
+                      style: text.labelSmall?.copyWith(color: fg),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSizes.sm),
             Expanded(
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: chips.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, __) => const SizedBox(width: AppSizes.sm),
                 itemBuilder: (_, i) => chips[i],
               ),
             ),
@@ -77,23 +76,40 @@ class ActiveFiltersBar extends StatelessWidget {
       );
     });
   }
+}
 
-  Widget _chip(String label, VoidCallback onRemove) => Container(
-        padding: const EdgeInsets.only(left: 12, right: 6),
-        decoration: BoxDecoration(
-            color: AppColors.accentTint, borderRadius: BorderRadius.circular(20)),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(label,
-                style: const TextStyle(fontSize: 13, color: AppColors.accentDark)),
-            IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-              icon: const Icon(Icons.close, size: 14, color: AppColors.accentDark),
-              onPressed: onRemove,
-            ),
-          ],
-        ),
-      );
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final VoidCallback onRemove;
+  const _FilterChip({required this.label, required this.onRemove});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Container(
+      padding: const EdgeInsets.only(left: AppSizes.smd, right: AppSizes.xs),
+      decoration: BoxDecoration(
+        color: t.accentTint,
+        borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(color: t.onAccentTint)),
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+            icon: Icon(Icons.close,
+                size: AppSizes.iconXs + 2, color: t.onAccentTint),
+            tooltip: 'Remove $label filter',
+            onPressed: onRemove,
+          ),
+        ],
+      ),
+    );
+  }
 }

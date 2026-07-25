@@ -77,8 +77,9 @@ class RecipeService {
   Future<List<Map<String, dynamic>>> getFavorites(String userId) async {
     return await supabase
         .from('favorites')
-        .select('recipes(*, categories(name))')
-        .eq('user_id', userId);
+        .select('collection_id, created_at, recipes(*, categories(name))')
+        .eq('user_id', userId)
+        .order('created_at', ascending: false);
   }
 
   Future<void> addFavorite(String userId, String recipeId) async {

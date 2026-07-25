@@ -10,7 +10,7 @@ import 'reports_view.dart';
 
 /// Admin dashboard — entry point to all admin tools.
 class AdminPortalView extends StatelessWidget {
-  const AdminPortalView({Key? key}) : super(key: key);
+  const AdminPortalView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,7 @@ class AdminPortalView extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text(AppStrings.adminPortal,

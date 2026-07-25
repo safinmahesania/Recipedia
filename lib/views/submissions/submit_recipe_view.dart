@@ -12,7 +12,7 @@ import '../../shared/widgets/primary_button.dart';
 /// Validated form + dropdowns + image (gallery / camera / URL).
 class SubmitRecipeView extends StatefulWidget {
   final Map<String, dynamic>? existing;
-  const SubmitRecipeView({Key? key, this.existing}) : super(key: key);
+  const SubmitRecipeView({super.key, this.existing});
 
   @override
   State<SubmitRecipeView> createState() => _SubmitRecipeViewState();
@@ -115,9 +115,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: Text(isEdit ? 'Edit submission' : 'Submit a recipe',
@@ -160,7 +158,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
               // ---------- diet + cook time ----------
               _label('Diet'),
               DropdownButtonFormField<String>(
-                value: _diet,
+                initialValue: _diet,
                 decoration: _decoration('Select diet'),
                 items: SubmissionController.dietOptions
                     .map((d) => DropdownMenuItem(value: d, child: Text(d)))
@@ -171,7 +169,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
 
               _label('Category'),
               Obx(() => DropdownButtonFormField<String>(
-                    value: _categoryId,
+                    initialValue: _categoryId,
                     decoration: _decoration('Select category'),
                     items: c.categories
                         .map((cat) => DropdownMenuItem(

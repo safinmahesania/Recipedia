@@ -6,7 +6,7 @@ import 'submit_recipe_view.dart';
 
 /// The user's own submissions and their review status (FR36).
 class MySubmissionsView extends StatelessWidget {
-  const MySubmissionsView({Key? key}) : super(key: key);
+  const MySubmissionsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +14,7 @@ class MySubmissionsView extends StatelessWidget {
     c.loadMySubmissions();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('My submissions',

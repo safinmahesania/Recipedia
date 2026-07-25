@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 
 class FaqView extends StatelessWidget {
-  const FaqView({Key? key}) : super(key: key);
+  const FaqView({super.key});
 
   static const _faqs = <List<String>>[
     ['How do I find a recipe from ingredients?',
@@ -18,9 +18,7 @@ class FaqView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('FAQs',

@@ -33,7 +33,7 @@ class AuthController extends GetxController {
       isLoading.value = true;
       await _service.signUp(email, password, name: name);
       Get.snackbar(AppStrings.appName, AppStrings.verifyEmailSent);
-      Get.offAll(() => LoginView());
+      Get.offAll(() => const LoginView());
     } on AuthException catch (e) {
       _error(e.message);
     } catch (_) {
@@ -67,7 +67,7 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     await _service.signOut();
-    Get.offAll(() => LoginView());
+    Get.offAll(() => const LoginView());
   }
 
   void _error(String msg) => Get.snackbar(AppStrings.error, msg);

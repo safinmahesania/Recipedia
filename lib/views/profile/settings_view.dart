@@ -10,7 +10,7 @@ import 'faq_view.dart';
 
 /// Settings: submissions, admin (admins only), about, FAQ, logout.
 class SettingsView extends StatelessWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +18,7 @@ class SettingsView extends StatelessWidget {
     final ProfileController profile = Get.put(ProfileController());
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Settings',

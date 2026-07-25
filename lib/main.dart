@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'constants/app_colors.dart';
 import 'services/supabase_client.dart';
+import 'theme/app_theme.dart';
 import 'views/splash/splash_view.dart';
 
 void main() async {
@@ -11,20 +11,18 @@ void main() async {
 }
 
 class RecipediaApp extends StatelessWidget {
-  const RecipediaApp({Key? key}) : super(key: key);
+  const RecipediaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Recipedia',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-        fontFamily: 'Helvetica',
-      ),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      // Follows the OS setting. Swap to a stored preference once the settings
+      // screen exposes a theme toggle.
+      themeMode: ThemeMode.system,
       home: const SplashView(),
     );
   }

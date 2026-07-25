@@ -1,54 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../constants/app_strings.dart';
 import '../../controllers/auth_controller.dart';
 import '../../shared/widgets/app_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../theme/app_tokens.dart';
 
-class SignupView extends StatelessWidget {
-  SignupView({Key? key}) : super(key: key);
+/// Create account. StatefulWidget so the three controllers are disposed.
+class SignupView extends StatefulWidget {
+  const SignupView({super.key});
 
+  @override
+  State<SignupView> createState() => _SignupViewState();
+}
+
+class _SignupViewState extends State<SignupView> {
   final AuthController auth = Get.put(AuthController());
-  final name = TextEditingController();
-  final email = TextEditingController();
-  final password = TextEditingController();
+  final _name = TextEditingController();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, foregroundColor: AppColors.textPrimary),
+      appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSizes.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Create account',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-              const SizedBox(height: 6),
-              const Text('Sign up to get started', style: TextStyle(color: AppColors.textSecondary)),
-              const SizedBox(height: 28),
-              AppTextField(label: 'Name', hint: 'Your name', controller: name),
-              const SizedBox(height: 16),
-              AppTextField(label: 'Email', hint: 'you@email.com', controller: email, keyboardType: TextInputType.emailAddress),
-              const SizedBox(height: 16),
-              AppTextField(label: 'Password', hint: '******', controller: password, obscure: true),
-              const SizedBox(height: 24),
+              Text('Create account', style: text.headlineMedium),
+              const SizedBox(height: AppSizes.xs + 2),
+              Text('Sign up to get started',
+                  style: text.bodyMedium?.copyWith(color: t.textSecondary)),
+              const SizedBox(height: AppSizes.xl),
+              AppTextField(label: 'Name', hint: 'Your name', controller: _name),
+              const SizedBox(height: AppSizes.md),
+              AppTextField(
+                label: 'Email',
+                hint: 'you@email.com',
+                controller: _email,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: AppSizes.md),
+              AppTextField(
+                label: 'Password',
+                hint: 'At least 8 characters',
+                controller: _password,
+                obscure: true,
+              ),
+              const SizedBox(height: AppSizes.lg),
               Obx(() => PrimaryButton(
                     label: AppStrings.signup,
                     loading: auth.isLoading.value,
-                    onTap: () => auth.signUp(name.text.trim(), email.text.trim(), password.text),
+                    onTap: () => auth.signUp(_name.text.trim(),
+                        _email.text.trim(), _password.text),
                   )),
-              const SizedBox(height: 20),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Text('Already have an account? ', style: TextStyle(color: AppColors.textSecondary)),
-                GestureDetector(
-                  onTap: () => Get.back(),
-                  child: const Text('Login', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-                ),
-              ]),
+              const SizedBox(height: AppSizes.lg),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Already have an account? ',
+                      style:
+                          text.bodySmall?.copyWith(color: t.textSecondary)),
+                  GestureDetector(
+                    onTap: Get.back,
+                    child: Text('Log in',
+                        style:
+                            text.labelMedium?.copyWith(color: t.onBrandTint)),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

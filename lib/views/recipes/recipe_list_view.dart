@@ -11,7 +11,7 @@ class RecipeListView extends StatefulWidget {
   /// When embedded in MainShell the shell owns the chrome, so the
   /// screen-level AppBar is suppressed.
   final bool showAppBar;
-  const RecipeListView({Key? key, this.showAppBar = true}) : super(key: key);
+  const RecipeListView({super.key, this.showAppBar = true});
 
   @override
   State<RecipeListView> createState() => _RecipeListViewState();
@@ -44,11 +44,9 @@ class _RecipeListViewState extends State<RecipeListView> {
           ? AppBar(
               title: const Text('Recipes',
                   style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-              backgroundColor: Colors.white,
               elevation: 0,
             )
           : null,
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [

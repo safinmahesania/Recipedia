@@ -5,7 +5,7 @@ import '../../controllers/admin_controller.dart';
 
 /// Approval queue for user-submitted recipes (FR35).
 class PendingRecipesView extends StatelessWidget {
-  const PendingRecipesView({Key? key}) : super(key: key);
+  const PendingRecipesView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +13,7 @@ class PendingRecipesView extends StatelessWidget {
     c.loadPending();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Pending submissions',

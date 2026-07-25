@@ -4,7 +4,7 @@ import '../../constants/app_colors.dart';
 import '../../controllers/admin_controller.dart';
 
 class FeedbackView extends StatelessWidget {
-  const FeedbackView({Key? key}) : super(key: key);
+  const FeedbackView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +12,7 @@ class FeedbackView extends StatelessWidget {
     c.loadReviews();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Reviews',

@@ -5,7 +5,7 @@ import '../../controllers/admin_controller.dart';
 
 /// Moderation queue for reported recipes / reviews / users (FR18).
 class ReportsView extends StatelessWidget {
-  const ReportsView({Key? key}) : super(key: key);
+  const ReportsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +13,7 @@ class ReportsView extends StatelessWidget {
     c.loadReports();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: const Text('Reports',

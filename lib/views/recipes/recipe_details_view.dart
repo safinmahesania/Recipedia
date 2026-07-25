@@ -14,7 +14,7 @@ import 'review_rating_view.dart';
 /// plus favorite, share, review and report actions.
 class RecipeDetailsView extends StatelessWidget {
   final String recipeId;
-  const RecipeDetailsView({Key? key, required this.recipeId}) : super(key: key);
+  const RecipeDetailsView({super.key, required this.recipeId});
 
   /// Fetch from network, cache on success; fall back to cache when offline.
   Future<Map<String, dynamic>> _load() async {
@@ -36,7 +36,6 @@ class RecipeDetailsView extends StatelessWidget {
     final favorites = Get.put(FavoritesController());
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: FutureBuilder<Map<String, dynamic>>(
         future: _load(),
         builder: (context, snap) {

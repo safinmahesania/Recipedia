@@ -6,13 +6,12 @@ import '../../controllers/recipe_controller.dart';
 /// Bottom sheet for combining category + cuisine + diet filters.
 /// Counts come from the database so the user can see how much each option holds.
 class FilterSheet extends StatelessWidget {
-  const FilterSheet({Key? key}) : super(key: key);
+  const FilterSheet({super.key});
 
   static void show(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),

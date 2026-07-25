@@ -12,7 +12,7 @@ import '../../shared/widgets/primary_button.dart';
 /// Add (recipe == null) or edit an existing recipe.
 class EditRecipeView extends StatefulWidget {
   final Map<String, dynamic>? recipe;
-  const EditRecipeView({Key? key, this.recipe}) : super(key: key);
+  const EditRecipeView({super.key, this.recipe});
 
   @override
   State<EditRecipeView> createState() => _EditRecipeViewState();
@@ -98,9 +98,7 @@ class _EditRecipeViewState extends State<EditRecipeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
         title: Text(isEdit ? 'Edit recipe' : 'Add recipe',
