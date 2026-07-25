@@ -88,7 +88,7 @@ class PendingRecipesView extends StatelessWidget {
     final reason = TextEditingController();
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dctx) => AlertDialog(
         title: const Text('Reject recipe'),
         content: TextField(
           controller: reason,
@@ -96,10 +96,10 @@ class PendingRecipesView extends StatelessWidget {
           maxLines: 3,
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(dctx), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
-              Get.back();
+              Navigator.pop(dctx);
               c.reject(recipeId, reason.text.trim());
             },
             child: const Text('Reject', style: TextStyle(color: AppColors.error)),

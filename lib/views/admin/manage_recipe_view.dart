@@ -85,14 +85,14 @@ class ManageRecipeView extends StatelessWidget {
   void _confirmDelete(BuildContext context, AdminController c, String id, String title) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dctx) => AlertDialog(
         title: const Text('Delete recipe'),
         content: Text('Delete "$title"? This cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(dctx), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
-              Get.back();
+              Navigator.pop(dctx);
               c.deleteRecipe(id);
             },
             child: const Text('Delete', style: TextStyle(color: AppColors.error)),

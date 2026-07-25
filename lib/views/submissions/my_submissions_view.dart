@@ -126,14 +126,14 @@ class MySubmissionsView extends StatelessWidget {
   void _confirmDelete(BuildContext context, SubmissionController c, String id) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dctx) => AlertDialog(
         title: const Text('Delete submission'),
         content: const Text('This cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(dctx), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
-              Get.back();
+              Navigator.pop(dctx);
               c.delete(id);
             },
             child: const Text('Delete', style: TextStyle(color: AppColors.error)),

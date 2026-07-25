@@ -21,6 +21,7 @@ dependencies:
   # media
   cached_network_image: ^3.4.0
   image_picker: ^1.1.0
+  path: ^1.9.0
 
   # sharing (FR11)
   share_plus: ^13.2.0
