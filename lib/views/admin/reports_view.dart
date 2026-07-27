@@ -1,93 +1,156 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
+import '../../theme/app_tokens.dart';
 
-/// Moderation queue for reported recipes / reviews / users (FR18).
-class ReportsView extends StatelessWidget {
+/// Moderation queue for reported recipes, reviews and users.
+class ReportsView extends StatefulWidget {
   const ReportsView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final AdminController c = Get.put(AdminController());
+  State<ReportsView> createState() => _ReportsViewState();
+}
+
+class _ReportsViewState extends State<ReportsView> {
+  final AdminController c = Get.put(AdminController());
+
+  @override
+  void initState() {
+    super.initState();
     c.loadReports();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: const Text('Reports',
-            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-      ),
+      backgroundColor: t.canvas,
+      appBar: AppBar(title: const Text('Reports')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+          return const Center(child: CircularProgressIndicator());
         }
         if (c.reports.isEmpty) {
-          return const Center(
-              child: Text('No reports', style: TextStyle(color: AppColors.textSecondary)));
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.flag_outlined,
+                    size: AppSizes.iconXl, color: t.borderStrong),
+                const SizedBox(height: AppSizes.smd),
+                Text('Nothing reported',
+                    style: text.bodyMedium?.copyWith(color: t.textSecondary)),
+              ],
+            ),
+          );
         }
-        return ListView.separated(
-          padding: const EdgeInsets.all(16),
-          itemCount: c.reports.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (_, i) {
-            final r = c.reports[i];
-            final reporter = (r['profiles'] as Map<String, dynamic>?)?['name'] ?? 'User';
-            final open = r['status'] == 'open';
-            return Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                  color: AppColors.surface, borderRadius: BorderRadius.circular(12)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                          color: AppColors.primaryTint, borderRadius: BorderRadius.circular(8)),
-                      child: Text(r['target_type'] ?? '',
-                          style: const TextStyle(fontSize: 11, color: AppColors.primary)),
-                    ),
-                    const Spacer(),
-                    Text(r['status'] ?? '',
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: open ? AppColors.warning : AppColors.textSecondary)),
-                  ]),
-                  const SizedBox(height: 8),
-                  Text(r['reason'] ?? '',
-                      style: const TextStyle(fontSize: 13, color: AppColors.textPrimary)),
-                  const SizedBox(height: 4),
-                  Text('reported by $reporter',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                  if (open) ...[
-                    const SizedBox(height: 10),
+
+        return RefreshIndicator(
+          color: t.brand,
+          onRefresh: c.loadReports,
+          child: ListView.separated(
+            padding: const EdgeInsets.all(AppSizes.screenPad),
+            itemCount: c.reports.length,
+            separatorBuilder: (_, __) => const SizedBox(height: AppSizes.smd),
+            itemBuilder: (_, i) {
+              final r = c.reports[i];
+              final reporter =
+                  (r['profiles'] as Map<String, dynamic>?)?['name'] ?? 'User';
+              final open = r['status'] == 'open';
+
+              return Container(
+                padding: const EdgeInsets.all(AppSizes.md),
+                decoration: BoxDecoration(
+                  color: t.surfaceRaised,
+                  border: Border.all(color: t.cardBorder),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                  boxShadow: t.cardShadow,
+                  // Open reports carry a coloured spine so the queue can be
+                  // triaged without reading every card.
+                  gradient: open
+                      ? LinearGradient(
+                          colors: [t.warningTint, t.surfaceRaised],
+                          stops: const [0.0, 0.02],
+                        )
+                      : null,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Row(children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => c.resolveReport(r['id'], 'dismissed'),
-                          child: const Text('Dismiss'),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppSizes.sm, vertical: AppSizes.xxs),
+                        decoration: BoxDecoration(
+                          color: t.brandTint,
+                          borderRadius:
+                              BorderRadius.circular(AppSizes.radiusPill),
                         ),
+                        child: Text((r['target_type'] ?? '') as String,
+                            style: text.labelSmall?.copyWith(
+                                color: t.onBrandTint,
+                                fontWeight: FontWeight.w700)),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              elevation: 0),
-                          onPressed: () => c.resolveReport(r['id'], 'resolved'),
-                          child: const Text('Resolve'),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppSizes.sm, vertical: AppSizes.xxs),
+                        decoration: BoxDecoration(
+                          color: open ? t.warningTint : t.surface,
+                          borderRadius:
+                              BorderRadius.circular(AppSizes.radiusPill),
                         ),
+                        child: Text((r['status'] ?? '') as String,
+                            style: text.labelSmall?.copyWith(
+                                color: open
+                                    ? t.onWarningTint
+                                    : t.textSecondary,
+                                fontWeight: FontWeight.w700)),
                       ),
                     ]),
+                    const SizedBox(height: AppSizes.smd),
+                    Text((r['reason'] ?? '') as String,
+                        style: text.bodyLarge?.copyWith(height: 1.45)),
+                    const SizedBox(height: AppSizes.xs),
+                    Text('reported by $reporter',
+                        style:
+                            text.labelSmall?.copyWith(color: t.textSecondary)),
+                    if (open) ...[
+                      const SizedBox(height: AppSizes.smd),
+                      Row(children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(
+                                  AppSizes.buttonHeightSm),
+                            ),
+                            onPressed: () =>
+                                c.resolveReport(r['id'] as String, 'dismissed'),
+                            child: const Text('Dismiss'),
+                          ),
+                        ),
+                        const SizedBox(width: AppSizes.smd),
+                        Expanded(
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              minimumSize: const Size.fromHeight(
+                                  AppSizes.buttonHeightSm),
+                            ),
+                            onPressed: () =>
+                                c.resolveReport(r['id'] as String, 'resolved'),
+                            child: const Text('Resolve'),
+                          ),
+                        ),
+                      ]),
+                    ],
                   ],
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         );
       }),
     );

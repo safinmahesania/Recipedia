@@ -1,56 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
+import '../../theme/app_tokens.dart';
 
-class UsersView extends StatelessWidget {
+/// StatefulWidget because loadUsers() was called from build() — a fresh
+/// network request on every rebuild.
+class UsersView extends StatefulWidget {
   const UsersView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final AdminController c = Get.put(AdminController());
+  State<UsersView> createState() => _UsersViewState();
+}
+
+class _UsersViewState extends State<UsersView> {
+  final AdminController c = Get.put(AdminController());
+
+  @override
+  void initState() {
+    super.initState();
     c.loadUsers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: const Text('Users',
-            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-      ),
+      backgroundColor: t.canvas,
+      appBar: AppBar(title: const Text('Users')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+          return const Center(child: CircularProgressIndicator());
         }
         if (c.users.isEmpty) {
-          return const Center(
-              child: Text('No users', style: TextStyle(color: AppColors.textSecondary)));
+          return Center(
+              child: Text('No users',
+                  style: text.bodyMedium?.copyWith(color: t.textSecondary)));
         }
         return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.screenPad),
           itemCount: c.users.length,
-          separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.border),
+          separatorBuilder: (_, __) => Divider(height: 1, color: t.border),
           itemBuilder: (_, i) {
             final u = c.users[i];
             final isAdmin = u['role'] == 'admin';
+            final name = (u['name'] ?? 'Unnamed').toString();
+            // Deterministic avatar tint, same ramp as recipe placeholders, so a
+            // long user list reads as varied rather than a column of clones.
+            final slot = AppColors.slotFor((u['id'] ?? name).toString());
+
             return ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
-                backgroundColor: AppColors.primaryTint,
-                child: Text((u['name'] ?? '?').toString().characters.first.toUpperCase(),
-                    style: const TextStyle(color: AppColors.primary)),
+                backgroundColor: t.categoryTints[slot],
+                child: Text(
+                  name.isEmpty ? '?' : name.characters.first.toUpperCase(),
+                  style: text.labelMedium
+                      ?.copyWith(color: t.categoryGlyphs[slot]),
+                ),
               ),
-              title: Text(u['name'] ?? 'Unnamed',
-                  style: const TextStyle(fontSize: 15, color: AppColors.textPrimary)),
-              subtitle: Text(u['email'] ?? '',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+              title: Text(name, style: text.bodyLarge),
+              subtitle: Text((u['email'] ?? '') as String,
+                  style: text.labelSmall?.copyWith(color: t.textSecondary)),
               trailing: isAdmin
                   ? Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppSizes.sm, vertical: AppSizes.xxs),
                       decoration: BoxDecoration(
-                          color: AppColors.accentTint, borderRadius: BorderRadius.circular(8)),
-                      child: const Text('Admin',
-                          style: TextStyle(fontSize: 11, color: AppColors.accentDark)),
+                        color: t.accentTint,
+                        borderRadius:
+                            BorderRadius.circular(AppSizes.radiusPill),
+                      ),
+                      child: Text('Admin',
+                          style: text.labelSmall?.copyWith(
+                              color: t.onAccentTint,
+                              fontWeight: FontWeight.w700)),
                     )
                   : null,
             );

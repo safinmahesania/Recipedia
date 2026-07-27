@@ -1,33 +1,43 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../constants/app_strings.dart';
+import '../../theme/app_tokens.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: const Text('About Us',
-            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(24),
+      backgroundColor: t.canvas,
+      appBar: AppBar(title: const Text('About us')),
+      body: Padding(
+        padding: const EdgeInsets.all(AppSizes.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppStrings.appName,
-                style: TextStyle(
-                    fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primary)),
-            SizedBox(height: 12),
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: t.brandTint,
+                borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+              ),
+              child: Icon(Icons.restaurant_menu,
+                  size: 30, color: t.onBrandTint),
+            ),
+            const SizedBox(height: AppSizes.md),
+            Text(AppStrings.appName, style: text.headlineMedium),
+            const SizedBox(height: AppSizes.smd),
             Text(
-              'Recipedia helps you find recipes from the ingredients you already '
-              'have at home. Scan a vegetable or fruit and get matching recipes, '
-              'save your favorites, and share what you cook.',
-              style: TextStyle(color: AppColors.textSecondary, height: 1.6),
+              'Recipedia helps you find recipes from the ingredients you '
+              'already have at home. Scan what is in your kitchen and get '
+              'matching recipes ranked by how much you already own, save your '
+              'favourites, and share what you cook.',
+              style: text.bodyLarge?.copyWith(color: t.textSecondary, height: 1.6),
             ),
           ],
         ),

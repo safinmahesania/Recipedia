@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
+import '../../theme/app_tokens.dart';
 import '../../constants/app_strings.dart';
 import '../../controllers/admin_controller.dart';
 import '../../services/admin_service.dart';
@@ -97,12 +97,12 @@ class _EditRecipeViewState extends State<EditRecipeView> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
     return Scaffold(
+      backgroundColor: t.canvas,
       appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: Text(isEdit ? 'Edit recipe' : 'Add recipe',
-            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
+        title: Text(isEdit ? 'Edit recipe' : 'Add recipe'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -111,8 +111,8 @@ class _EditRecipeViewState extends State<EditRecipeView> {
           children: [
             AppTextField(label: 'Title', hint: 'Recipe name', controller: title),
             const SizedBox(height: 14),
-            const Text('Cook time',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary)),
+            Text('Cook time',
+                style: text.labelMedium?.copyWith(color: t.textSecondary)),
             const SizedBox(height: 6),
             DurationField(
               initial: cookTime.text,
@@ -128,8 +128,8 @@ class _EditRecipeViewState extends State<EditRecipeView> {
                 hint: 'aloo, palak',
                 controller: coreIngredients),
             const SizedBox(height: 6),
-            const Text('Main ingredients — these drive scan matching.',
-                style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+            Text('Main ingredients — these drive scan matching.',
+                style: text.labelSmall?.copyWith(color: t.textSecondary)),
             const SizedBox(height: 14),
             AppTextField(
                 label: 'Optional ingredients (comma separated)',

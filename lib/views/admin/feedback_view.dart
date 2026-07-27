@@ -1,62 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
+import '../../theme/app_tokens.dart';
 
-class FeedbackView extends StatelessWidget {
+/// Every review across the catalogue. StatefulWidget because loadReviews()
+/// was firing from build() on every rebuild.
+class FeedbackView extends StatefulWidget {
   const FeedbackView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final AdminController c = Get.put(AdminController());
+  State<FeedbackView> createState() => _FeedbackViewState();
+}
+
+class _FeedbackViewState extends State<FeedbackView> {
+  final AdminController c = Get.put(AdminController());
+
+  @override
+  void initState() {
+    super.initState();
     c.loadReviews();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: const Text('Reviews',
-            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-      ),
+      backgroundColor: t.canvas,
+      appBar: AppBar(title: const Text('Reviews')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+          return const Center(child: CircularProgressIndicator());
         }
         if (c.reviews.isEmpty) {
-          return const Center(
-              child: Text('No reviews yet', style: TextStyle(color: AppColors.textSecondary)));
+          return Center(
+              child: Text('No reviews yet',
+                  style: text.bodyMedium?.copyWith(color: t.textSecondary)));
         }
         return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.screenPad),
           itemCount: c.reviews.length,
-          separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.border),
+          separatorBuilder: (_, __) => Divider(height: 1, color: t.border),
           itemBuilder: (_, i) {
             final r = c.reviews[i];
-            final user = (r['profiles'] as Map<String, dynamic>?)?['name'] ?? 'User';
-            final recipe = (r['recipes'] as Map<String, dynamic>?)?['title'] ?? '';
-            final rating = r['rating'] ?? 0;
+            final user =
+                (r['profiles'] as Map<String, dynamic>?)?['name'] ?? 'User';
+            final recipe =
+                (r['recipes'] as Map<String, dynamic>?)?['title'] ?? '';
+            final rating = (r['rating'] ?? 0) as int;
+            final comment = (r['comment'] ?? '').toString();
+
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: AppSizes.smd),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                    Text(recipe,
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
-                    const Spacer(),
+                    Expanded(
+                        child: Text('$recipe', style: text.titleMedium)),
+                    const SizedBox(width: AppSizes.sm),
                     ...List.generate(
-                        5,
-                        (s) => Icon(s < rating ? Icons.star : Icons.star_border,
-                            size: 14, color: AppColors.star)),
+                      5,
+                      (s) => Icon(s < rating ? Icons.star : Icons.star_border,
+                          size: AppSizes.iconXs + 2, color: t.star),
+                    ),
                   ]),
                   const SizedBox(height: 3),
                   Text('by $user',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                  if ((r['comment'] ?? '').toString().isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Text(r['comment'],
-                        style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                      style: text.labelSmall?.copyWith(color: t.textSecondary)),
+                  if (comment.isNotEmpty) ...[
+                    const SizedBox(height: AppSizes.sm),
+                    Text(comment,
+                        style: text.bodyMedium
+                            ?.copyWith(color: t.textSecondary, height: 1.45)),
                   ],
                 ],
               ),
