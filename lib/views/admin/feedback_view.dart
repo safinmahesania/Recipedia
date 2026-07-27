@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Every review across the catalogue. StatefulWidget because loadReviews()
 /// was firing from build() on every rebuild.
@@ -32,14 +33,19 @@ class _FeedbackViewState extends State<FeedbackView> {
       appBar: AppBar(title: const Text('Reviews')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 0);
         }
         if (c.reviews.isEmpty) {
-          return Center(
-              child: Text('No reviews yet',
-                  style: text.bodyMedium?.copyWith(color: t.textSecondary)));
+          return const EmptyState(
+            icon: Icons.star_outline,
+            title: 'No reviews yet',
+            message: 'Ratings and comments across the catalogue show up here.',
+          );
         }
-        return ListView.separated(
+        return RefreshIndicator(
+          color: t.brand,
+          onRefresh: c.loadReviews,
+          child: ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.screenPad),
           itemCount: c.reviews.length,
           separatorBuilder: (_, __) => Divider(height: 1, color: t.border),
@@ -79,7 +85,8 @@ class _FeedbackViewState extends State<FeedbackView> {
                 ],
               ),
             );
-          },
+            },
+          ),
         );
       }),
     );

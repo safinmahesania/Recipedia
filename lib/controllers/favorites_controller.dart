@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../services/auth_service.dart';
 import '../services/cache_service.dart';
@@ -129,6 +130,7 @@ class FavoritesController extends GetxController {
   Future<void> toggleFavorite(String recipeId) async {
     final userId = _auth.currentUser?.id;
     if (userId == null) return;
+    HapticFeedback.selectionClick();
     try {
       if (isFavorite(recipeId)) {
         await _service.removeFavorite(userId, recipeId);

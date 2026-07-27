@@ -12,6 +12,7 @@ import '../planner/meal_plan_view.dart';
 import '../shopping/shopping_list_view.dart';
 import '../submissions/my_submissions_view.dart';
 import 'settings_view.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Profile — identity, activity, and the settings that change how the app
 /// behaves. Submissions and Admin were buried in Settings before, which is why
@@ -30,7 +31,7 @@ class ProfileView extends StatelessWidget {
       body: SafeArea(
         child: Obx(() {
           if (c.isLoading.value && c.profile.value == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const ListSkeleton(count: 5, thumb: 40);
           }
           final p = c.profile.value;
 

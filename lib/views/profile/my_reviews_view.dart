@@ -6,6 +6,7 @@ import '../../shared/widgets/recipe_image.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
 import '../recipes/review_rating_view.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Everything the user has written. The data existed from the start — there
 /// was simply no screen that read it back.
@@ -29,7 +30,7 @@ class _MyReviewsViewState extends State<MyReviewsView> {
       appBar: AppBar(title: const Text('My reviews')),
       body: Obx(() {
         if (c.isLoading.value && c.reviews.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 48, card: true);
         }
         if (c.reviews.isEmpty) {
           return Center(

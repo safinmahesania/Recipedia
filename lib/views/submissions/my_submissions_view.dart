@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/submission_controller.dart';
 import '../../theme/app_tokens.dart';
 import 'submit_recipe_view.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// The user's own submissions and where each one stands.
 ///
@@ -42,7 +43,7 @@ class _MySubmissionsViewState extends State<MySubmissionsView> {
       ),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 52, card: true);
         }
         if (c.mySubmissions.isEmpty) {
           return Center(

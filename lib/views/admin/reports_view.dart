@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Moderation queue for reported recipes, reviews and users.
 class ReportsView extends StatefulWidget {
@@ -31,7 +32,7 @@ class _ReportsViewState extends State<ReportsView> {
       appBar: AppBar(title: const Text('Reports')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 0, card: true);
         }
         if (c.reports.isEmpty) {
           return Center(

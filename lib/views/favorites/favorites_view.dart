@@ -5,6 +5,7 @@ import '../../controllers/favorites_controller.dart';
 import '../../shared/widgets/recipe_card.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Saved — an organiser, not a third recipe list.
 class FavoritesView extends StatelessWidget {
@@ -69,10 +70,13 @@ class FavoritesView extends StatelessWidget {
                 ),
               Expanded(
                 child: c.isLoading.value
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const ListSkeleton(thumb: 52, card: true)
                     : items.isEmpty
                         ? _Empty(hasAny: c.favorites.isNotEmpty)
-                        : ListView.separated(
+                        : RefreshIndicator(
+                            color: t.brand,
+                            onRefresh: c.loadFavorites,
+                            child: ListView.separated(
                             padding: const EdgeInsets.fromLTRB(
                                 AppSizes.screenPad,
                                 AppSizes.smd,
@@ -95,7 +99,8 @@ class FavoritesView extends StatelessWidget {
                                       c.toggleFavorite(r['id'] as String),
                                 ),
                               );
-                            },
+                              },
+                            ),
                           ),
               ),
             ],

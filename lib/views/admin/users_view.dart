@@ -4,6 +4,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// StatefulWidget because loadUsers() was called from build() — a fresh
 /// network request on every rebuild.
@@ -33,14 +34,19 @@ class _UsersViewState extends State<UsersView> {
       appBar: AppBar(title: const Text('Users')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 40);
         }
         if (c.users.isEmpty) {
-          return Center(
-              child: Text('No users',
-                  style: text.bodyMedium?.copyWith(color: t.textSecondary)));
+          return const EmptyState(
+            icon: Icons.people_outline,
+            title: 'No users yet',
+            message: 'Accounts appear here as people sign up.',
+          );
         }
-        return ListView.separated(
+        return RefreshIndicator(
+          color: t.brand,
+          onRefresh: c.loadUsers,
+          child: ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.screenPad),
           itemCount: c.users.length,
           separatorBuilder: (_, __) => Divider(height: 1, color: t.border),
@@ -81,7 +87,8 @@ class _UsersViewState extends State<UsersView> {
                     )
                   : null,
             );
-          },
+            },
+          ),
         );
       }),
     );

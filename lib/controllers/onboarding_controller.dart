@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../services/auth_service.dart';
 import '../services/onboarding_service.dart';
@@ -111,6 +112,7 @@ class OnboardingController extends GetxController {
     if (step.value < totalSteps - 1) {
       step.value++;
     } else {
+      HapticFeedback.mediumImpact();
       done.value = true;
     }
     return true;

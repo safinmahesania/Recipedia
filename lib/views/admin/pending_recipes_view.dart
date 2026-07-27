@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Approval queue for user-submitted recipes.
 class PendingRecipesView extends StatefulWidget {
@@ -31,7 +32,7 @@ class _PendingRecipesViewState extends State<PendingRecipesView> {
       appBar: AppBar(title: const Text('Pending submissions')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 52, card: true);
         }
         if (c.pending.isEmpty) {
           return Center(

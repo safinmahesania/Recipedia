@@ -13,6 +13,7 @@ import '../../shared/widgets/recipe_image.dart';
 import '../../theme/app_tokens.dart';
 import 'cook_mode_view.dart';
 import 'review_rating_view.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Recipe detail — hero, meta, ingredients, instructions, and the favorite,
 /// share, review and report actions.
@@ -53,7 +54,7 @@ class RecipeDetailsView extends StatelessWidget {
             );
           }
           if (!snap.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const _DetailSkeleton();
           }
 
           final r = snap.data!;
@@ -322,4 +323,39 @@ class _Meta extends StatelessWidget {
       ]),
     );
   }
+}
+
+/// Mirrors the real layout — hero, title, chips, two sections — so nothing
+/// shifts when the recipe arrives.
+class _DetailSkeleton extends StatelessWidget {
+  const _DetailSkeleton();
+
+  @override
+  Widget build(BuildContext context) => Pulse(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: const [
+            SkeletonBox(height: 240, radius: 0),
+            Padding(
+              padding: EdgeInsets.all(AppSizes.screenPad),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonBox(width: 220, height: 24),
+                  SizedBox(height: AppSizes.smd),
+                  SkeletonBox(width: 180, height: 28, radius: AppSizes.radiusPill),
+                  SizedBox(height: AppSizes.lg),
+                  SkeletonBox(width: 120, height: 14),
+                  SizedBox(height: AppSizes.smd),
+                  SkeletonBox(height: 12),
+                  SizedBox(height: AppSizes.sm),
+                  SkeletonBox(height: 12),
+                  SizedBox(height: AppSizes.sm),
+                  SkeletonBox(height: 12),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
 }

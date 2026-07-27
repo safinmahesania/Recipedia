@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/review_controller.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Rate and review a recipe, and read what others said.
 class ReviewRatingView extends StatefulWidget {
@@ -103,7 +104,8 @@ class _ReviewRatingViewState extends State<ReviewRatingView> {
             const SizedBox(height: AppSizes.smd),
             Obx(() {
               if (c.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const ListSkeleton(
+                    count: 3, thumb: 0, padding: EdgeInsets.zero);
               }
               if (c.reviews.isEmpty) {
                 return Padding(

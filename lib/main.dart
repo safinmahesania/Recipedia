@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'services/ingredient_art_service.dart';
 import 'services/supabase_client.dart';
+import 'constants/app_sizes.dart';
 import 'theme/app_theme.dart';
 import 'views/splash/splash_view.dart';
 
@@ -29,6 +30,10 @@ class RecipediaApp extends StatelessWidget {
       // Follows the OS setting. Swap to a stored preference once the settings
       // screen exposes a theme toggle.
       themeMode: ThemeMode.system,
+      // Routes were snapping in with no transition. cupertino reads as a push
+      // on both platforms and is short enough not to feel like waiting.
+      defaultTransition: Transition.cupertino,
+      transitionDuration: AppSizes.durBase,
       home: const SplashView(),
     );
   }

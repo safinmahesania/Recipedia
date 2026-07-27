@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/preferences_controller.dart';
 import '../../shared/widgets/ingredient_icon.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Editing for the preferences onboarding collected. Every control here
 /// changes what match_recipes_for_user returns on the next scan.
@@ -34,7 +35,7 @@ class _DietAllergiesViewState extends State<DietAllergiesView> {
       appBar: AppBar(title: const Text('Diet and allergies')),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const BlockSkeleton();
         }
         return ListView(
           padding: const EdgeInsets.fromLTRB(AppSizes.screenPad, AppSizes.md,

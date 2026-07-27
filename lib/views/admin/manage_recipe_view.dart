@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
 import 'edit_recipe_view.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// Full recipe catalogue with edit and delete. StatefulWidget because
 /// loadRecipes() was firing from build() on every rebuild.
@@ -40,14 +41,19 @@ class _ManageRecipeViewState extends State<ManageRecipeView> {
       ),
       body: Obx(() {
         if (c.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 0);
         }
         if (c.recipes.isEmpty) {
-          return Center(
-              child: Text('No recipes',
-                  style: text.bodyMedium?.copyWith(color: t.textSecondary)));
+          return const EmptyState(
+            icon: Icons.menu_book_outlined,
+            title: 'No recipes',
+            message: 'Add one with the button below, or approve a submission.',
+          );
         }
-        return ListView.separated(
+        return RefreshIndicator(
+          color: t.brand,
+          onRefresh: c.loadRecipes,
+          child: ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.screenPad),
           itemCount: c.recipes.length,
           separatorBuilder: (_, __) => Divider(height: 1, color: t.border),
@@ -88,7 +94,8 @@ class _ManageRecipeViewState extends State<ManageRecipeView> {
                 ),
               ]),
             );
-          },
+            },
+          ),
         );
       }),
     );

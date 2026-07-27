@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/shopping_controller.dart';
 import '../../shared/widgets/ingredient_icon.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// The other half of the scan. `missing_names` tells you what you lack; this
 /// turns it into something you can act on, and checked items flow back into
@@ -37,7 +38,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
       ),
       body: Obx(() {
         if (c.isLoading.value && c.items.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return const ListSkeleton(thumb: 22);
         }
         if (c.items.isEmpty) return const _Empty();
 

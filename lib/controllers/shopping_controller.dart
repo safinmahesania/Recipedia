@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../services/auth_service.dart';
 import '../services/pantry_service.dart';
@@ -56,6 +57,7 @@ class ShoppingController extends GetxController {
 
   Future<void> toggle(Map<String, dynamic> item) async {
     final next = item['checked'] != true;
+    HapticFeedback.selectionClick();
     item['checked'] = next; // optimistic — a tick should feel instant
     items.refresh();
     try {

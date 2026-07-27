@@ -6,6 +6,7 @@ import '../../services/meal_plan_service.dart';
 import '../../shared/widgets/recipe_image.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
+import '../../shared/widgets/skeletons.dart';
 
 /// A week of meals, one day at a time.
 ///
@@ -123,7 +124,7 @@ class _MealPlanViewState extends State<MealPlanView> {
             ),
             Expanded(
               child: c.isLoading.value
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const ListSkeleton(thumb: 48, card: true)
                   : ListView(
                       padding: const EdgeInsets.fromLTRB(AppSizes.screenPad,
                           AppSizes.md, AppSizes.screenPad, AppSizes.xxl),
