@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_sizes.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/profile_controller.dart';
 import '../../theme/app_tokens.dart';
