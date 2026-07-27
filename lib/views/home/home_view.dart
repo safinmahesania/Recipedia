@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/home_controller.dart';
 import '../../controllers/profile_controller.dart';
+import '../../controllers/shopping_controller.dart';
 import '../../shared/widgets/ingredient_icon.dart';
 import '../../shared/widgets/recipe_card.dart';
 import '../../shared/widgets/section_header.dart';
@@ -332,6 +333,19 @@ class _AlmostThere extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: AppSizes.sm),
               child: RecipeCard(
                 recipe: r,
+                onAddMissing: () async {
+                  final names = (r['missing_names'] as List?)
+                          ?.map((e) => e.toString())
+                          .toList() ??
+                      [];
+                  final n = await Get.put(ShoppingController())
+                      .addMissing(names, recipeId: r['id'] as String?);
+                  Get.snackbar(
+                      'Shopping list',
+                      n == 0
+                          ? 'Already on your list'
+                          : '$n added to your shopping list');
+                },
                 onTap: () =>
                     Get.to(() => RecipeDetailsView(recipeId: r['id'])),
               ),

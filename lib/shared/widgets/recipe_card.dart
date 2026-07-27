@@ -20,6 +20,10 @@ class RecipeCard extends StatelessWidget {
   final VoidCallback? onToggleFavorite;
   final bool isFavorite;
 
+  /// When provided and the card carries missing ingredients, the match label
+  /// becomes tappable and adds them to the shopping list.
+  final VoidCallback? onAddMissing;
+
   const RecipeCard({
     super.key,
     required this.recipe,
@@ -27,6 +31,7 @@ class RecipeCard extends StatelessWidget {
     this.trailing,
     this.onToggleFavorite,
     this.isFavorite = false,
+    this.onAddMissing,
   });
 
   @override
@@ -138,10 +143,39 @@ class RecipeCard extends StatelessWidget {
                     Wrap(
                       spacing: AppSizes.xs,
                       runSpacing: AppSizes.xs,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         MatchLabel(
                             missing: missing, missingNames: missingNames),
                         if (hasAllergen) const _AllergenFlag(),
+                        if (onAddMissing != null && missing > 0)
+                          GestureDetector(
+                            onTap: onAddMissing,
+                            behavior: HitTestBehavior.opaque,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSizes.sm,
+                                  vertical: AppSizes.xxs),
+                              decoration: BoxDecoration(
+                                color: t.surface,
+                                borderRadius: BorderRadius.circular(
+                                    AppSizes.radiusPill),
+                              ),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                Icon(Icons.add,
+                                    size: AppSizes.iconXs + 2,
+                                    color: t.textSecondary),
+                                const SizedBox(width: 3),
+                                Text('List',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                            color: t.textSecondary,
+                                            fontWeight: FontWeight.w600)),
+                              ]),
+                            ),
+                          ),
                       ],
                     ),
                   ] else if ((diet != null && diet.isNotEmpty) ||

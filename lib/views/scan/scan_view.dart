@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/scan_controller.dart';
+import '../../controllers/shopping_controller.dart';
 import '../../shared/widgets/ingredient_icon.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/recipe_card.dart';
@@ -25,6 +26,7 @@ class ScanView extends StatefulWidget {
 
 class _ScanViewState extends State<ScanView> {
   final ScanController c = Get.put(ScanController());
+  final ShoppingController shopping = Get.put(ShoppingController());
   final _manual = TextEditingController();
 
   @override
@@ -270,12 +272,25 @@ class _ScanViewState extends State<ScanView> {
     );
   }
 
+  Future<void> _addMissing(Map<String, dynamic> r) async {
+    final names =
+        (r['missing_names'] as List?)?.map((e) => e.toString()).toList() ?? [];
+    final added = await shopping.addMissing(names, recipeId: r['id'] as String?);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(added == 0
+          ? 'Already on your list'
+          : '$added added to your shopping list'),
+    ));
+  }
+
   List<Widget> _cards(List<Map<String, dynamic>> rows) => [
         for (final r in rows)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSizes.smd),
             child: RecipeCard(
               recipe: r,
+              onAddMissing: () => _addMissing(r),
               onTap: () => Get.to(() => RecipeDetailsView(recipeId: r['id'])),
             ),
           ),

@@ -39,7 +39,7 @@ class IngredientArt {
     try {
       final rows = await supabase
           .from('ingredients')
-          .select('name, icon_key, category');
+          .select('id, name, icon_key, category');
       final list = List<Map<String, dynamic>>.from(rows as List);
       _hydrate(list);
       await prefs.setString(_key, jsonEncode(list));
@@ -53,7 +53,8 @@ class IngredientArt {
       final m = Map<String, dynamic>.from(r as Map);
       final name = (m['name'] ?? '').toString().toLowerCase().trim();
       if (name.isEmpty) continue;
-      _byName[name] = _Art(m['icon_key'] as String?, m['category'] as String?);
+      _byName[name] = _Art(
+          m['id'] as String?, m['icon_key'] as String?, m['category'] as String?);
     }
   }
 
@@ -62,10 +63,16 @@ class IngredientArt {
 
   static String? categoryFor(String name) =>
       _byName[name.toLowerCase().trim()]?.category;
+
+  /// Resolves a name to its row id. The scan RPC returns missing ingredients as
+  /// NAMES, but shopping_list_items references ingredients by id — without this
+  /// every "add missing" would have to round-trip to resolve them.
+  static String? idFor(String name) => _byName[name.toLowerCase().trim()]?.id;
 }
 
 class _Art {
+  final String? id;
   final String? iconKey;
   final String? category;
-  const _Art(this.iconKey, this.category);
+  const _Art(this.id, this.iconKey, this.category);
 }
