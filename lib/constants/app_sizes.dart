@@ -19,18 +19,20 @@ class AppSizes {
   static const screenPad = 20.0;
 
   // ---------- radii ----------
-  static const radiusXs = 6.0;
-  static const radiusSm = 10.0;
-  static const radiusMd = 14.0;
-  static const radiusLg = 20.0;
-  static const radiusXl = 28.0;
+  // Softer than the first pass. Roles are unchanged, so no call site moves:
+  // Sm = thumbnails, Md = buttons and inputs, Lg = cards, Xl = sheets.
+  static const radiusXs = 8.0;
+  static const radiusSm = 14.0;
+  static const radiusMd = 20.0;
+  static const radiusLg = 26.0;
+  static const radiusXl = 32.0;
   static const radiusPill = 999.0;
 
   // ---------- components ----------
-  static const buttonHeight = 52.0;
+  static const buttonHeight = 50.0;
   static const buttonHeightSm = 40.0;
-  static const inputHeight = 52.0;
-  static const thumbSize = 72.0;
+  static const inputHeight = 50.0;
+  static const thumbSize = 84.0;
   static const avatarRadius = 44.0;
   static const chipHeight = 30.0;
   static const navBarHeight = 64.0;
@@ -76,17 +78,21 @@ class AppSizes {
 class AppShadows {
   AppShadows._();
 
+  // Two layers: a tight one that defines the edge, a wide one that gives the
+  // card weight. This is what replaces borders in light mode, so it has to do
+  // real work — a single subtle shadow reads as a rendering artefact.
   static const card = <BoxShadow>[
-    BoxShadow(color: Color(0x0D0F0F14), blurRadius: 2, offset: Offset(0, 1)),
-    BoxShadow(color: Color(0x0A0F0F14), blurRadius: 8, offset: Offset(0, 4)),
+    BoxShadow(color: Color(0x0D2B2724), blurRadius: 10, offset: Offset(0, 2)),
+    BoxShadow(color: Color(0x0B2B2724), blurRadius: 26, offset: Offset(0, 10)),
   ];
 
   static const raised = <BoxShadow>[
-    BoxShadow(color: Color(0x140F0F14), blurRadius: 16, offset: Offset(0, 8)),
+    BoxShadow(color: Color(0x142B2724), blurRadius: 18, offset: Offset(0, 6)),
+    BoxShadow(color: Color(0x122B2724), blurRadius: 40, offset: Offset(0, 18)),
   ];
 
   static const sheet = <BoxShadow>[
-    BoxShadow(color: Color(0x1F0F0F14), blurRadius: 32, offset: Offset(0, -4)),
+    BoxShadow(color: Color(0x1F2B2724), blurRadius: 36, offset: Offset(0, -6)),
   ];
 
   static const none = <BoxShadow>[];

@@ -44,6 +44,30 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  fonts:
+    # Inter 18pt: the optical size cut for text between 11 and 16px, which is
+    # everything this app sets in Inter — body, labels, captions, admin tables.
+    - family: Inter
+      fonts:
+        - asset: fonts/Inter/Inter_18pt-Regular.ttf
+          weight: 400
+        - asset: fonts/Inter/Inter_18pt-Medium.ttf
+          weight: 500
+        - asset: fonts/Inter/Inter_18pt-SemiBold.ttf
+          weight: 600
+        - asset: fonts/Inter/Inter_18pt-Bold.ttf
+          weight: 700
+    # Display only: screen titles and recipe titles. Deliberately no regular
+    # weight — this face is never used for body copy.
+    - family: PlusJakartaSans
+      fonts:
+        - asset: fonts/Plus_Jakarta_Sans/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: fonts/Plus_Jakarta_Sans/PlusJakartaSans-Bold.ttf
+          weight: 700
+        - asset: fonts/Plus_Jakarta_Sans/PlusJakartaSans-ExtraBold.ttf
+          weight: 800
+
   # Uncomment when the trained model is added:
   # assets:
   #   - assets/ml/

@@ -317,8 +317,10 @@ class _Group extends StatelessWidget {
     final t = context.tokens;
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: t.border),
+        color: t.surfaceRaised,
+        border: Border.all(color: t.cardBorder),
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        boxShadow: t.cardShadow,
       ),
       child: Column(children: children),
     );

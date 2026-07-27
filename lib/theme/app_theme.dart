@@ -140,14 +140,15 @@ class AppTheme {
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-          side: BorderSide(color: t.border),
+          // Transparent in light, hairline in dark — see AppTokens.cardBorder.
+          side: BorderSide(color: t.cardBorder),
         ),
       ),
 
       chipTheme: ChipThemeData(
         backgroundColor: t.surface,
         selectedColor: t.brandTint,
-        side: BorderSide(color: t.border),
+        side: BorderSide(color: t.cardBorder),
         labelStyle: AppTextStyles.caption.copyWith(color: t.textSecondary),
         secondaryLabelStyle: AppTextStyles.caption.copyWith(color: t.onBrandTint),
         shape: const StadiumBorder(),

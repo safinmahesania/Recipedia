@@ -5,18 +5,24 @@ import '../constants/app_sizes.dart';
 /// SEMANTIC TOKENS — the layer widgets actually read.
 ///
 /// Widgets ask for a *role* ("the colour of secondary text") rather than a
-/// *value* ("#6B6B72"). That indirection is what makes light and dark a single
-/// codebase instead of two: swap the token set, every screen follows.
+/// *value*. That indirection is what makes light and dark one codebase.
 ///
-/// Usage:  final t = context.tokens;  Text(x, style: ...copyWith(color: t.textSecondary))
+/// Usage:  final t = context.tokens;
 @immutable
 class AppTokens extends ThemeExtension<AppTokens> {
   // surfaces
   final Color canvas;
   final Color surface;
   final Color surfaceRaised;
+
+  /// Hairline for dividers and list separators.
   final Color border;
   final Color borderStrong;
+
+  /// Card outline. Transparent in light — depth comes from `cardShadow` — and a
+  /// visible hairline in dark, where shadows are invisible on near-black. Cards
+  /// read this instead of `border`, so the two can diverge.
+  final Color cardBorder;
 
   // text
   final Color textPrimary;
@@ -24,15 +30,15 @@ class AppTokens extends ThemeExtension<AppTokens> {
   final Color textTertiary;
 
   // brand
-  /// Identity colour — icons, indicators, borders, large text. NOT small text.
+  /// Identity colour: icons, indicators, active states, large text.
   final Color brand;
-  /// Text-bearing fill (buttons). Darker than `brand` so white labels pass AA.
+  /// Text-bearing fill. Darker than `brand` so white labels pass AA.
   final Color brandFill;
   final Color onBrandFill;
   final Color brandTint;
   final Color onBrandTint;
 
-  // accent
+  // accent — mint by day, gold by night
   final Color accent;
   final Color accentTint;
   final Color onAccentTint;
@@ -60,6 +66,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
     required this.surfaceRaised,
     required this.border,
     required this.borderStrong,
+    required this.cardBorder,
     required this.textPrimary,
     required this.textSecondary,
     required this.textTertiary,
@@ -97,11 +104,12 @@ class AppTokens extends ThemeExtension<AppTokens> {
     surfaceRaised: AppColors.surfaceRaised,
     border: AppColors.border,
     borderStrong: AppColors.borderStrong,
+    cardBorder: Colors.transparent, // borderless by design
     textPrimary: AppColors.textPrimary,
     textSecondary: AppColors.textSecondary,
     textTertiary: AppColors.textTertiary,
     brand: AppColors.primary,
-    brandFill: AppColors.primaryPressed, // 4.50:1 with white — the AA-safe one
+    brandFill: AppColors.primaryPressed, // 4.50:1 with white
     onBrandFill: Colors.white,
     brandTint: AppColors.primaryTint,
     onBrandTint: AppColors.onPrimaryTint,
@@ -134,35 +142,36 @@ class AppTokens extends ThemeExtension<AppTokens> {
     surfaceRaised: AppColors.surfaceRaisedDark,
     border: AppColors.borderDark,
     borderStrong: AppColors.borderStrongDark,
+    cardBorder: AppColors.borderDark, // hairline replaces the shadow
     textPrimary: AppColors.textPrimaryDark,
     textSecondary: AppColors.textSecondaryDark,
     textTertiary: AppColors.textTertiaryDark,
-    brand: AppColors.primaryLight, // 6.80:1 on the dark card
-    brandFill: AppColors.primary, // full coral reads correctly on dark
+    brand: AppColors.primaryLight,
+    brandFill: AppColors.primaryPressed, // same fill both modes
     onBrandFill: Colors.white,
     brandTint: AppColors.primaryTintDark,
-    onBrandTint: AppColors.primaryLight,
-    accent: AppColors.accentLight,
+    onBrandTint: AppColors.onPrimaryTintDark,
+    accent: AppColors.accentGold,
     accentTint: AppColors.accentTintDark,
-    onAccentTint: AppColors.accentLight,
-    success: Color(0xFF4CD68C),
-    successTint: Color(0xFF12301F),
-    onSuccessTint: Color(0xFF4CD68C),
-    warning: Color(0xFFF5B942),
-    warningTint: Color(0xFF33280F),
-    onWarningTint: Color(0xFFF5B942),
-    error: Color(0xFFF97066),
-    errorTint: Color(0xFF3A1A17),
-    onErrorTint: Color(0xFFF97066),
-    info: Color(0xFF6BA1FF),
-    infoTint: Color(0xFF1A2438),
-    onInfoTint: Color(0xFF6BA1FF),
-    star: Color(0xFFF5B942),
+    onAccentTint: AppColors.accentGold,
+    success: AppColors.onSuccessTintDark,
+    successTint: AppColors.successTintDark,
+    onSuccessTint: AppColors.onSuccessTintDark,
+    warning: AppColors.onWarningTintDark,
+    warningTint: AppColors.warningTintDark,
+    onWarningTint: AppColors.onWarningTintDark,
+    error: AppColors.errorLight,
+    errorTint: AppColors.errorTintDark,
+    onErrorTint: AppColors.errorLight,
+    info: AppColors.onInfoTintDark,
+    infoTint: AppColors.infoTintDark,
+    onInfoTint: AppColors.onInfoTintDark,
+    star: AppColors.starDark,
     pipFilled: AppColors.primaryLight,
     pipEmpty: AppColors.borderStrongDark,
     categoryTints: AppColors.categoryTintsDark,
     categoryGlyphs: AppColors.categoryGlyphsDark,
-    cardShadow: AppShadows.none, // dark uses raised surfaces, not shadows
+    cardShadow: AppShadows.none, // depth from raised surfaces instead
   );
 
   @override
@@ -173,6 +182,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
         surfaceRaised: surfaceRaised,
         border: border,
         borderStrong: borderStrong,
+        cardBorder: cardBorder,
         textPrimary: textPrimary ?? this.textPrimary,
         textSecondary: textSecondary,
         textTertiary: textTertiary,

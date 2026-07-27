@@ -46,8 +46,9 @@ class _RecipeCardSkeletonState extends State<RecipeCardSkeleton>
         padding: const EdgeInsets.all(AppSizes.smd),
         decoration: BoxDecoration(
           color: t.surfaceRaised,
-          border: Border.all(color: t.border),
+          border: Border.all(color: t.cardBorder),
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          boxShadow: t.cardShadow,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

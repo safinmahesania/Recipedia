@@ -57,8 +57,9 @@ class RecipeCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSizes.smd),
         decoration: BoxDecoration(
           color: t.surfaceRaised,
-          border: Border.all(color: t.border),
+          border: Border.all(color: t.cardBorder),
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          boxShadow: t.cardShadow,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +189,7 @@ class _MetaChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: accent ? t.accentTint : t.surface,
         borderRadius: BorderRadius.circular(AppSizes.radiusPill),
-        border: accent ? null : Border.all(color: t.border),
+        border: accent ? null : Border.all(color: t.cardBorder),
       ),
       child: Text(
         label,

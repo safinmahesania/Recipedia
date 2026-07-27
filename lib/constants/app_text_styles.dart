@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 /// in recipe_card alone), which broke the project's own "never hardcode" rule.
 ///
 /// Two families, one rule:
-///   Bricolage Grotesque -> display only (screen titles, recipe titles, numbers
+///   Plus Jakarta Sans   -> display only (screen titles, recipe titles, numbers
 ///                          that are the point of the screen). Used with
 ///                          restraint: it is the personality, and personality
 ///                          stops being personality when it is everywhere.
+///                          Bundled without a regular weight on purpose.
 ///   Inter               -> everything else. Body, labels, inputs, and every
 ///                          dense admin table, where character costs legibility.
 ///
@@ -18,7 +19,7 @@ import 'package:flutter/material.dart';
 class AppTextStyles {
   AppTextStyles._();
 
-  static const display = 'Bricolage';
+  static const display = 'PlusJakartaSans';
   static const body = 'Inter';
 
   static const _tabular = <FontFeature>[FontFeature.tabularFigures()];
@@ -29,7 +30,7 @@ class AppTextStyles {
     fontFamily: display,
     fontSize: 32,
     height: 38 / 32,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w800,
     letterSpacing: -0.6,
     fontFeatures: _tabular,
   );
@@ -39,7 +40,7 @@ class AppTextStyles {
     fontFamily: display,
     fontSize: 24,
     height: 30 / 24,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w800,
     letterSpacing: -0.4,
     fontFeatures: _tabular,
   );
@@ -49,7 +50,7 @@ class AppTextStyles {
     fontFamily: display,
     fontSize: 20,
     height: 26 / 20,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.2,
   );
 
@@ -58,7 +59,7 @@ class AppTextStyles {
     fontFamily: display,
     fontSize: 16,
     height: 21 / 16,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     letterSpacing: -0.1,
   );
 

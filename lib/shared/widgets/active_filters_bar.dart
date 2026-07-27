@@ -47,7 +47,7 @@ class ActiveFiltersBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: fill,
                   borderRadius: BorderRadius.circular(AppSizes.radiusPill),
-                  border: active ? null : Border.all(color: t.border),
+                  border: active ? null : Border.all(color: t.cardBorder),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
