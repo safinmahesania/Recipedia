@@ -13,11 +13,14 @@ class CollectionService {
     return List<Map<String, dynamic>>.from(rows as List);
   }
 
-  Future<void> create(String userId, String name) async {
-    await supabase.from('collections').insert({
+  /// Returns the new id so the caller can drop a recipe straight into it —
+  /// creating a collection is almost always followed by filling it.
+  Future<String> create(String userId, String name) async {
+    final row = await supabase.from('collections').insert({
       'user_id': userId,
       'name': name.trim(),
-    });
+    }).select('id').single();
+    return row['id'] as String;
   }
 
   Future<void> rename(String id, String name) async {

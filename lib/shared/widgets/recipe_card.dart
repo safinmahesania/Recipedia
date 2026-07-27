@@ -25,6 +25,9 @@ class RecipeCard extends StatelessWidget {
   /// becomes tappable and adds them to the shopping list.
   final VoidCallback? onAddMissing;
 
+  /// Secondary action — used for "add to collection" on the saved list.
+  final VoidCallback? onLongPress;
+
   const RecipeCard({
     super.key,
     required this.recipe,
@@ -33,6 +36,7 @@ class RecipeCard extends StatelessWidget {
     this.onToggleFavorite,
     this.isFavorite = false,
     this.onAddMissing,
+    this.onLongPress,
   });
 
   @override
@@ -58,6 +62,7 @@ class RecipeCard extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       borderRadius: BorderRadius.circular(AppSizes.radiusLg),
       child: Container(
         padding: const EdgeInsets.all(AppSizes.smd),

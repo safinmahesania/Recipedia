@@ -111,11 +111,42 @@ class FavoritesController extends GetxController {
   void setCollection(String? id) => activeCollectionId.value = id;
   void setSort(FavoriteSort s) => sort.value = s;
 
-  Future<void> createCollection(String name) async {
+  Future<String?> createCollection(String name) async {
     final userId = _auth.currentUser?.id;
-    if (userId == null || name.trim().isEmpty) return;
-    await _collections.create(userId, name);
-    collections.value = await _collections.list(userId);
+    if (userId == null || name.trim().isEmpty) return null;
+    try {
+      final id = await _collections.create(userId, name);
+      await loadFavorites();
+      return id;
+    } catch (_) {
+      Get.snackbar('Not created', 'Could not create that collection.');
+      return null;
+    }
+  }
+
+  Future<void> renameCollection(String id, String name) async {
+    if (name.trim().isEmpty) return;
+    final i = collections.indexWhere((c) => c['id'] == id);
+    if (i >= 0) {
+      collections[i] = {...collections[i], 'name': name.trim()};
+      collections.refresh();
+    }
+    try {
+      await _collections.rename(id, name);
+    } catch (_) {
+      await loadFavorites();
+    }
+  }
+
+  /// Deleting a collection must not delete the recipes in it — they go back to
+  /// being uncategorised saves.
+  Future<void> deleteCollection(String id) async {
+    if (activeCollectionId.value == id) activeCollectionId.value = null;
+    try {
+      await _collections.remove(id);
+    } finally {
+      await loadFavorites();
+    }
   }
 
   Future<void> moveToCollection(String recipeId, String? collectionId) async {
