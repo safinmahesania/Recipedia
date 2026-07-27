@@ -13,6 +13,17 @@ class OnboardingService {
     return List<Map<String, dynamic>>.from(rows as List);
   }
 
+  Future<List<Map<String, dynamic>>> cuisinesWithCounts() async {
+    final rows = await supabase.rpc('distinct_cuisines');
+    return List<Map<String, dynamic>>.from(rows as List);
+  }
+
+  Future<void> saveDefaultCuisine(String uid, String? cuisine) async {
+    await supabase
+        .from('profiles')
+        .update({'default_cuisine': cuisine}).eq('id', uid);
+  }
+
   /// Curated allergen shortlist, resolved against real rows so the ids are
   /// valid for user_allergies. Anything not covered here is reachable through
   /// search.
@@ -90,7 +101,7 @@ class OnboardingService {
   Future<Map<String, dynamic>> loadPreferences(String uid) async {
     final profile = await supabase
         .from('profiles')
-        .select('diet_preference, hide_unsafe')
+        .select('diet_preference, default_cuisine, hide_unsafe')
         .eq('id', uid)
         .single();
     final allergies = await supabase
@@ -103,6 +114,7 @@ class OnboardingService {
         .eq('user_id', uid);
     return {
       'diet': profile['diet_preference'],
+      'default_cuisine': profile['default_cuisine'],
       'hide_unsafe': profile['hide_unsafe'] ?? true,
       'allergies': [
         for (final a in (allergies as List))

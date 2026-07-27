@@ -68,6 +68,34 @@ class _DietAllergiesViewState extends State<DietAllergiesView> {
                 style: text.labelSmall?.copyWith(color: t.textSecondary)),
 
             const SizedBox(height: AppSizes.lg),
+            _Label('DEFAULT CUISINE'),
+            const SizedBox(height: AppSizes.sm),
+            Wrap(
+              spacing: AppSizes.sm,
+              runSpacing: AppSizes.sm,
+              children: [
+                _Pill(
+                  label: 'Any',
+                  on: c.defaultCuisine.value == null,
+                  onTap: () => c.setDefaultCuisine(null),
+                ),
+                ...c.cuisineOptions.take(10).map((cu) {
+                  final name = (cu['value'] ?? '') as String;
+                  return _Pill(
+                    label: name,
+                    on: c.defaultCuisine.value == name,
+                    onTap: () => c.setDefaultCuisine(
+                        c.defaultCuisine.value == name ? null : name),
+                  );
+                }),
+              ],
+            ),
+            const SizedBox(height: AppSizes.sm),
+            Text('Pre-selected when you open Recipes. Clearing the filter '
+                'there still clears it.',
+                style: text.labelSmall?.copyWith(color: t.textSecondary)),
+
+            const SizedBox(height: AppSizes.lg),
             _Label('ALLERGIES'),
             const SizedBox(height: AppSizes.sm),
             TextField(

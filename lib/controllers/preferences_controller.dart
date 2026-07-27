@@ -20,6 +20,8 @@ class PreferencesController extends GetxController {
   final searchResults = <Map<String, dynamic>>[].obs;
 
   final diet = Rxn<String>();
+  final defaultCuisine = Rxn<String>();
+  final cuisineOptions = <Map<String, dynamic>>[].obs;
   final hideUnsafe = true.obs;
   final allergies = <Map<String, dynamic>>[].obs;
   final staples = <String>{}.obs;
@@ -39,16 +41,19 @@ class PreferencesController extends GetxController {
       isLoading.value = true;
       final results = await Future.wait([
         _service.dietsWithCounts(),
+        _service.cuisinesWithCounts(),
         _service.allergenCandidates(),
         _service.stapleCandidates(),
         _service.loadPreferences(uid),
       ]);
       diets.value = List<Map<String, dynamic>>.from(results[0] as List);
-      allergenOptions.value = List<Map<String, dynamic>>.from(results[1] as List);
-      stapleOptions.value = List<Map<String, dynamic>>.from(results[2] as List);
+      cuisineOptions.value = List<Map<String, dynamic>>.from(results[1] as List);
+      allergenOptions.value = List<Map<String, dynamic>>.from(results[2] as List);
+      stapleOptions.value = List<Map<String, dynamic>>.from(results[3] as List);
 
-      final prefs = results[3] as Map<String, dynamic>;
+      final prefs = results[4] as Map<String, dynamic>;
       diet.value = prefs['diet'] as String?;
+      defaultCuisine.value = prefs['default_cuisine'] as String?;
       hideUnsafe.value = prefs['hide_unsafe'] == true;
       allergies.value = List<Map<String, dynamic>>.from(prefs['allergies'] as List);
       staples.assignAll(Set<String>.from(prefs['staples'] as List));
@@ -64,6 +69,11 @@ class PreferencesController extends GetxController {
   Future<void> setDiet(String value) async {
     diet.value = value;
     await _saveDiet();
+  }
+
+  Future<void> setDefaultCuisine(String? value) async {
+    defaultCuisine.value = value;
+    await _save(() => _service.saveDefaultCuisine(_uid!, value));
   }
 
   Future<void> setHideUnsafe(bool value) async {

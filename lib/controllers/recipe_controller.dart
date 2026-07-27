@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import '../services/recipe_service.dart';
+import 'profile_controller.dart';
 
 /// Recipe list state: combined filters, pagination, debounced search.
 class RecipeController extends GetxController {
@@ -32,11 +33,34 @@ class RecipeController extends GetxController {
       (cuisine.value != null ? 1 : 0) +
       (diet.value != null ? 1 : 0);
 
+  /// True once the profile defaults have been applied, so returning to the tab
+  /// does not silently re-apply a filter the user has just cleared.
+  bool _defaultsApplied = false;
+
   @override
   void onInit() {
     super.onInit();
     loadFilterOptions();
+    _applyProfileDefaults();
     loadRecipes();
+  }
+
+  /// Onboarding tells the user their diet will be used as a default filter.
+  /// Until now it was stored and never read, so that was not true.
+  ///
+  /// Applied once per app run, and only as a starting point — clearing the
+  /// filter clears it for good, rather than snapping back on every visit.
+  void _applyProfileDefaults() {
+    if (_defaultsApplied) return;
+    _defaultsApplied = true;
+    final p = Get.put(ProfileController()).profile.value;
+    if (p == null) return;
+
+    final d = p.dietPreference;
+    if (d != null && d.isNotEmpty && d != 'any') diet.value = d;
+
+    final c = p.defaultCuisine;
+    if (c != null && c.isNotEmpty && c != 'any') cuisine.value = c;
   }
 
   @override
