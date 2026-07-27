@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="39" y="5" width="3.4" height="26" rx="1.7" transform="rotate(15 41 18)" fill="#44652F" opacity=".45"/>
+  <rect x="46" y="5" width="3.4" height="26" rx="1.7" transform="rotate(22 48 18)" fill="#44652F" opacity=".45"/>
+  <path d="M14 32c0-9 8-14 18-14s18 5 18 14z" fill="#8FBA6E"/>
+  <rect x="7" y="31" width="50" height="6" rx="3" fill="#44652F"/>
+  <path d="M11 37h42c0 11-9 18-21 18s-21-7-21-18z" fill="#44652F" opacity=".85"/></svg>
