@@ -65,7 +65,11 @@ class RecipeImage extends StatelessWidget {
                 imageUrl: imageUrl!,
                 fit: BoxFit.cover,
                 fadeInDuration: const Duration(milliseconds: 150),
-                placeholder: (_, __) => Container(color: tint),
+                // Show the illustration while loading, not a bare tint. Imported
+                // recipes point at external hosts: many block hotlinking and hang
+                // rather than returning an error, so errorWidget never fires and a
+                // flat colour block is all the user ever sees.
+                placeholder: (_, __) => placeholder(),
                 // Many source images 404 or block hotlinking — fall back to the
                 // illustration rather than showing a broken box.
                 errorWidget: (_, __, ___) => placeholder(),
