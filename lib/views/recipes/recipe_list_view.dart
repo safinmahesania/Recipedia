@@ -18,6 +18,7 @@ class RecipeListView extends StatefulWidget {
   /// When embedded in MainShell the shell owns the chrome, so the
   /// screen-level AppBar is suppressed and an inline header is used instead.
   final bool showAppBar;
+
   const RecipeListView({super.key, this.showAppBar = true});
 
   @override
@@ -84,7 +85,8 @@ class _RecipeListViewState extends State<RecipeListView> {
               foregroundColor: t.textPrimary,
               elevation: 2,
               tooltip: 'Back to top',
-              child: const AppIcon('arrow_upward', fallback: Icons.arrow_upward),
+              child:
+                  const AppIcon('arrow_upward', fallback: Icons.arrow_upward),
             )
           : const SizedBox.shrink()),
       body: SafeArea(
@@ -108,18 +110,20 @@ class _RecipeListViewState extends State<RecipeListView> {
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: 'Search recipes',
-                  prefixIcon: const AppIcon('search', fallback: Icons.search, size: AppSizes.iconInput),
+                  prefixIcon: const AppIcon('search',
+                      fallback: Icons.search, size: AppSizes.iconInput),
                   suffixIcon: ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _searchCtrl,
                     builder: (_, value, __) => value.text.isEmpty
                         ? const SizedBox.shrink()
                         : IconButton(
-                            icon: const AppIcon('close', fallback: Icons.close,
-                                size: AppSizes.iconMd),
+                            icon: const AppIcon('close',
+                                fallback: Icons.close, size: AppSizes.iconMd),
                             tooltip: 'Clear search',
                             onPressed: _clearSearch,
                           ),
                   ),
+                  isDense: true,
                 ),
               ),
             ),
@@ -186,8 +190,7 @@ class _RecipeListViewState extends State<RecipeListView> {
                   final gridWidth =
                       constraints.maxWidth - (AppSizes.screenPad * 2);
                   final columns = _columns(constraints.maxWidth);
-                  final delegate =
-                      SliverGridDelegateWithFixedCrossAxisCount(
+                  final delegate = SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: columns,
                     mainAxisSpacing: AppSizes.md,
                     crossAxisSpacing: AppSizes.smd,
@@ -292,6 +295,7 @@ class _CategoryChip extends StatelessWidget {
 /// End of grid: next-page spinner, or a quiet full stop.
 class _Footer extends StatelessWidget {
   final RecipeController controller;
+
   const _Footer({required this.controller});
 
   @override
@@ -326,6 +330,7 @@ class _Footer extends StatelessWidget {
 
 class _Empty extends StatelessWidget {
   final RecipeController controller;
+
   const _Empty({required this.controller});
 
   @override
@@ -336,36 +341,39 @@ class _Empty extends StatelessWidget {
       final filtered = controller.activeFilterCount > 0;
       final term = controller.searchTerm.value;
       return ListView(
-      // Stays scrollable so pull-to-refresh still works when empty.
-      padding: const EdgeInsets.all(AppSizes.xl),
-      children: [
-        const SizedBox(height: AppSizes.xl),
-        AppIcon('search_off', fallback: Icons.search_off, size: AppSizes.iconXl, color: t.borderStrong),
-        const SizedBox(height: AppSizes.smd),
-        Text(
-          term.isNotEmpty ? 'Nothing matches "$term"' : 'No recipes match',
-          textAlign: TextAlign.center,
-          style: text.titleLarge,
-        ),
-        const SizedBox(height: AppSizes.xs),
-        Text(
-          filtered
-              ? 'Try removing a filter or searching a different ingredient.'
-              : 'Try a different search term.',
-          textAlign: TextAlign.center,
-          style: text.bodySmall?.copyWith(color: t.textSecondary),
-        ),
-        if (filtered) ...[
-          const SizedBox(height: AppSizes.md),
-          Center(
-            child: OutlinedButton(
-              onPressed: controller.clearFilters,
-              child: const Text('Clear filters'),
-            ),
+        // Stays scrollable so pull-to-refresh still works when empty.
+        padding: const EdgeInsets.all(AppSizes.xl),
+        children: [
+          const SizedBox(height: AppSizes.xl),
+          AppIcon('search_off',
+              fallback: Icons.search_off,
+              size: AppSizes.iconXl,
+              color: t.borderStrong),
+          const SizedBox(height: AppSizes.smd),
+          Text(
+            term.isNotEmpty ? 'Nothing matches "$term"' : 'No recipes match',
+            textAlign: TextAlign.center,
+            style: text.titleLarge,
           ),
+          const SizedBox(height: AppSizes.xs),
+          Text(
+            filtered
+                ? 'Try removing a filter or searching a different ingredient.'
+                : 'Try a different search term.',
+            textAlign: TextAlign.center,
+            style: text.bodySmall?.copyWith(color: t.textSecondary),
+          ),
+          if (filtered) ...[
+            const SizedBox(height: AppSizes.md),
+            Center(
+              child: OutlinedButton(
+                onPressed: controller.clearFilters,
+                child: const Text('Clear filters'),
+              ),
+            ),
+          ],
         ],
-      ],
-    );
+      );
     });
   }
 }

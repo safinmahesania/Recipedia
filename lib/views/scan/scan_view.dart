@@ -58,7 +58,8 @@ class _ScanViewState extends State<ScanView> {
             onPressed: () => c.pickImage(ImageSource.camera),
           ),
           IconButton(
-            icon: const AppIcon('image_outlined', fallback: Icons.image_outlined),
+            icon:
+                const AppIcon('image_outlined', fallback: Icons.image_outlined),
             tooltip: 'Pick a photo',
             onPressed: () => c.pickImage(ImageSource.gallery),
           ),
@@ -84,7 +85,6 @@ class _ScanViewState extends State<ScanView> {
                     style: text.bodyMedium?.copyWith(color: t.textSecondary),
                   ),
                   const SizedBox(height: AppSizes.md),
-
                   TextField(
                     controller: _manual,
                     onChanged: c.suggest,
@@ -94,6 +94,7 @@ class _ScanViewState extends State<ScanView> {
                       hintText: 'Type an ingredient…',
                       prefixIcon: AppIcon('search',
                           fallback: Icons.search, size: AppSizes.iconInput),
+                      isDense: true,
                     ),
                   ),
 
@@ -105,18 +106,15 @@ class _ScanViewState extends State<ScanView> {
                       margin: const EdgeInsets.only(top: AppSizes.sm),
                       decoration: BoxDecoration(
                         color: t.surface,
-                        borderRadius:
-                            BorderRadius.circular(AppSizes.radiusMd),
+                        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                       ),
                       child: Column(
                         children: c.suggestions
                             .map((name) => ListTile(
                                   dense: true,
                                   visualDensity: VisualDensity.compact,
-                                  leading:
-                                      IngredientIcon(name: name, size: 20),
-                                  title:
-                                      Text(name, style: text.bodyMedium),
+                                  leading: IngredientIcon(name: name, size: 20),
+                                  title: Text(name, style: text.bodyMedium),
                                   trailing: AppIcon('add',
                                       fallback: Icons.add,
                                       size: AppSizes.iconMd,
@@ -141,8 +139,8 @@ class _ScanViewState extends State<ScanView> {
                     }
                     if (c.ingredients.isEmpty) {
                       return Text('Nothing added yet',
-                          style: text.bodySmall
-                              ?.copyWith(color: t.textTertiary));
+                          style:
+                              text.bodySmall?.copyWith(color: t.textTertiary));
                     }
                     return Wrap(
                       spacing: AppSizes.sm,
@@ -189,8 +187,7 @@ class _ScanViewState extends State<ScanView> {
                       padding: const EdgeInsets.all(AppSizes.smd),
                       decoration: BoxDecoration(
                         color: t.brandTint,
-                        borderRadius:
-                            BorderRadius.circular(AppSizes.radiusMd),
+                        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                       ),
                       child: Row(children: [
                         AppIcon('info_outline',
@@ -202,8 +199,8 @@ class _ScanViewState extends State<ScanView> {
                           child: Text(
                             'Photo detection is coming. Type ingredients for '
                             'now — matching works the same either way.',
-                            style: text.labelSmall
-                                ?.copyWith(color: t.onBrandTint),
+                            style:
+                                text.labelSmall?.copyWith(color: t.onBrandTint),
                           ),
                         ),
                       ]),
@@ -230,6 +227,7 @@ class _ScanViewState extends State<ScanView> {
 
 class _Eyebrow extends StatelessWidget {
   final String text;
+
   const _Eyebrow(this.text);
 
   @override
@@ -259,7 +257,8 @@ class _Chip extends StatelessWidget {
     final t = context.tokens;
     return Container(
       padding: EdgeInsets.only(
-          left: AppSizes.sm, right: onRemove == null ? AppSizes.smd : AppSizes.xs),
+          left: AppSizes.sm,
+          right: onRemove == null ? AppSizes.smd : AppSizes.xs),
       height: 34,
       decoration: BoxDecoration(
         color: muted ? t.surface : t.brandTint,

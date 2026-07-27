@@ -44,6 +44,28 @@ class ProfileView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(AppSizes.screenPad, AppSizes.lg,
                 AppSizes.screenPad, AppSizes.xl),
             children: [
+              // Top-right, above the identity it edits — where a settings
+              // affordance sits in most profile screens.
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () => Get.to(() => const EditProfileView()),
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    width: 38,
+                    height: 38,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: t.surface,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    ),
+                    child: AppIcon('edit_outlined',
+                        fallback: Icons.edit_outlined,
+                        size: AppSizes.iconMd,
+                        color: t.textSecondary),
+                  ),
+                ),
+              ),
               Center(
                 child: Column(
                   children: [
@@ -104,36 +126,6 @@ class ProfileView extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: text.bodySmall),
                       ),
-                    // Editing lives on the identity it edits, rather than
-                    // buried in a list below it.
-                    Padding(
-                      padding: const EdgeInsets.only(top: AppSizes.smd),
-                      child: GestureDetector(
-                        onTap: () => Get.to(() => const EditProfileView()),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppSizes.md, vertical: AppSizes.sm),
-                          decoration: BoxDecoration(
-                            color: t.surface,
-                            borderRadius:
-                                BorderRadius.circular(AppSizes.radiusPill),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AppIcon('edit_outlined',
-                                  fallback: Icons.edit_outlined,
-                                  size: AppSizes.iconSm,
-                                  color: t.textSecondary),
-                              const SizedBox(width: AppSizes.sm),
-                              Text('Edit profile',
-                                  style: text.labelMedium
-                                      ?.copyWith(color: t.textSecondary)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
                     if (p?.isAdmin == true)
                       Padding(
                         padding: const EdgeInsets.only(top: AppSizes.sm),
@@ -296,9 +288,6 @@ class ProfileView extends StatelessWidget {
       ),
     );
   }
-
-  static void _soon(String what) =>
-      Get.snackbar('Coming next', '$what is being built.');
 
   void _avatarSheet(BuildContext context, ProfileController c) {
     Get.bottomSheet(
