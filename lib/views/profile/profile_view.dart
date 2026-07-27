@@ -5,7 +5,9 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/profile_controller.dart';
 import '../../theme/app_tokens.dart';
 import '../admin/admin_portal_view.dart';
+import 'account_security_view.dart';
 import 'diet_allergies_view.dart';
+import 'my_reviews_view.dart';
 import '../shopping/shopping_list_view.dart';
 import '../submissions/my_submissions_view.dart';
 import 'settings_view.dart';
@@ -134,7 +136,7 @@ class ProfileView extends StatelessWidget {
                   icon: Icons.star_outline,
                   label: 'My reviews',
                   trailingText: '${c.reviewCount.value}',
-                  onTap: () => _soon('My reviews'),
+                  onTap: () => Get.to(() => const MyReviewsView()),
                 ),
                 _Tile(
                   icon: Icons.eco_outlined,
@@ -166,7 +168,7 @@ class ProfileView extends StatelessWidget {
                 _Tile(
                   icon: Icons.shield_outlined,
                   label: 'Account and security',
-                  onTap: () => _soon('Account and security'),
+                  onTap: () => Get.to(() => const AccountSecurityView()),
                   isLast: true,
                 ),
               ]),

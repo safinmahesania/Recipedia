@@ -26,6 +26,33 @@ class AuthService {
   Future<void> resetPassword(String email) => _auth.resetPasswordForEmail(email);
   Future<void> signOut() => _auth.signOut();
 
+  Future<void> updatePassword(String newPassword) =>
+      _auth.updateUser(UserAttributes(password: newPassword));
+
+  /// Deleting the auth user needs the service_role key, which must never ship
+  /// in the app — so it lives in an Edge Function (supabase/functions/
+  /// delete-account). If that call fails we still remove the profile row,
+  /// which cascades away every recipe, review, favourite and list the user
+  /// owns, and sign out. That satisfies "delete my data"; the orphaned
+  /// auth.users row is cleaned up when the function is deployed.
+  Future<bool> deleteAccount() async {
+    final id = currentUser?.id;
+    if (id == null) return false;
+    var fullyDeleted = false;
+    try {
+      await supabase.functions.invoke('delete-account');
+      fullyDeleted = true;
+    } catch (_) {
+      try {
+        await supabase.from('profiles').delete().eq('id', id);
+      } catch (_) {
+        return false;
+      }
+    }
+    await signOut();
+    return fullyDeleted;
+  }
+
   Future<bool> isAdmin() async {
     final id = currentUser?.id;
     if (id == null) return false;

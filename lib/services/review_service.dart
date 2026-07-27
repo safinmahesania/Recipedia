@@ -10,6 +10,22 @@ class ReviewService {
         .order('created_at', ascending: false);
   }
 
+  /// Everything this user has written, newest first, with enough of the recipe
+  /// joined to render a row without a second round trip.
+  Future<List<Map<String, dynamic>>> getMyReviews(String userId) async {
+    final rows = await supabase
+        .from('reviews')
+        .select('id, rating, comment, created_at, '
+            'recipes(id, title, image_url, cook_time, cuisine)')
+        .eq('user_id', userId)
+        .order('created_at', ascending: false);
+    return List<Map<String, dynamic>>.from(rows as List);
+  }
+
+  Future<void> deleteReview(String reviewId) async {
+    await supabase.from('reviews').delete().eq('id', reviewId);
+  }
+
   /// One review per user per recipe — upsert so re-rating updates.
   Future<void> submitReview({
     required String userId,
