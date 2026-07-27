@@ -92,8 +92,8 @@ class _ScanViewState extends State<ScanView> {
                     textInputAction: TextInputAction.done,
                     decoration: const InputDecoration(
                       hintText: 'Type an ingredient…',
-                      prefixIcon:
-                          AppIcon('search', fallback: Icons.search),
+                      prefixIcon: AppIcon('search',
+                          fallback: Icons.search, size: AppSizes.iconMd),
                     ),
                   ),
 

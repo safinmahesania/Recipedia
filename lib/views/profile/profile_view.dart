@@ -11,9 +11,11 @@ import 'my_reviews_view.dart';
 import '../planner/meal_plan_view.dart';
 import '../shopping/shopping_list_view.dart';
 import '../submissions/my_submissions_view.dart';
-import 'settings_view.dart';
 import '../../shared/widgets/skeletons.dart';
 import '../../shared/widgets/app_icon.dart';
+import '../../controllers/auth_controller.dart';
+import 'about_view.dart';
+import 'faq_view.dart';
 
 /// Profile — identity, activity, and the settings that change how the app
 /// behaves. Submissions and Admin were buried in Settings before, which is why
@@ -193,14 +195,36 @@ class ProfileView extends StatelessWidget {
                 ]),
               ],
               const SizedBox(height: AppSizes.md),
+              _GroupLabel('SUPPORT'),
               _Group(children: [
                 _Tile(
-                  icon: 'settings_outlined',
-                  label: 'More settings',
-                  onTap: () => Get.to(() => const SettingsView()),
+                  icon: 'help_outline',
+                  label: 'FAQs',
+                  onTap: () => Get.to(() => const FaqView()),
+                ),
+                _Tile(
+                  icon: 'info_outline',
+                  label: 'About Recipedia',
+                  onTap: () => Get.to(() => const AboutView()),
                   isLast: true,
                 ),
               ]),
+              const SizedBox(height: AppSizes.md),
+              _Group(children: [
+                _Tile(
+                  icon: 'logout',
+                  label: 'Log out',
+                  danger: true,
+                  onTap: () => _confirmLogout(context),
+                  isLast: true,
+                ),
+              ]),
+              const SizedBox(height: AppSizes.lg),
+              Center(
+                child: Text('Recipedia 1.0.0',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: context.tokens.textTertiary)),
+              ),
             ],
           );
         }),
@@ -216,6 +240,28 @@ class ProfileView extends StatelessWidget {
 
   // Screens land in the next batch; the tiles ship now so the structure is
   // reviewable and the routes are already in place.
+  void _confirmLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dctx) => AlertDialog(
+        title: const Text('Log out'),
+        content: const Text('You will need to sign in again.'),
+        actions: [
+          TextButton(onPressed: Get.back, child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              Get.put(AuthController()).logout();
+            },
+            style: TextButton.styleFrom(
+                foregroundColor: Theme.of(dctx).colorScheme.error),
+            child: const Text('Log out'),
+          ),
+        ],
+      ),
+    );
+  }
+
   static void _soon(String what) =>
       Get.snackbar('Coming next', '$what is being built.');
 
@@ -346,12 +392,17 @@ class _Tile extends StatelessWidget {
   final VoidCallback onTap;
   final bool isLast;
 
+  /// Destructive rows read in the error colour and drop the chevron — there is
+  /// nothing to navigate to.
+  final bool danger;
+
   const _Tile({
     required this.icon,
     required this.label,
     required this.onTap,
     this.trailingText,
     this.isLast = false,
+    this.danger = false,
   });
 
   @override
@@ -370,15 +421,26 @@ class _Tile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            AppIcon(icon, fallback: Icons.circle_outlined, size: AppSizes.iconMd, color: t.textSecondary),
+            AppIcon(icon,
+                fallback: Icons.circle_outlined,
+                size: AppSizes.iconMd,
+                color: danger ? t.error : t.textSecondary),
             const SizedBox(width: AppSizes.smd),
-            Expanded(child: Text(label, style: text.bodyMedium)),
+            Expanded(
+              child: Text(label,
+                  style: text.bodyMedium
+                      ?.copyWith(color: danger ? t.error : null)),
+            ),
             if (trailingText != null)
               Text(trailingText!,
                   style: text.labelSmall?.copyWith(color: t.textSecondary)),
-            const SizedBox(width: AppSizes.xs),
-            AppIcon('chevron_right', fallback: Icons.chevron_right,
-                size: AppSizes.iconMd, color: t.borderStrong),
+            if (!danger) ...[
+              const SizedBox(width: AppSizes.xs),
+              AppIcon('chevron_right',
+                  fallback: Icons.chevron_right,
+                  size: AppSizes.iconMd,
+                  color: t.borderStrong),
+            ],
           ],
         ),
       ),

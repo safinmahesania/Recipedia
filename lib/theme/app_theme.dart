@@ -108,6 +108,14 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: t.surface,
+        // Default prefix/suffix boxes are 48x48, which leaves a wide gutter
+        // between a 20px icon and the text. Tighten to the icon plus padding.
+        prefixIconConstraints:
+            const BoxConstraints(minWidth: 42, minHeight: 42),
+        suffixIconConstraints:
+            const BoxConstraints(minWidth: 42, minHeight: 42),
+        prefixIconColor: t.textTertiary,
+        suffixIconColor: t.textTertiary,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSizes.md,
           vertical: AppSizes.smd,
