@@ -74,6 +74,21 @@ class RecipeSteps {
     return Duration(minutes: value);
   }
 
+  /// Minutes from free-text cook time ("35 min", "1 hr 10 min"). Unparseable
+  /// values sort last rather than pretending to be zero.
+  static int minutes(dynamic raw) {
+    final t = (raw ?? '').toString().toLowerCase();
+    if (t.isEmpty) return 1 << 30;
+    final h = RegExp(r'(\d+)\s*(h|hr|hour)').firstMatch(t);
+    final m = RegExp(r'(\d+)\s*(m|min)').firstMatch(t);
+    if (h == null && m == null) {
+      final bare = RegExp(r'(\d+)').firstMatch(t);
+      return bare == null ? 1 << 30 : int.parse(bare.group(1)!);
+    }
+    return (int.tryParse(h?.group(1) ?? '0') ?? 0) * 60 +
+        (int.tryParse(m?.group(1) ?? '0') ?? 0);
+  }
+
   static String format(Duration d) {
     final m = d.inMinutes.remainder(60).toString();
     final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');

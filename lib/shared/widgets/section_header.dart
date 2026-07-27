@@ -7,6 +7,9 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final String? subtitle;
   final int? count;
+
+  /// Right-hand label, e.g. "Under 30 min" next to "Quick tonight".
+  final String? trailingLabel;
   final VoidCallback? onSeeAll;
 
   const SectionHeader({
@@ -14,6 +17,7 @@ class SectionHeader extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.count,
+    this.trailingLabel,
     this.onSeeAll,
   });
 
@@ -41,6 +45,9 @@ class SectionHeader extends StatelessWidget {
               ],
             ),
           ),
+          if (trailingLabel != null)
+            Text(trailingLabel!,
+                style: text.labelSmall?.copyWith(color: t.textSecondary)),
           if (count != null)
             Container(
               padding: const EdgeInsets.symmetric(

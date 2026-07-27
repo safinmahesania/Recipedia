@@ -11,6 +11,9 @@ import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
 import '../scan/scan_view.dart';
 import '../../shared/widgets/app_icon.dart';
+import '../../constants/app_colors.dart';
+import '../shopping/shopping_list_view.dart';
+import '../recipes/recipe_list_view.dart';
 
 /// Home — "what can I cook tonight?"
 ///
@@ -50,6 +53,14 @@ class HomeView extends StatelessWidget {
                     _ReadyToCook(controller: c),
                   if (c.almostThere.isNotEmpty)
                     _AlmostThere(controller: c),
+                  if (c.toBuy.isNotEmpty) _ToBuy(controller: c),
+                  if (c.quickTonight.isNotEmpty)
+                    _Carousel(
+                      title: 'Quick tonight',
+                      trailing: 'Under 30 min',
+                      items: c.quickTonight,
+                    ),
+                  if (c.cuisines.isNotEmpty) _Cuisines(controller: c),
                   if (c.recentlyViewed.isNotEmpty)
                     _Carousel(
                       title: 'Pick up where you left off',
@@ -361,9 +372,14 @@ class _AlmostThere extends StatelessWidget {
 class _Carousel extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final String? trailing;
   final List<Map<String, dynamic>> items;
 
-  const _Carousel({required this.title, this.subtitle, required this.items});
+  const _Carousel(
+      {required this.title,
+      this.subtitle,
+      this.trailing,
+      required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -375,7 +391,8 @@ class _Carousel extends StatelessWidget {
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: AppSizes.screenPad),
-            child: SectionHeader(title: title, subtitle: subtitle),
+            child: SectionHeader(
+                title: title, subtitle: subtitle, trailingLabel: trailing),
           ),
           SizedBox(
             height: 182,
@@ -398,5 +415,145 @@ class _Carousel extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// Shopping nudge. Sits directly under the pantry card in the kit, because the
+/// thing you are missing is the most actionable item on the screen.
+class _ToBuy extends StatelessWidget {
+  final HomeController controller;
+  const _ToBuy({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    return Obx(() {
+      final items = controller.toBuy;
+      if (items.isEmpty) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(
+            AppSizes.screenPad, AppSizes.md, AppSizes.screenPad, 0),
+        child: InkWell(
+          onTap: () => Get.to(() => const ShoppingListView()),
+          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          child: Container(
+            padding: const EdgeInsets.all(AppSizes.smd),
+            decoration: BoxDecoration(
+              color: t.surfaceRaised,
+              border: Border.all(color: t.cardBorder),
+              borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+              boxShadow: t.cardShadow,
+            ),
+            child: Row(children: [
+              Container(
+                width: 38,
+                height: 38,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: t.warningTint,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                ),
+                child: AppIcon('shopping_cart',
+                    fallback: Icons.shopping_cart,
+                    size: AppSizes.iconMd,
+                    color: t.onWarningTint),
+              ),
+              const SizedBox(width: AppSizes.smd),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${items.length} ${items.length == 1 ? 'thing' : 'things'} to buy',
+                      style: text.titleMedium,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(items.take(4).join(', '),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.labelSmall
+                            ?.copyWith(color: t.textSecondary)),
+                  ],
+                ),
+              ),
+              AppIcon('chevron_right',
+                  fallback: Icons.chevron_right, color: t.borderStrong),
+            ]),
+          ),
+        ),
+      );
+    });
+  }
+}
+
+/// Cuisine tiles with live counts. Uses the same tint ramp as recipe
+/// placeholders so the row reads as part of the same family.
+class _Cuisines extends StatelessWidget {
+  final HomeController controller;
+  const _Cuisines({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    return Obx(() => Padding(
+          padding: const EdgeInsets.only(top: AppSizes.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSizes.screenPad),
+                child: SectionHeader(title: 'Browse by cuisine'),
+              ),
+              SizedBox(
+                height: 68,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.screenPad),
+                  itemCount: controller.cuisines.length,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(width: AppSizes.smd),
+                  itemBuilder: (_, i) {
+                    final c = controller.cuisines[i];
+                    final name = (c['value'] ?? '') as String;
+                    final count = c['recipe_count'];
+                    final slot = AppColors.slotFor(name);
+                    return GestureDetector(
+                      onTap: () => Get.to(() => const RecipeListView()),
+                      child: Container(
+                        width: 116,
+                        padding: const EdgeInsets.all(AppSizes.smd),
+                        alignment: Alignment.bottomLeft,
+                        decoration: BoxDecoration(
+                          color: t.categoryTints[slot],
+                          borderRadius:
+                              BorderRadius.circular(AppSizes.radiusMd),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: text.titleMedium?.copyWith(
+                                    color: t.categoryGlyphs[slot],
+                                    fontSize: 13)),
+                            Text('$count recipes',
+                                style: text.labelSmall?.copyWith(
+                                    color: t.categoryGlyphs[slot],
+                                    fontSize: 10)),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
