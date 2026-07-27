@@ -110,7 +110,7 @@ class ProfileController extends GetxController {
       final file = await _images.pick(source);
       if (file == null) return;
       isSaving.value = true;
-      final url = await _images.upload(file);
+      final url = await _images.uploadAvatar(file);
       await supabase.from('profiles').update({'avatar_url': url}).eq('id', id);
       await loadProfile();
     } catch (_) {

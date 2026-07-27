@@ -7,6 +7,8 @@ import '../../theme/app_tokens.dart';
 import '../admin/admin_portal_view.dart';
 import 'account_security_view.dart';
 import 'diet_allergies_view.dart';
+import 'edit_profile_view.dart';
+import 'notifications_view.dart';
 import 'my_reviews_view.dart';
 import '../planner/meal_plan_view.dart';
 import '../shopping/shopping_list_view.dart';
@@ -99,6 +101,23 @@ class ProfileView extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: text.bodySmall),
                       ),
+                    // Editing lives on the identity it edits, rather than
+                    // buried in a list below it.
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSizes.xs),
+                      child: OutlinedButton.icon(
+                        onPressed: () => Get.to(() => const EditProfileView()),
+                        icon: const AppIcon('edit_outlined',
+                            fallback: Icons.edit_outlined,
+                            size: AppSizes.iconSm),
+                        label: const Text('Edit profile'),
+                        style: OutlinedButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppSizes.md),
+                        ),
+                      ),
+                    ),
                     if (p?.isAdmin == true)
                       Padding(
                         padding: const EdgeInsets.only(top: AppSizes.sm),
@@ -173,7 +192,7 @@ class ProfileView extends StatelessWidget {
                 _Tile(
                   icon: 'notifications_none',
                   label: 'Notifications',
-                  onTap: () => _soon('Notifications'),
+                  onTap: () => Get.to(() => const NotificationsView()),
                 ),
                 _Tile(
                   icon: 'shield_outlined',

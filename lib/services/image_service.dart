@@ -7,7 +7,8 @@ import 'supabase_client.dart';
 /// returning a public URL. URL-based images are handled by the caller directly.
 class ImageService {
   final ImagePicker _picker = ImagePicker();
-  static const _bucket = 'recipe-images';
+  static const _recipeBucket = 'recipe-images';
+  static const _avatarBucket = 'avatars';
 
   Future<File?> pick(ImageSource source) async {
     final x = await _picker.pickImage(
@@ -15,13 +16,18 @@ class ImageService {
     return x == null ? null : File(x.path);
   }
 
-  /// Uploads a file and returns its public URL.
-  Future<String> upload(File file) async {
+  /// Uploads a recipe photo and returns its public URL.
+  Future<String> upload(File file) => _put(_recipeBucket, file);
+
+  /// Avatars live in their own bucket. Storage policy requires the first path
+  /// segment to be the uploader's uid, so one user cannot overwrite another's.
+  Future<String> uploadAvatar(File file) => _put(_avatarBucket, file);
+
+  Future<String> _put(String bucket, File file) async {
     final userId = supabase.auth.currentUser?.id ?? 'anon';
     final ext = p.extension(file.path).toLowerCase();
-    final path =
-        '$userId/${DateTime.now().millisecondsSinceEpoch}$ext';
-    await supabase.storage.from(_bucket).upload(path, file);
-    return supabase.storage.from(_bucket).getPublicUrl(path);
+    final path = '$userId/${DateTime.now().millisecondsSinceEpoch}$ext';
+    await supabase.storage.from(bucket).upload(path, file);
+    return supabase.storage.from(bucket).getPublicUrl(path);
   }
 }
