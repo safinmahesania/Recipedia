@@ -7,6 +7,7 @@ import '../../shared/widgets/primary_button.dart';
 import '../../theme/app_tokens.dart';
 import '../../shared/widgets/app_icon.dart';
 import 'mail_sent_view.dart';
+import '../../shared/widgets/auth_hero.dart';
 
 /// Password reset request. StatefulWidget so the controller is disposed.
 class ForgotPasswordView extends StatefulWidget {
@@ -39,57 +40,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // The kit gives this screen a hero; login and signup deliberately
-              // have none — they are forms people arrive at knowing what to do.
-              Center(
-                child: SizedBox(
-                  height: 132,
-                  width: 132,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: t.categoryTints[3],
-                          borderRadius:
-                              BorderRadius.circular(AppSizes.radiusXl),
-                        ),
-                      ),
-                      Container(
-                        width: 92,
-                        height: 92,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: t.canvas.withValues(alpha: 0.5)),
-                        ),
-                      ),
-                      AppIcon('key',
-                          fallback: Icons.key,
-                          size: 42,
-                          color: t.categoryGlyphs[3]),
-                      Positioned(
-                        right: 12,
-                        bottom: 16,
-                        child: Container(
-                          width: 34,
-                          height: 34,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: t.surfaceRaised,
-                            boxShadow: t.cardShadow,
-                          ),
-                          child: AppIcon('lock',
-                              fallback: Icons.lock,
-                              size: 17,
-                              color: t.categoryGlyphs[3]),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // Kit composition: lock in the large tile, key on the badge.
+              const AuthHero(icon: 'lock', badge: 'key', slot: 0),
               const SizedBox(height: AppSizes.lg),
               Text('Forgot your\npassword?', style: text.headlineMedium),
               const SizedBox(height: AppSizes.sm),

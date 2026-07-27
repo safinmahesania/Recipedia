@@ -18,7 +18,7 @@ const kTablerIcons = <String>{
   'person', 'person_outline', 'photo', 'photo_camera_outlined', 'photo_library_outlined',
   'play_arrow', 'public', 'rate_review_outlined', 'refresh', 'remove',
   'restaurant_menu', 'schedule', 'search', 'search_off', 'settings_outlined',
-  'share', 'shield_outlined', 'shopping_basket_outlined', 'shopping_cart', 'star',
-  'star_border', 'star_outline', 'swap_vert', 'tune', 'visibility',
-  'visibility_off', 'warning_amber_rounded',
+  'share', 'shield_outlined', 'shopping_basket_outlined', 'shopping_cart', 'sparkles',
+  'star', 'star_border', 'star_outline', 'swap_vert', 'tune',
+  'visibility', 'visibility_off', 'warning_amber_rounded',
 };

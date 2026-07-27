@@ -6,6 +6,7 @@ import '../../shared/widgets/app_icon.dart';
 import '../../shared/widgets/app_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/auth_hero.dart';
 
 /// Step 1 of 4. Account creation is the first onboarding step, not a separate
 /// errand — the kit shows one continuous progress bar from here through diet,
@@ -107,7 +108,12 @@ class _SignupViewState extends State<SignupView> {
                 ),
               ),
 
-              const SizedBox(height: AppSizes.lg),
+              const SizedBox(height: AppSizes.md),
+              // Shortest of the three: this screen already carries a progress
+              // bar, four inputs and a consent row.
+              const AuthHero(
+                  icon: 'person', badge: 'sparkles', slot: 1, height: 104),
+              const SizedBox(height: AppSizes.md),
               Text('Create your account', style: text.headlineMedium),
               const SizedBox(height: AppSizes.lg),
 

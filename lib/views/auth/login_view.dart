@@ -8,6 +8,7 @@ import '../../shared/widgets/primary_button.dart';
 import '../../theme/app_tokens.dart';
 import 'forgot_password_view.dart';
 import 'signup_view.dart';
+import '../../shared/widgets/auth_hero.dart';
 
 /// Login. Now a StatefulWidget so the text controllers are disposed — they
 /// were fields on a StatelessWidget before, which leaked them.
@@ -42,6 +43,14 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: AppSizes.smd),
+              // Shorter than the reset screen's: this one carries a form too,
+              // and the fields should stay above the fold.
+              const AuthHero(
+                  icon: 'restaurant_menu',
+                  badge: 'local_fire_department',
+                  slot: 0,
+                  height: 118),
               const SizedBox(height: AppSizes.lg),
               // Left-aligned like every other screen. A centred wordmark read
               // as a splash rather than the top of a form.
