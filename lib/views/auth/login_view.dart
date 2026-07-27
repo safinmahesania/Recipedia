@@ -53,12 +53,14 @@ class _LoginViewState extends State<LoginView> {
               AppTextField(
                 label: 'Email',
                 hint: 'you@email.com',
+                icon: 'mail_outline',
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: AppSizes.md),
               AppTextField(
                 label: 'Password',
+                icon: 'lock',
                 hint: 'Your password',
                 controller: _password,
                 obscure: true,

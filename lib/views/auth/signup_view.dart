@@ -112,17 +112,22 @@ class _SignupViewState extends State<SignupView> {
               const SizedBox(height: AppSizes.lg),
 
               AppTextField(
-                  label: 'Name', hint: 'Your name', controller: _name),
+                  label: 'Name',
+                  hint: 'Your name',
+                  icon: 'person',
+                  controller: _name),
               const SizedBox(height: AppSizes.md),
               AppTextField(
                 label: 'Email',
                 hint: 'you@email.com',
+                icon: 'mail_outline',
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: AppSizes.md),
               AppTextField(
                 label: 'Password',
+                icon: 'lock',
                 hint: 'At least 8 characters',
                 controller: _password,
                 obscure: true,

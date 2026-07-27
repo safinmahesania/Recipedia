@@ -105,6 +105,7 @@ class _SetPasswordViewState extends State<SetPasswordView> {
               const SizedBox(height: AppSizes.lg),
               AppTextField(
                 label: 'New password',
+                icon: 'lock',
                 hint: 'At least 8 characters',
                 controller: _password,
                 obscure: true,
@@ -113,6 +114,7 @@ class _SetPasswordViewState extends State<SetPasswordView> {
               const SizedBox(height: AppSizes.md),
               AppTextField(
                 label: 'Confirm password',
+                icon: 'lock',
                 hint: 'Type it again',
                 controller: _confirm,
                 obscure: true,
