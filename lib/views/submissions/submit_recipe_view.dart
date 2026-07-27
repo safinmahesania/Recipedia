@@ -121,7 +121,18 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
     return Scaffold(
       backgroundColor: t.canvas,
       appBar: AppBar(
-        title: Text(isEdit ? 'Edit submission' : 'Add your recipe'),
+        titleSpacing: 0,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(isEdit ? 'Edit submission' : 'Add your recipe',
+                style: Theme.of(context).textTheme.titleLarge),
+            Text('Takes about two minutes',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: context.tokens.textSecondary)),
+          ],
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -259,48 +270,122 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
       );
 
   Widget _imagePicker() {
+    final t = context.tokens;
+    final hasImage =
+        _pickedImage != null || imageUrl.text.trim().isNotEmpty;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (_pickedImage != null)
+        if (hasImage) ...[
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.file(_pickedImage!, height: 160, width: double.infinity, fit: BoxFit.cover),
-          )
-        else if (imageUrl.text.trim().isNotEmpty)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(imageUrl.text.trim(),
-                height: 160, width: double.infinity, fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => _emptyImage()),
-          )
-        else
-          _emptyImage(),
-        const SizedBox(height: 10),
-        Row(children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () => _pick(ImageSource.gallery),
-              icon: const AppIcon('image_outlined', fallback: Icons.image_outlined, size: 18),
-              label: const Text('Gallery'),
+            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+            child: _pickedImage != null
+                ? Image.file(_pickedImage!,
+                    height: 160, width: double.infinity, fit: BoxFit.cover)
+                : Image.network(imageUrl.text.trim(),
+                    height: 160,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _emptyImage()),
+          ),
+          const SizedBox(height: AppSizes.sm),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: () => setState(() {
+                _pickedImage = null;
+                imageUrl.clear();
+              }),
+              icon: const AppIcon('close', fallback: Icons.close, size: 16),
+              label: const Text('Remove photo'),
             ),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () => _pick(ImageSource.camera),
-              icon: const AppIcon('camera_alt_outlined', fallback: Icons.camera_alt_outlined, size: 18),
-              label: const Text('Camera'),
+        ] else
+          Row(children: [
+            _Source(
+              icon: 'photo',
+              label: 'Gallery',
+              tint: t.brandTint,
+              onTint: t.onBrandTint,
+              onTap: () => _pick(ImageSource.gallery),
             ),
-          ),
-        ]),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: imageUrl,
-          decoration: _decoration('or paste an image URL'),
-          onChanged: (_) => setState(() => _pickedImage = null),
+            const SizedBox(width: AppSizes.sm),
+            _Source(
+              icon: 'camera_alt',
+              label: 'Camera',
+              tint: t.accentTint,
+              onTint: t.onAccentTint,
+              onTap: () => _pick(ImageSource.camera),
+            ),
+            const SizedBox(width: AppSizes.sm),
+            _Source(
+              icon: 'link',
+              label: 'Paste URL',
+              tint: t.warningTint,
+              onTint: t.onWarningTint,
+              onTap: _pasteUrlSheet,
+            ),
+          ]),
+        const SizedBox(height: AppSizes.sm),
+        Text(
+          'Optional — a photo roughly doubles the chance of approval.',
+          style: Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: t.textSecondary),
         ),
       ],
     );
+  }
+
+  /// URL entry lives in a sheet rather than a permanent field: two of the three
+  /// sources are one tap, and a naked text box next to them made pasting look
+  /// like the default path.
+  void _pasteUrlSheet() {
+    final ctrl = TextEditingController(text: imageUrl.text);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.tokens.surfaceRaised,
+      shape: const RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(AppSizes.radiusXl)),
+      ),
+      builder: (sheetCtx) => Padding(
+        padding: EdgeInsets.fromLTRB(
+            AppSizes.screenPad,
+            AppSizes.lg,
+            AppSizes.screenPad,
+            MediaQuery.of(sheetCtx).viewInsets.bottom + AppSizes.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Paste an image URL',
+                style: Theme.of(sheetCtx).textTheme.titleLarge),
+            const SizedBox(height: AppSizes.smd),
+            TextField(
+              controller: ctrl,
+              autofocus: true,
+              keyboardType: TextInputType.url,
+              decoration: const InputDecoration(hintText: 'https://…'),
+            ),
+            const SizedBox(height: AppSizes.md),
+            FilledButton(
+              onPressed: () {
+                setState(() {
+                  imageUrl.text = ctrl.text.trim();
+                  _pickedImage = null; // a URL replaces a picked file
+                });
+                Navigator.pop(sheetCtx);
+              },
+              child: const Text('Use this image'),
+            ),
+          ],
+        ),
+      ),
+    ).then((_) => ctrl.dispose());
   }
 
   Widget _emptyImage() => Builder(
@@ -317,4 +402,59 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
         ),
       );
 
+}
+
+/// One of the three ways to add a photo. Tinted tiles rather than outlined
+/// buttons, so no single source reads as the default.
+class _Source extends StatelessWidget {
+  final String icon;
+  final String label;
+  final Color tint;
+  final Color onTint;
+  final VoidCallback onTap;
+
+  const _Source({
+    required this.icon,
+    required this.label,
+    required this.tint,
+    required this.onTint,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSizes.smd),
+          decoration: BoxDecoration(
+            color: t.surface,
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
+          child: Column(children: [
+            Container(
+              width: 34,
+              height: 34,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: tint,
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              ),
+              child: AppIcon(icon,
+                  fallback: Icons.image_outlined,
+                  size: AppSizes.iconSm + 1,
+                  color: onTint),
+            ),
+            const SizedBox(height: AppSizes.sm),
+            Text(label,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.w700)),
+          ]),
+        ),
+      ),
+    );
+  }
 }
