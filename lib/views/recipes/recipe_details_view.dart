@@ -7,9 +7,11 @@ import '../../controllers/review_controller.dart';
 import '../../services/cache_service.dart';
 import '../../services/recipe_service.dart';
 import '../../services/share_service.dart';
+import '../../shared/recipe_steps.dart';
 import '../../shared/widgets/ingredient_icon.dart';
 import '../../shared/widgets/recipe_image.dart';
 import '../../theme/app_tokens.dart';
+import 'cook_mode_view.dart';
 import 'review_rating_view.dart';
 
 /// Recipe detail — hero, meta, ingredients, instructions, and the favorite,
@@ -31,18 +33,6 @@ class RecipeDetailsView extends StatelessWidget {
       if (cached != null) return cached;
       rethrow;
     }
-  }
-
-  /// Source instructions are one blob, but most carry line breaks. Splitting
-  /// them into numbered steps is the difference between a wall of text and
-  /// something you can cook from with a phone on the counter.
-  List<String> _steps(String raw) {
-    final parts = raw
-        .split(RegExp(r'\r?\n+'))
-        .map((s) => s.trim().replaceFirst(RegExp(r'^\d+[.)]\s*'), ''))
-        .where((s) => s.isNotEmpty)
-        .toList();
-    return parts.length > 1 ? parts : const [];
   }
 
   @override
@@ -68,7 +58,7 @@ class RecipeDetailsView extends StatelessWidget {
 
           final r = snap.data!;
           final ingredients = (r['recipe_ingredients'] as List?) ?? [];
-          final steps = _steps((r['instructions'] ?? '') as String);
+          final steps = RecipeSteps.split((r['instructions'] ?? '') as String);
 
           return CustomScrollView(
             slivers: [
@@ -208,9 +198,24 @@ class RecipeDetailsView extends StatelessWidget {
                         const SizedBox(width: AppSizes.smd),
                         Expanded(
                           child: FilledButton.icon(
-                            onPressed: () => ShareService().shareRecipe(r),
-                            icon: const Icon(Icons.share, size: AppSizes.iconSm),
-                            label: const Text('Share'),
+                            onPressed: steps.isEmpty
+                                ? null
+                                : () => Get.to(() => CookModeView(
+                                      recipeId: recipeId,
+                                      title: (r['title'] ?? '') as String,
+                                      steps: steps,
+                                      ingredients: [
+                                        for (final ri in ingredients)
+                                          [
+                                            ((ri['ingredients'] as Map?)?['name'] ?? '')
+                                                .toString(),
+                                            ((ri['quantity'] ?? '') as String)
+                                          ].where((x) => x.isNotEmpty).join('  ')
+                                      ],
+                                    )),
+                            icon: const Icon(Icons.local_fire_department,
+                                size: AppSizes.iconSm),
+                            label: const Text('Start cooking'),
                           ),
                         ),
                       ]),
