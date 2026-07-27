@@ -8,6 +8,7 @@ import '../admin/admin_portal_view.dart';
 import 'account_security_view.dart';
 import 'diet_allergies_view.dart';
 import 'my_reviews_view.dart';
+import '../planner/meal_plan_view.dart';
 import '../shopping/shopping_list_view.dart';
 import '../submissions/my_submissions_view.dart';
 import 'settings_view.dart';
@@ -148,6 +149,11 @@ class ProfileView extends StatelessWidget {
                   icon: Icons.shopping_basket_outlined,
                   label: 'Shopping list',
                   onTap: () => Get.to(() => const ShoppingListView()),
+                ),
+                _Tile(
+                  icon: Icons.calendar_month_outlined,
+                  label: 'Meal planner',
+                  onTap: () => Get.to(() => const MealPlanView()),
                   isLast: true,
                 ),
               ]),
