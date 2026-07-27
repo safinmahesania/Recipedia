@@ -1,0 +1,81 @@
+name: Database backup
+
+# You have lost this dataset once already. 1,032 recipes and their ingredient
+# links are the part that cannot be recreated from code.
+on:
+  schedule:
+    - cron: '0 3 * * *'      # 03:00 UTC daily
+  workflow_dispatch:          # and on demand
+
+jobs:
+  dump:
+    name: Dump and archive
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Supabase runs Postgres 15+; the client must be at least as new or
+      # pg_dump refuses with a server version mismatch.
+      - name: Install pg_dump 16
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt \
+            $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+            | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-16
+
+      - name: Dump
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          STAMP=$(date -u +%Y-%m-%d)
+
+          # 1. Everything: schema + data. This is the restore target.
+          pg_dump "$DATABASE_URL" \
+            --schema=public --no-owner --no-privileges \
+            | gzip -9 > "out/recipedia-full-$STAMP.sql.gz"
+
+          # 2. Content only. Small, and the part that took real work to build:
+          #    the catalogue and its ingredient graph. Restorable into an empty
+          #    schema without dragging user rows along.
+          pg_dump "$DATABASE_URL" \
+            --data-only --no-owner --no-privileges \
+            --table=public.categories \
+            --table=public.ingredients \
+            --table=public.recipes \
+            --table=public.recipe_ingredients \
+            | gzip -9 > "out/recipedia-content-$STAMP.sql.gz"
+
+          ls -lh out
+
+      # Fail loudly on an empty dump rather than archiving a useless file and
+      # discovering it during a restore.
+      - name: Sanity check
+        run: |
+          for f in out/*.gz; do
+            size=$(stat -c%s "$f")
+            echo "$f -> $size bytes"
+            if [ "$size" -lt 10240 ]; then
+              echo "::error::$f is suspiciously small - dump likely failed"
+              exit 1
+            fi
+          done
+          gunzip -t out/*.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_number }}
+          path: out/*.gz
+          retention-days: 90
+
+      - name: Summary
+        run: |
+          echo "### Backup complete" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          ls -lh out >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,1047 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recipedia UI Kit 05 — House Blend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ SHARED SCAFFOLD — page chrome only, not the app design ============
+   Every kit file embeds this, then overrides with its own design language.
+   The phone frame, the page grid and the section headers are neutral on
+   purpose: they must not compete with the kit being presented. */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0B0B0E;color:#E8E8EC;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin:0 auto;padding:0 28px 96px}
+
+/* cover */
+.cover{padding:72px 0 40px;border-bottom:1px solid #22222A}
+.eyebrow{font-size:12px;letter-spacing:2.4px;text-transform:uppercase;color:#7A7A88;font-weight:600}
+.kitname{font-size:64px;line-height:1;letter-spacing:-2.5px;margin:14px 0 10px;font-weight:700}
+.tagline{font-size:17px;color:#9A9AA8;max-width:620px;line-height:1.6}
+.principles{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.principle{font-size:12px;border:1px solid #2A2A33;padding:6px 13px;border-radius:99px;color:#B4B4C0}
+
+/* section */
+.sec{padding:56px 0 8px}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sec-n{font-size:12px;color:#5A5A68;font-variant-numeric:tabular-nums;font-weight:600}
+.sec-t{font-size:24px;font-weight:600;letter-spacing:-.5px}
+.sec-d{font-size:14px;color:#8A8A98;margin-bottom:28px;max-width:640px;line-height:1.6}
+
+/* token strips */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px;margin-bottom:34px}
+.sw{border:1px solid #22222A;border-radius:12px;overflow:hidden}
+.sw-c{height:64px}
+.sw-m{padding:9px 11px;background:#131318}
+.sw-n{font-size:12px;font-weight:500}
+.sw-v{font-size:11px;color:#7A7A88;font-family:ui-monospace,monospace;margin-top:2px}
+
+/* phone grid */
+.screens{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:34px 26px}
+.slot{display:flex;flex-direction:column;gap:11px}
+.slot-l{font-size:13px;color:#9A9AA8;font-weight:500}
+.slot-l span{color:#5A5A68;margin-left:7px;font-size:12px}
+.phone{width:100%;aspect-ratio:9/19.5;border-radius:38px;padding:9px;background:#1A1A20;box-shadow:0 22px 60px rgba(0,0,0,.55);position:relative}
+.glass{width:100%;height:100%;border-radius:30px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.notch{position:absolute;top:15px;left:50%;transform:translateX(-50%);width:78px;height:20px;background:#1A1A20;border-radius:99px;z-index:60}
+.scr{flex:1;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.body{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.sbar{height:34px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 20px 3px;font-size:10px;font-weight:600;flex:none}
+.sbar i{font-size:11px;margin-left:3px}
+
+/* sticky jump nav */
+.jump{position:sticky;top:0;z-index:100;background:rgba(11,11,14,.9);backdrop-filter:blur(14px);border-bottom:1px solid #22222A;padding:13px 0;margin-bottom:-1px}
+.jump-in{max-width:1360px;margin:0 auto;padding:0 28px;display:flex;gap:8px;align-items:center;overflow-x:auto}
+.jump a{font-size:12px;color:#9A9AA8;text-decoration:none;padding:6px 12px;border-radius:99px;white-space:nowrap;border:1px solid transparent}
+.jump a:hover{color:#fff;border-color:#2A2A33}
+.jump b{font-size:12px;font-weight:600;margin-right:8px;white-space:nowrap}
+.note{font-size:13px;color:#8A8A98;background:#131318;border:1px solid #22222A;border-left:2px solid #FF4F5A;padding:13px 16px;border-radius:0 10px 10px 0;margin:22px 0 30px;line-height:1.65}
+
+
+/* =========== KIT 05 — HOUSE BLEND ===========
+   Type from Kit 01 · Splash from Kit 04 · Screens from Kit 04 · Dark from Kit 03
+   Food slots use two-tone illustrations rather than line icons, and every tint
+   is a gradient rather than a flat fill. */
+.k{--disp:'Plus Jakarta Sans',sans-serif;
+ --bg:#FDFCFB;--sf:#F4F1EE;--sf2:#EAE5E0;--bd:#F0ECE8;--bd2:#DDD6CF;
+ --tx:#2B2724;--tx2:#7B736C;--tx3:#A8A099;
+ --br:#FF4F5A;--fill:#E8434F;--tint:#FFE8E9;--onTint:#B3323C;
+ --ac:#22B894;--acT:#D7F5EC;--onAc:#0E6A52;--star:#F0A93B;
+ --wn:#FDECCF;--onWn:#8A5A05;--ok:#DAF3E4;--onOk:#12734C;--okFill:#12734C;
+ --dg:#C0392B;--dgT:#FDE2DE;--dgB:#F6D5CF;
+ --a1:#FFE0E3;--a1t:#B3323C;--a2:#D7F5EC;--a2t:#0E6A52;--a3:#E1E8FA;--a3t:#3A4C8F;--a4:#FDECCF;--a4t:#8A5A05;
+ --cook:#2B2724;--ovl:rgba(255,255,255,.94);
+ --splash:linear-gradient(165deg,#FF7B84 0%,#E8434F 100%);
+ --onDark16:rgba(255,255,255,.16);--onDark12:rgba(255,255,255,.12);--onDark10:rgba(255,255,255,.1);--onDark07:rgba(255,255,255,.07);
+ --r:26px;--r2:20px;--r3:14px;
+ --sh1:0 2px 10px rgba(43,39,36,.05),0 10px 26px rgba(43,39,36,.045);
+ --sh2:0 6px 18px rgba(43,39,36,.08),0 18px 40px rgba(43,39,36,.07);
+ --cardBg:#FDFCFB;--cardBd:none;--btnBg:linear-gradient(160deg,#FF6B74,#E8434F);
+ background:var(--bg);color:var(--tx);font-family:Inter,sans-serif}
+
+body.dark .k{
+ --bg:#0D0D10;--sf:#16161B;--sf2:#1E1E25;--bd:#26262F;--bd2:#3A3A46;
+ --tx:#F2F2F5;--tx2:#9E9EA8;--tx3:#6A6A76;
+ --br:#FF6B73;--fill:#FF4F5A;--tint:#34181C;--onTint:#FF9AA1;
+ --ac:#E8B45C;--acT:#2E2413;--onAc:#E8B45C;--star:#E8B45C;
+ --wn:#33280F;--onWn:#EFC069;--ok:#12301F;--onOk:#4CD68C;--okFill:#12704A;
+ --dg:#F97066;--dgT:#3A1A17;--dgB:#5A2622;
+ --a1:#34181C;--a1t:#FF9AA1;--a2:#12301F;--a2t:#4CD68C;--a3:#1A2338;--a3t:#9FB0EC;--a4:#33280F;--a4t:#EFC069;
+ --cook:#08080A;--ovl:rgba(13,13,16,.8);
+ /* Shadows vanish on near-black, so depth switches to raised panels + hairline. */
+ --sh1:none;--sh2:none;--cardBg:#16161B;--cardBd:1px solid #26262F;
+ --btnBg:linear-gradient(160deg,#FF5F69,#E23B47)}
+
+.k .sbar{color:var(--tx)}
+.k-pad{padding:0 20px}
+.k-h1{font-family:var(--disp);font-size:26px;font-weight:800;letter-spacing:-.9px;line-height:1.12}
+.k-h2{font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.4px}
+.k-t{font-family:var(--disp);font-size:14px;font-weight:700;letter-spacing:-.2px;line-height:1.28}
+.k-sub{font-size:12px;color:var(--tx2);line-height:1.45}
+.k-meta{font-size:11px;color:var(--tx2);font-variant-numeric:tabular-nums}
+.k-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:1.3px;color:var(--tx3);text-transform:uppercase}
+.k-row{display:flex;align-items:center;gap:11px}
+.k-list>div{padding:13px 0;border-bottom:1px solid var(--bd)}.k-list>div:last-child{border:none}
+.k-scroll{flex:1;overflow:hidden;padding-bottom:8px}
+.k-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.k-ph{border-radius:var(--r2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.k-ph .ill{height:58%;width:auto;aspect-ratio:1;color:inherit}
+.hero{position:relative;display:flex;align-items:center;justify-content:center;border-radius:28px;overflow:hidden}
+.hero .halo{position:absolute;border-radius:50%;border:1.6px dashed rgba(0,0,0,.09)}
+body.dark .hero .halo{border-color:rgba(255,255,255,.11)}
+.hero .dot{position:absolute;border-radius:50%;background:rgba(255,255,255,.6)}
+body.dark .hero .dot{background:rgba(255,255,255,.18)}
+.hero .trail{position:absolute;inset:0;width:100%;height:100%;opacity:.4}
+.hero .heroill{height:80px;width:80px}
+.float{position:absolute;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--bg);box-shadow:0 8px 20px rgba(43,39,36,.14)}
+body.dark .float{box-shadow:0 8px 22px rgba(0,0,0,.55)}
+.float svg:not(.ic){width:62%;height:62%}
+.k-ph .ic{font-size:26px;opacity:.9}
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:none}
+.sbar .ic{font-size:11px;margin-left:3px;vertical-align:-.1em}
+.ingi{width:15px;height:15px;flex:none}
+.ingt{width:24px;height:24px;flex:none;border-radius:8px;background:var(--sf);padding:2px;box-sizing:content-box}
+.k-pip{width:6px;height:6px;border-radius:50%;background:var(--br)}.k-pip.off{background:var(--bd2)}
+.k-stat{background:var(--sf);border-radius:var(--r2);padding:12px 10px;text-align:center}
+.k-stat b{font-family:var(--disp);font-size:19px;font-weight:800;display:block;font-variant-numeric:tabular-nums}
+.k-card{background:var(--cardBg);border:var(--cardBd);border-radius:var(--r);box-shadow:var(--sh1);transition:.2s}
+.k-card:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+body.dark .k-card:hover{border-color:rgba(232,180,92,.32)}
+.k-chip{font-size:11px;font-weight:700;padding:6px 13px;border-radius:99px;border:none;color:var(--tx2);white-space:nowrap;background:var(--sf);display:inline-flex;align-items:center;gap:6px}
+.k-chip.on{background:var(--tint);color:var(--onTint)}
+.k-tag{font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--acT);color:var(--onAc)}
+.k-tag.w{background:var(--wn);color:var(--onWn)}.k-tag.o{background:var(--ok);color:var(--onOk)}
+.k-btn{height:50px;border-radius:var(--r2);background:var(--btnBg);color:#fff;font-size:14px;font-weight:700;font-family:var(--disp);display:flex;align-items:center;justify-content:center;gap:7px;border:none;width:100%;cursor:pointer;box-shadow:0 6px 16px rgba(232,67,79,.28);transition:.18s}
+.k-btn:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(232,67,79,.34)}
+.k-btn:active{transform:translateY(0)}
+.k-btn.g{background:var(--sf);color:var(--tx);box-shadow:none}
+.k-in{height:50px;border-radius:var(--r2);background:var(--sf);border:none;display:flex;align-items:center;gap:9px;padding:0 16px;font-size:13px;color:var(--tx3)}
+.k-nav{height:66px;display:flex;background:var(--bg);flex:none;box-shadow:0 -6px 20px rgba(43,39,36,.05)}
+body.dark .k-nav{box-shadow:none;border-top:1px solid var(--bd)}
+.k-nav div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9.5px;color:var(--tx3);cursor:pointer}
+.k-nav div .ic{font-size:19px;vertical-align:0}.k-nav div.on{color:var(--br)}.k-nav div.on span{color:var(--tx);font-weight:700}
+.k-back{width:38px;height:38px;border-radius:14px;border:none;background:var(--sf);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--tx);flex:none}
+.k-seg{display:flex;background:var(--sf);border-radius:16px;padding:4px}
+.k-seg span{flex:1;text-align:center;font-size:11px;font-weight:700;padding:7px 0;border-radius:13px;color:var(--tx2)}
+.k-seg span.on{background:var(--bg);color:var(--tx);box-shadow:0 2px 6px rgba(43,39,36,.08)}
+body.dark .k-seg span.on{background:var(--sf2);color:var(--ac);box-shadow:none}
+.k-fab{position:absolute;right:16px;bottom:78px;width:52px;height:52px;border-radius:22px;background:var(--btnBg);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;z-index:20;box-shadow:0 10px 24px rgba(232,67,79,.32)}
+
+/* Gradient tints — each carries a second illustration tone via --ill2 */
+.t1{background:linear-gradient(150deg,#FFE9EB,#FFD0D5);color:#B3323C;--ill2:#FF9BA4}
+.t2{background:linear-gradient(150deg,#DFF7EF,#BEEFDF);color:#0E6A52;--ill2:#4FD3AE}
+.t3{background:linear-gradient(150deg,#FDF1D9,#FBE2B4);color:#8A5A05;--ill2:#F0B84E}
+.t4{background:linear-gradient(150deg,#E7ECFB,#D2DBF6);color:#3A4C8F;--ill2:#8CA0E4}
+.t5{background:linear-gradient(150deg,#F4EAFA,#E7D5F4);color:#6B3E86;--ill2:#B98BD6}
+.t6{background:linear-gradient(150deg,#E9F3E2,#D6E9C9);color:#44652F;--ill2:#8FBA6E}
+.t7{background:linear-gradient(150deg,#FCEBE0,#F9D8C2);color:#9A4A1E;--ill2:#E8A075}
+.t8{background:linear-gradient(150deg,#E4F1F7,#CDE5F0);color:#1F5C77;--ill2:#77BAD8}
+body.dark .t1{background:linear-gradient(150deg,#3B1B20,#2A1216);color:#FF9AA1;--ill2:#C25661}
+body.dark .t2{background:linear-gradient(150deg,#143627,#0D2418);color:#5FE0BC;--ill2:#2E8F73}
+body.dark .t3{background:linear-gradient(150deg,#392C11,#261D0B);color:#EFC069;--ill2:#9C7C33}
+body.dark .t4{background:linear-gradient(150deg,#1D273D,#141A2A);color:#9FB0EC;--ill2:#5C6EA8}
+body.dark .t5{background:linear-gradient(150deg,#31233B,#221828);color:#C79BDD;--ill2:#8058A0}
+body.dark .t6{background:linear-gradient(150deg,#232F1D,#181F14);color:#A8C88E;--ill2:#69864F}
+body.dark .t7{background:linear-gradient(150deg,#3B271D,#281A12);color:#E8A87C;--ill2:#9E6742}
+body.dark .t8{background:linear-gradient(150deg,#173039,#0F2027);color:#83C2DC;--ill2:#417F9C}
+
+.toggle{margin-left:auto;display:flex;background:#16161B;border:1px solid #2A2A33;border-radius:99px;padding:3px;flex:none}
+.toggle button{border:none;background:none;color:#8A8A98;font-size:11.5px;font-weight:600;padding:5px 13px;border-radius:99px;cursor:pointer;font-family:Inter,sans-serif}
+.toggle button.on{background:#2A2A33;color:#fff}
+.illrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:12px;margin-bottom:30px}
+.illcell{border-radius:16px;height:96px;display:flex;align-items:center;justify-content:center}
+.illcell svg{height:58%;width:auto;aspect-ratio:1}
+.ingrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-bottom:30px}
+.ingcell{background:#131318;border:1px solid #22222A;border-radius:14px;padding:12px 6px;text-align:center}
+.ingcell svg{width:34px;height:34px}
+.ingcell div{font-size:10.5px;color:#8A8A98;margin-top:6px}
+
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="ic-adjustments-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M4 6l8 0" />
+  <path d="M16 6l4 0" />
+  <path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M4 12l2 0" />
+  <path d="M10 12l10 0" />
+  <path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M4 18l11 0" />
+  <path d="M19 18l1 0" /></symbol><symbol id="ic-alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+  <path d="M12 8v4" />
+  <path d="M12 16h.01" /></symbol><symbol id="ic-antenna-bars-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18l0 -3" />
+  <path d="M10 18l0 -6" />
+  <path d="M14 18l0 -9" />
+  <path d="M18 18l0 -12" /></symbol><symbol id="ic-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0" />
+  <path d="M5 12l6 6" />
+  <path d="M5 12l6 -6" /></symbol><symbol id="ic-arrows-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4 -4l4 4m-4 -4v14" />
+  <path d="M21 15l-4 4l-4 -4m4 4v-14" /></symbol><symbol id="ic-basket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+  <path d="M5.001 8h13.999a2 2 0 0 1 1.977 2.304l-1.255 7.152a3 3 0 0 1 -2.966 2.544h-9.512a3 3 0 0 1 -2.965 -2.544l-1.255 -7.152a2 2 0 0 1 1.977 -2.304z" />
+  <path d="M17 10l-2 -6" />
+  <path d="M7 10l2 -6" /></symbol><symbol id="ic-battery-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h11a2 2 0 0 1 2 2v.5a.5 .5 0 0 0 .5 .5a.5 .5 0 0 1 .5 .5v3a.5 .5 0 0 1 -.5 .5a.5 .5 0 0 0 -.5 .5v.5a2 2 0 0 1 -2 2h-11a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2" />
+  <path d="M7 10l0 4" />
+  <path d="M10 10l0 4" />
+  <path d="M13 10l0 4" /></symbol><symbol id="ic-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+  <path d="M9 17v1a3 3 0 0 0 6 0v-1" /></symbol><symbol id="ic-book-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12z" />
+  <path d="M19 16h-12a2 2 0 0 0 -2 2" />
+  <path d="M9 8h6" /></symbol><symbol id="ic-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z" /></symbol><symbol id="ic-bookmark-filled" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M14 2a5 5 0 0 1 5 5v14a1 1 0 0 1 -1.555 .832l-5.445 -3.63l-5.444 3.63a1 1 0 0 1 -1.55 -.72l-.006 -.112v-14a5 5 0 0 1 5 -5h4z" /></symbol><symbol id="ic-bowl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16a1 1 0 0 1 1 1v.5c0 1.5 -2.517 5.573 -4 6.5v1a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-1c-1.687 -1.054 -4 -5 -4 -6.5v-.5a1 1 0 0 1 1 -1z" /></symbol><symbol id="ic-brand-apple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.286 7.008c-3.216 0 -4.286 3.23 -4.286 5.92c0 3.229 2.143 8.072 4.286 8.072c1.165 -.05 1.799 -.538 3.214 -.538c1.406 0 1.607 .538 3.214 .538s4.286 -3.229 4.286 -5.381c-.03 -.011 -2.649 -.434 -2.679 -3.23c-.02 -2.335 2.589 -3.179 2.679 -3.228c-1.096 -1.606 -3.162 -2.113 -3.75 -2.153c-1.535 -.12 -3.032 1.077 -3.75 1.077c-.729 0 -2.036 -1.077 -3.214 -1.077z" />
+  <path d="M12 4a2 2 0 0 0 2 -2a2 2 0 0 0 -2 2" /></symbol><symbol id="ic-brand-google" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.945 11a9 9 0 1 1 -3.284 -5.997l-2.655 2.392a5.5 5.5 0 1 0 2.119 6.605h-4.125v-3h7.945z" /></symbol><symbol id="ic-cake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18v-8a3 3 0 0 0 -3 -3h-12a3 3 0 0 0 -3 3v8z" />
+  <path d="M3 14.803c.312 .135 .654 .204 1 .197a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1c.35 .007 .692 -.062 1 -.197" />
+  <path d="M12 4l1.465 1.638a2 2 0 1 1 -3.015 .099l1.55 -1.737z" /></symbol><symbol id="ic-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" />
+  <path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /></symbol><symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l10 -10" /></symbol><symbol id="ic-checkup-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+  <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+  <path d="M9 14h.01" />
+  <path d="M9 17h.01" />
+  <path d="M12 16l1 1l3 -3" /></symbol><symbol id="ic-chef-hat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1.918 0 3.52 1.35 3.91 3.151a4 4 0 0 1 2.09 7.723l0 7.126h-12v-7.126a4 4 0 1 1 2.092 -7.723a4 4 0 0 1 3.908 -3.151z" />
+  <path d="M6.161 17.009l11.839 -.009" /></symbol><symbol id="ic-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6l6 -6" /></symbol><symbol id="ic-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6l-6 6" /></symbol><symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+  <path d="M12 7v5l3 3" /></symbol><symbol id="ic-clock-hour-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+  <path d="M12 12l3 2" />
+  <path d="M12 7v5" /></symbol><symbol id="ic-cookie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" />
+  <path d="M8 13v.01" />
+  <path d="M12 17v.01" />
+  <path d="M12 12v.01" />
+  <path d="M16 14v.01" />
+  <path d="M11 8v.01" />
+  <path d="M13.148 3.476l2.667 1.104a4 4 0 0 0 4.656 6.14l.053 .132a3 3 0 0 1 0 2.296q -.745 1.18 -1.024 1.852q -.283 .684 -.66 2.216a3 3 0 0 1 -1.624 1.623q -1.572 .394 -2.216 .661q -.712 .295 -1.852 1.024a3 3 0 0 1 -2.296 0q -1.203 -.754 -1.852 -1.024q -.707 -.292 -2.216 -.66a3 3 0 0 1 -1.623 -1.624q -.397 -1.577 -.661 -2.216q -.298 -.718 -1.024 -1.852a3 3 0 0 1 0 -2.296q .719 -1.116 1.024 -1.852q .257 -.62 .66 -2.216a3 3 0 0 1 1.624 -1.623q 1.547 -.384 2.216 -.661q .687 -.285 1.852 -1.024a3 3 0 0 1 2.296 0" /></symbol><symbol id="ic-dots-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+  <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+  <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></symbol><symbol id="ic-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+  <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+  <path d="M16 5l3 3" /></symbol><symbol id="ic-egg-fried" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+  <path d="M14 3a5 5 0 0 1 4.872 6.13a3 3 0 0 1 .178 5.681a3 3 0 1 1 -4.684 3.626a5 5 0 1 1 -8.662 -5a5 5 0 1 1 4.645 -8.856a4.982 4.982 0 0 1 3.651 -1.585z" /></symbol><symbol id="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></symbol><symbol id="ic-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a5 5 0 0 1 7 0a5 5 0 0 0 7 0v9a5 5 0 0 1 -7 0a5 5 0 0 0 -7 0v-9z" />
+  <path d="M5 21v-7" /></symbol><symbol id="ic-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10.941c2.333 -3.308 .167 -7.823 -1 -8.941c0 3.395 -2.235 5.299 -3.667 6.706c-1.43 1.408 -2.333 3.621 -2.333 5.588c0 3.704 3.134 6.706 7 6.706s7 -3.002 7 -6.706c0 -1.712 -1.232 -4.403 -2.333 -5.588c-2.084 3.353 -3.257 3.353 -4.667 2.235" /></symbol><symbol id="ic-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></symbol><symbol id="ic-heart-filled" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" /></symbol><symbol id="ic-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></symbol><symbol id="ic-home-filled" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.707 2.293l9 9c.63 .63 .184 1.707 -.707 1.707h-1v6a3 3 0 0 1 -3 3h-1v-7a3 3 0 0 0 -2.824 -2.995l-.176 -.005h-2a3 3 0 0 0 -3 3v7h-1a3 3 0 0 1 -3 -3v-6h-1c-.89 0 -1.337 -1.077 -.707 -1.707l9 -9a1 1 0 0 1 1.414 0m.293 11.707a1 1 0 0 1 1 1v7h-4v-7a1 1 0 0 1 .883 -.993l.117 -.007z" /></symbol><symbol id="ic-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.555 3.843l3.602 3.602a2.877 2.877 0 0 1 0 4.069l-2.643 2.643a2.877 2.877 0 0 1 -4.069 0l-.301 -.301l-6.558 6.558a2 2 0 0 1 -1.239 .578l-.175 .008h-1.172a1 1 0 0 1 -.993 -.883l-.007 -.117v-1.172a2 2 0 0 1 .467 -1.284l.119 -.13l.414 -.414h2v-2h2v-2l2.144 -2.144l-.301 -.301a2.877 2.877 0 0 1 0 -4.069l2.643 -2.643a2.877 2.877 0 0 1 4.069 0z" />
+  <path d="M15 9h.01" /></symbol><symbol id="ic-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c.5 -4.5 2.5 -8 7 -10" />
+  <path d="M9 18c6.218 0 10.5 -3.288 11 -12v-2h-4.014c-9 0 -11.986 4 -12 9c0 1 0 3 2 5h3z" /></symbol><symbol id="ic-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6 -6" />
+  <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
+  <path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" /></symbol><symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" />
+  <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+  <path d="M8 11v-4a4 4 0 1 1 8 0v4" /></symbol><symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+  <path d="M3 7l9 6l9 -6" /></symbol><symbol id="ic-mail-forward" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" />
+  <path d="M3 6l9 6l9 -6" />
+  <path d="M15 18h6" />
+  <path d="M18 15l3 3l-3 3" /></symbol><symbol id="ic-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0" /></symbol><symbol id="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></symbol><symbol id="ic-photo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8h.01" />
+  <path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" />
+  <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" />
+  <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" /></symbol><symbol id="ic-player-pause-filled" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" />
+  <path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" /></symbol><symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l0 14" />
+  <path d="M5 12l14 0" /></symbol><symbol id="ic-rotate-clockwise" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" /></symbol><symbol id="ic-salad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16a1 1 0 0 1 1 1v.5c0 1.5 -2.517 5.573 -4 6.5v1a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-1c-1.687 -1.054 -4 -5 -4 -6.5v-.5a1 1 0 0 1 1 -1z" />
+  <path d="M18.5 11c.351 -1.017 .426 -2.236 .5 -3.714v-1.286h-2.256c-2.83 0 -4.616 .804 -5.64 2.076" />
+  <path d="M5.255 11.008a12.204 12.204 0 0 1 -.255 -2.008v-1h1.755c.98 0 1.801 .124 2.479 .35" />
+  <path d="M8 8l1 -4l4 2.5" />
+  <path d="M13 11v-.5a2.5 2.5 0 1 0 -5 0v.5" /></symbol><symbol id="ic-scan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7v-1a2 2 0 0 1 2 -2h2" />
+  <path d="M4 17v1a2 2 0 0 0 2 2h2" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v1" />
+  <path d="M16 20h2a2 2 0 0 0 2 -2v-1" />
+  <path d="M5 12l14 0" /></symbol><symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+  <path d="M21 21l-6 -6" /></symbol><symbol id="ic-share-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1" />
+  <path d="M12 14v-11" />
+  <path d="M9 6l3 -3l3 3" /></symbol><symbol id="ic-shield-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+  <path d="M12 11m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+  <path d="M12 12l0 2.5" /></symbol><symbol id="ic-shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+  <path d="M17 17h-11v-14h-2" />
+  <path d="M6 5l14 1l-1 7h-13" /></symbol><symbol id="ic-soup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16a1 1 0 0 1 1 1v.5c0 1.5 -2.517 5.573 -4 6.5v1a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1v-1c-1.687 -1.054 -4 -5 -4 -6.5v-.5a1 1 0 0 1 1 -1z" />
+  <path d="M12 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2" />
+  <path d="M16 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2" />
+  <path d="M8 4a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2" /></symbol><symbol id="ic-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z" /></symbol><symbol id="ic-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></symbol><symbol id="ic-star-filled" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></symbol><symbol id="ic-tools-kitchen-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12zm0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3" /></symbol><symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></symbol><symbol id="ic-user-filled" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
+  <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></symbol><symbol id="ic-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+  <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="ic-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18l.01 0" />
+  <path d="M9.172 15.172a4 4 0 0 1 5.656 0" />
+  <path d="M6.343 12.343a8 8 0 0 1 11.314 0" />
+  <path d="M3.515 9.515c4.686 -4.687 12.284 -4.687 17 0" /></symbol><symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6l-12 12" />
+  <path d="M6 6l12 12" /></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="i-curry" viewBox="0 0 64 64">
+  <path d="M23 15c0-3 3-3 3-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".38"/>
+  <path d="M32 13c0-3 3-3 3-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".38"/>
+  <path d="M41 15c0-3 3-3 3-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".38"/>
+  <ellipse cx="32" cy="28" rx="18" ry="5.5" fill="var(--ill2,currentColor)"/>
+  <circle cx="25" cy="26" r="2.6" fill="currentColor" opacity=".5"/>
+  <circle cx="36" cy="27" r="2.1" fill="currentColor" opacity=".5"/>
+  <rect x="6" y="27" width="52" height="6" rx="3" fill="currentColor"/>
+  <path d="M10 33h44a22 22 0 0 1-44 0z" fill="currentColor" opacity=".82"/>
+</symbol>
+<symbol id="i-salad" viewBox="0 0 64 64">
+  <circle cx="20" cy="23" r="7.5" fill="var(--ill2,currentColor)"/>
+  <circle cx="33" cy="19" r="8.5" fill="currentColor" opacity=".5"/>
+  <circle cx="45" cy="24" r="6.5" fill="var(--ill2,currentColor)"/>
+  <rect x="5" y="27" width="54" height="6" rx="3" fill="currentColor"/>
+  <path d="M9 33h46c0 12-10 20-23 20S9 45 9 33z" fill="currentColor" opacity=".85"/>
+</symbol>
+<symbol id="i-egg" viewBox="0 0 64 64">
+  <path d="M20 21c8-9 25-8 29 2s3 21-8 25-26 1-29-9 0-9 8-18z" fill="var(--ill2,currentColor)"/>
+  <circle cx="30" cy="31" r="9.5" fill="currentColor"/>
+  <circle cx="27" cy="28" r="3" fill="#fff" opacity=".3"/>
+</symbol>
+<symbol id="i-drink" viewBox="0 0 64 64">
+  <rect x="37" y="6" width="4" height="18" rx="2" transform="rotate(16 39 15)" fill="currentColor" opacity=".45"/>
+  <path d="M19 17h26l-4 33a5 5 0 0 1-5 4h-8a5 5 0 0 1-5-4z" fill="var(--ill2,currentColor)"/>
+  <path d="M21 27h22l-3 23a5 5 0 0 1-5 4h-6a5 5 0 0 1-5-4z" fill="currentColor" opacity=".9"/>
+  <circle cx="45" cy="20" r="5.5" fill="currentColor" opacity=".45"/>
+</symbol>
+<symbol id="i-cake" viewBox="0 0 64 64">
+  <circle cx="32" cy="13" r="4" fill="currentColor"/>
+  <path d="M12 27c0-6 9-11 20-11s20 5 20 11z" fill="var(--ill2,currentColor)"/>
+  <rect x="12" y="27" width="40" height="8" fill="currentColor" opacity=".72"/>
+  <rect x="12" y="35" width="40" height="9" fill="var(--ill2,currentColor)"/>
+  <rect x="12" y="44" width="40" height="8" rx="2" fill="currentColor"/>
+</symbol>
+<symbol id="i-soup" viewBox="0 0 64 64">
+  <rect x="45" y="10" width="4" height="22" rx="2" transform="rotate(18 47 21)" fill="currentColor" opacity=".45"/>
+  <ellipse cx="52" cy="12" rx="5" ry="7" transform="rotate(18 52 12)" fill="currentColor" opacity=".45"/>
+  <path d="M24 16c0-3 3-3 3-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".38"/>
+  <path d="M33 14c0-3 3-3 3-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".38"/>
+  <ellipse cx="30" cy="30" rx="19" ry="5" fill="var(--ill2,currentColor)"/>
+  <rect x="4" y="29" width="52" height="6" rx="3" fill="currentColor"/>
+  <path d="M8 35h44c0 11-10 18-22 18S8 46 8 35z" fill="currentColor" opacity=".82"/>
+</symbol>
+<symbol id="i-snack" viewBox="0 0 64 64">
+  <path d="M32 11l23 40H9z" fill="currentColor" opacity=".9"/>
+  <path d="M32 11L20 51h24z" fill="var(--ill2,currentColor)"/>
+  <circle cx="24" cy="42" r="2.2" fill="var(--ill2,currentColor)"/>
+  <circle cx="42" cy="40" r="2.2" fill="var(--ill2,currentColor)"/>
+  <circle cx="33" cy="46" r="2.2" fill="currentColor" opacity=".55"/>
+</symbol>
+<symbol id="i-grain" viewBox="0 0 64 64">
+  <rect x="39" y="5" width="3.4" height="26" rx="1.7" transform="rotate(15 41 18)" fill="currentColor" opacity=".45"/>
+  <rect x="46" y="5" width="3.4" height="26" rx="1.7" transform="rotate(22 48 18)" fill="currentColor" opacity=".45"/>
+  <path d="M14 32c0-9 8-14 18-14s18 5 18 14z" fill="var(--ill2,currentColor)"/>
+  <rect x="7" y="31" width="50" height="6" rx="3" fill="currentColor"/>
+  <path d="M11 37h42c0 11-9 18-21 18s-21-7-21-18z" fill="currentColor" opacity=".85"/>
+</symbol>
+</defs>
+</svg>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="g-tomato" viewBox="0 0 40 40"><circle cx="20" cy="23" r="14" fill="#E8483C"/><ellipse cx="15" cy="18" rx="4" ry="3" fill="#FF7A6E" opacity=".6"/><path d="M20 9v3M20 9l-6-2 3 4M20 9l6-2-3 4" stroke="#3E8E4C" stroke-width="2.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="g-onion" viewBox="0 0 40 40"><path d="M20 10c7 0 12 7 12 14 0 5-5 8-12 8S8 29 8 24c0-7 5-14 12-14z" fill="#B98BD6"/><path d="M20 10c2 5 2 17 0 22M14 13c-1 6-1 14 1 19M26 13c1 6 1 14-1 19" stroke="#7E4FA0" stroke-width="1.6" fill="none" opacity=".65"/><path d="M20 10l-3-5M20 10l3-5" stroke="#8FBA6E" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="g-potato" viewBox="0 0 40 40"><ellipse cx="20" cy="21" rx="15" ry="11" transform="rotate(-12 20 21)" fill="#C99A5B"/><circle cx="14" cy="18" r="1.7" fill="#8E6534"/><circle cx="23" cy="16" r="1.4" fill="#8E6534"/><circle cx="26" cy="24" r="1.6" fill="#8E6534"/><circle cx="17" cy="25" r="1.3" fill="#8E6534"/></symbol>
+<symbol id="g-spinach" viewBox="0 0 40 40"><path d="M20 33c0-10 6-16 15-16 0 10-6 16-15 16z" fill="#57A85F"/><path d="M20 33c0-10-6-16-15-16 0 10 6 16 15 16z" fill="#7DC583"/><path d="M20 33V17" stroke="#3E8E4C" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="g-paneer" viewBox="0 0 40 40"><path d="M8 16l12-6 12 6-12 6z" fill="#FFF6E3"/><path d="M8 16v9l12 6v-9z" fill="#F2E3C4"/><path d="M32 16v9l-12 6v-9z" fill="#E6D3AE"/></symbol>
+<symbol id="g-chilli" viewBox="0 0 40 40"><path d="M24 10c5 3 7 11 3 17s-12 7-16 3c6 1 10-2 11-7s-1-10 2-13z" fill="#D93B46"/><path d="M24 10l-4-4M24 10l5-1" stroke="#4E9B57" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="g-garlic" viewBox="0 0 40 40"><path d="M20 12c6 0 11 8 11 13 0 4-5 6-11 6S9 29 9 25c0-5 5-13 11-13z" fill="#F4EEE2"/><path d="M20 12v19M14 16c-2 5-2 11-1 15M26 16c2 5 2 11 1 15" stroke="#CBBFA6" stroke-width="1.6" fill="none"/><path d="M20 12c0-3 1-5 2-6-2 0-3 2-4 4" fill="#B9AC90"/></symbol>
+<symbol id="g-lemon" viewBox="0 0 40 40"><ellipse cx="20" cy="21" rx="14" ry="10" transform="rotate(-18 20 21)" fill="#F2C64B"/><ellipse cx="15" cy="17" rx="4" ry="2.4" transform="rotate(-18 15 17)" fill="#FBE49A" opacity=".7"/><path d="M32 13l3-3" stroke="#7DA84F" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="g-carrot" viewBox="0 0 40 40"><path d="M20 34L11 16c4-4 14-4 18 0z" fill="#E8853C"/><path d="M15 20h10M16.5 25h7" stroke="#C56A24" stroke-width="1.6" stroke-linecap="round"/><path d="M20 14V7M20 12l-6-4M20 12l6-4" stroke="#57A85F" stroke-width="2.6" stroke-linecap="round"/></symbol>
+<symbol id="g-ginger" viewBox="0 0 40 40"><path d="M12 26c-3-5 0-11 5-12 3-1 4 2 7 1s6 1 6 5-3 6-6 6-4 3-7 3-4-1-5-3z" fill="#D8B383"/><path d="M17 14c1-3 3-5 5-4M27 20c3-1 5 0 5 2" stroke="#B08E5D" stroke-width="2.2" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="g-rice" viewBox="0 0 40 40"><path d="M7 24h26c0 6-6 10-13 10S7 30 7 24z" fill="#DDD6CF"/><path d="M9 24c0-6 5-9 11-9s11 3 11 9z" fill="#FFFDF7"/><ellipse cx="15" cy="19" rx="2.6" ry="1.4" transform="rotate(-25 15 19)" fill="#EDE6D8"/><ellipse cx="22" cy="17" rx="2.6" ry="1.4" transform="rotate(15 22 17)" fill="#EDE6D8"/><ellipse cx="26" cy="21" rx="2.6" ry="1.4" transform="rotate(-10 26 21)" fill="#EDE6D8"/></symbol>
+<symbol id="g-dal" viewBox="0 0 40 40"><path d="M7 22h26c0 7-6 12-13 12S7 29 7 22z" fill="#E8C56A"/><rect x="5" y="19" width="30" height="4" rx="2" fill="#D9A93F"/><circle cx="14" cy="16" r="2.4" fill="#F0D68F"/><circle cx="21" cy="14" r="2.4" fill="#F0D68F"/><circle cx="27" cy="17" r="2.4" fill="#F0D68F"/></symbol>
+<symbol id="g-mango" viewBox="0 0 40 40"><path d="M25 9c6 3 8 12 4 19s-13 8-17 3 0-14 5-18c3-3 6-5 8-4z" fill="#F0A93B"/><path d="M22 13c-4 2-7 7-7 12" stroke="#FBD08A" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".8"/><path d="M25 9l2-4" stroke="#57A85F" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="g-banana" viewBox="0 0 40 40"><path d="M9 13c1 12 8 19 20 19 3 0 4-3 1-4-9-1-14-6-15-15-1-3-6-3-6 0z" fill="#F2CB4B"/><path d="M11 15c2 9 8 14 17 15" stroke="#D9A93F" stroke-width="1.8" fill="none" opacity=".8"/></symbol>
+<symbol id="g-apple" viewBox="0 0 40 40"><path d="M20 13c4-3 11-1 12 6s-5 14-9 14c-2 0-2-1-3-1s-1 1-3 1c-4 0-11-7-9-14s8-9 12-6z" fill="#E8483C"/><ellipse cx="15" cy="19" rx="3" ry="4" transform="rotate(-20 15 19)" fill="#FF7A6E" opacity=".55"/><path d="M20 13V8" stroke="#8E6534" stroke-width="2.2" stroke-linecap="round"/><path d="M20 10c3-3 6-3 7-1-2 2-5 3-7 1z" fill="#57A85F"/></symbol>
+<symbol id="g-orange" viewBox="0 0 40 40"><circle cx="20" cy="22" r="13" fill="#F08B3B"/><path d="M20 9v26M9 22h22M11 14l18 16M29 14L11 30" stroke="#D9762A" stroke-width="1.2" opacity=".45"/><path d="M20 9l4-4" stroke="#57A85F" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="g-juice" viewBox="0 0 40 40"><path d="M12 10h16l-2 22a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3z" fill="#FBE4C4"/><path d="M13 17h14l-1.6 15a3 3 0 0 1-3 3h-4.8a3 3 0 0 1-3-3z" fill="#F08B3B"/><rect x="24" y="4" width="3" height="12" rx="1.5" transform="rotate(14 25 10)" fill="#E8483C"/><circle cx="29" cy="12" r="4" fill="#F2C64B"/></symbol>
+<symbol id="g-lassi" viewBox="0 0 40 40"><path d="M13 8h14v25a3 3 0 0 1-3 3h-8a3 3 0 0 1-3-3z" fill="#F4F1EE"/><path d="M14 15h12v18a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3z" fill="#FFF9EC"/><ellipse cx="20" cy="8" rx="7" ry="2.4" fill="#E6DFD6"/><path d="M25 8c2-3 5-4 6-3-1 3-3 4-6 3z" fill="#57A85F"/></symbol>
+<symbol id="g-oil" viewBox="0 0 40 40"><rect x="15" y="4" width="6" height="6" rx="1.6" fill="#8E6534"/><path d="M13 12h12c3 0 5 3 5 6v14a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4V18c0-3 1-6 1-6z" fill="#E8C56A"/><path d="M15 20h10v12H15z" fill="#F2E3B0" opacity=".7"/></symbol>
+<symbol id="g-spice" viewBox="0 0 40 40"><path d="M9 26h22c0 5-5 8-11 8S9 31 9 26z" fill="#D9A93F"/><path d="M12 26c0-5 4-8 8-8s8 3 8 8z" fill="#F0B84E"/><circle cx="16" cy="14" r="1.6" fill="#C97F2A"/><circle cx="23" cy="12" r="1.6" fill="#C97F2A"/><circle cx="20" cy="16" r="1.4" fill="#C97F2A"/></symbol>
+<symbol id="g-salt" viewBox="0 0 40 40"><path d="M14 14h12l2 18a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3z" fill="#EFECE7"/><path d="M14 8h12v6H14z" fill="#BFC5C9"/><circle cx="18" cy="10" r="1" fill="#7B848A"/><circle cx="22" cy="11" r="1" fill="#7B848A"/><circle cx="20" cy="8.5" r="1" fill="#7B848A"/></symbol>
+<symbol id="g-besan" viewBox="0 0 40 40"><path d="M8 25h24c0 6-5 9-12 9S8 31 8 25z" fill="#E0D3B0"/><path d="M11 25c0-6 4-10 9-10s9 4 9 10z" fill="#F2E3B0"/><circle cx="17" cy="20" r="1.3" fill="#CBBB8C"/><circle cx="22" cy="19" r="1.3" fill="#CBBB8C"/></symbol>
+<symbol id="g-cream" viewBox="0 0 40 40"><path d="M14 6h12v5l4 6v14a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V17l4-6z" fill="#EFF3F5"/><path d="M11 20h18v9H11z" fill="#DCE5EA"/><rect x="14" y="4" width="12" height="3" rx="1.5" fill="#9FB0BA"/></symbol>
+
+<symbol id="g-powder" viewBox="0 0 40 40"><path d="M7 27h26c0 5-5 8-13 8S7 32 7 27z" fill="var(--p2,#D9A93F)"/><path d="M11 27c0-6 4-10 9-10s9 4 9 10z" fill="var(--p1,#F0B84E)"/><circle cx="16" cy="21" r="1.5" fill="var(--p2,#D9A93F)"/><circle cx="23" cy="20" r="1.5" fill="var(--p2,#D9A93F)"/><circle cx="20" cy="24" r="1.3" fill="var(--p2,#D9A93F)"/></symbol>
+<symbol id="g-seeds" viewBox="0 0 40 40"><ellipse cx="13" cy="16" rx="3.4" ry="2" transform="rotate(-28 13 16)" fill="var(--p1,#B98B5A)"/><ellipse cx="22" cy="13" rx="3.4" ry="2" transform="rotate(14 22 13)" fill="var(--p1,#B98B5A)"/><ellipse cx="28" cy="19" rx="3.4" ry="2" transform="rotate(-12 28 19)" fill="var(--p2,#8E6534)"/><ellipse cx="16" cy="23" rx="3.4" ry="2" transform="rotate(20 16 23)" fill="var(--p2,#8E6534)"/><ellipse cx="24" cy="27" rx="3.4" ry="2" transform="rotate(-22 24 27)" fill="var(--p1,#B98B5A)"/><ellipse cx="12" cy="30" rx="3.4" ry="2" transform="rotate(8 12 30)" fill="var(--p2,#8E6534)"/><ellipse cx="31" cy="29" rx="3.4" ry="2" transform="rotate(30 31 29)" fill="var(--p1,#B98B5A)"/></symbol>
+<symbol id="g-sprig" viewBox="0 0 40 40"><path d="M20 35V11" stroke="var(--p2,#3E7A44)" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="13" cy="17" rx="6" ry="3.6" transform="rotate(-32 13 17)" fill="var(--p1,#57A85F)"/><ellipse cx="27" cy="17" rx="6" ry="3.6" transform="rotate(32 27 17)" fill="var(--p1,#57A85F)"/><ellipse cx="13" cy="26" rx="6" ry="3.6" transform="rotate(-32 13 26)" fill="var(--p2,#3E7A44)"/><ellipse cx="27" cy="26" rx="6" ry="3.6" transform="rotate(32 27 26)" fill="var(--p2,#3E7A44)"/><ellipse cx="20" cy="11" rx="4.4" ry="3.2" fill="var(--p1,#57A85F)"/></symbol>
+<symbol id="g-coconut" viewBox="0 0 40 40"><circle cx="20" cy="21" r="14" fill="#8E6534"/><path d="M20 7a14 14 0 0 1 0 28 9 14 0 0 0 0-28z" fill="#6B4A26"/><ellipse cx="20" cy="21" rx="8.5" ry="9" fill="#FFF9EC"/><circle cx="16" cy="14" r="1.5" fill="#4E3419"/><circle cx="21" cy="12.5" r="1.5" fill="#4E3419"/></symbol>
+<symbol id="g-ghee" viewBox="0 0 40 40"><rect x="12" y="6" width="16" height="4" rx="2" fill="#C99A5B"/><path d="M11 11h18v20a4 4 0 0 1-4 4H15a4 4 0 0 1-4-4z" fill="#F7EFE0"/><path d="M13 19h14v12a3 3 0 0 1-3 3h-8a3 3 0 0 1-3-3z" fill="#F0B84E"/></symbol>
+<symbol id="g-curd" viewBox="0 0 40 40"><path d="M8 24h24c0 7-5 11-12 11S8 31 8 24z" fill="#E6DFD6"/><rect x="6" y="21" width="28" height="5" rx="2.5" fill="#F4F1EE"/><ellipse cx="20" cy="21" rx="12" ry="4" fill="#FFFDF9"/></symbol>
+<symbol id="g-cinnamon" viewBox="0 0 40 40"><rect x="9" y="12" width="9" height="24" rx="4.5" transform="rotate(-9 13 24)" fill="#9A5C2C"/><rect x="21" y="9" width="9" height="24" rx="4.5" transform="rotate(9 25 21)" fill="#B4703A"/><path d="M13 14c0 8 0 14 0 20M26 11c0 8 0 14 0 20" stroke="#7A431C" stroke-width="1.4" opacity=".55"/></symbol>
+<symbol id="g-cardamom" viewBox="0 0 40 40"><ellipse cx="15" cy="23" rx="6" ry="9" transform="rotate(-16 15 23)" fill="#A8C88E"/><ellipse cx="26" cy="20" rx="5.4" ry="8" transform="rotate(14 26 20)" fill="#8FBA6E"/><path d="M15 14v-4M26 12v-4" stroke="#5E7F42" stroke-width="2" stroke-linecap="round"/><path d="M15 17v12M26 14v11" stroke="#5E7F42" stroke-width="1.2" opacity=".6"/></symbol>
+<symbol id="g-tamarind" viewBox="0 0 40 40"><path d="M9 12c8 2 13 9 15 17 1 4-3 6-6 4C11 29 8 21 8 14c0-2 1-2 1-2z" fill="#8E5A2E"/><circle cx="14" cy="18" r="2.4" fill="#5E3818"/><circle cx="19" cy="25" r="2.4" fill="#5E3818"/><path d="M26 10c4 4 6 10 5 16" stroke="#B4703A" stroke-width="2.6" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="g-jaggery" viewBox="0 0 40 40"><path d="M8 18l12-6 12 6-12 6z" fill="#C08040"/><path d="M8 18v10l12 6V24z" fill="#9A5C2C"/><path d="M32 18v10l-12 6V24z" fill="#7A431C"/></symbol>
+<symbol id="g-water" viewBox="0 0 40 40"><path d="M20 6c6 8 11 13 11 19a11 11 0 0 1-22 0c0-6 5-11 11-19z" fill="#83C2DC"/><path d="M20 6c6 8 11 13 11 19a11 11 0 0 1-11 11z" fill="#5AA6C6"/><ellipse cx="15" cy="24" rx="2.6" ry="4" transform="rotate(-18 15 24)" fill="#FFF" opacity=".45"/></symbol>
+<symbol id="g-bayleaf" viewBox="0 0 40 40"><path d="M10 30C10 17 18 8 31 7c1 13-8 22-21 23z" fill="#6B8F5A"/><path d="M10 30L31 7" stroke="#4A6B3C" stroke-width="1.8" stroke-linecap="round"/><path d="M16 25l6-8M20 27l7-9M13 22l5-7" stroke="#4A6B3C" stroke-width="1.1" opacity=".55"/></symbol>
+<symbol id="g-hing" viewBox="0 0 40 40"><rect x="11" y="9" width="18" height="26" rx="5" fill="#E8DCC4"/><rect x="13" y="17" width="14" height="16" rx="3" fill="#D9A93F"/><rect x="14" y="5" width="12" height="5" rx="2.5" fill="#B4703A"/></symbol>
+<symbol id="g-cheese" viewBox="0 0 40 40"><path d="M6 20l14-9 14 9v9a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z" fill="#F2C64B"/><path d="M6 20h28v3H6z" fill="#E0A92F"/><circle cx="14" cy="26" r="2.4" fill="#E0A92F"/><circle cx="25" cy="27" r="1.8" fill="#E0A92F"/></symbol>
+<symbol id="g-butter" viewBox="0 0 40 40"><path d="M7 22l9-7h17v10l-9 7H7z" fill="#F5D477"/><path d="M16 15v10H7l9-10z" fill="#FBE9AF"/><path d="M16 25h17l-9 7H7z" fill="#E0B94F"/></symbol>
+<symbol id="g-egg2" viewBox="0 0 40 40"><ellipse cx="15" cy="23" rx="9" ry="11.5" fill="#FFF6E3"/><ellipse cx="26" cy="26" rx="7.5" ry="9.5" fill="#F2E3C4"/></symbol>
+<symbol id="g-cauliflower" viewBox="0 0 40 40"><circle cx="20" cy="18" r="6.5" fill="#FFF9EC"/><circle cx="13" cy="21" r="5.5" fill="#F4EEE2"/><circle cx="27" cy="21" r="5.5" fill="#F4EEE2"/><circle cx="20" cy="25" r="5" fill="#FFF9EC"/><path d="M11 26c2 5 5 8 9 8s7-3 9-8z" fill="#8FBA6E"/></symbol>
+<symbol id="g-mushroom" viewBox="0 0 40 40"><path d="M7 21c0-8 6-13 13-13s13 5 13 13z" fill="#B98B5A"/><path d="M16 21h8v9a4 4 0 0 1-8 0z" fill="#F0E4D0"/></symbol>
+</defs></svg>
+
+<div class="jump"><div class="jump-in"><b>Kit 05 · House Blend</b>
+<a href="#tokens">Tokens</a><a href="#onboard">Onboarding</a><a href="#core">Core</a><a href="#cook">Cooking</a><a href="#contrib">Contribute</a><a href="#admin">Admin</a>
+<span class="toggle"><button id="bL" class="on">Light</button><button id="bD">Dark</button></span></div></div>
+<div class="wrap">
+<div class="cover">
+  <div class="eyebrow">Recipedia · UI Kit 05 — your blend</div>
+  <h1 class="kitname">House Blend</h1>
+  <p class="tagline">Type from Garnish. Splash and screens from Pantry. Dark theme from Ember. Food slots now carry two-tone illustrations instead of line icons, and every tint is a gradient. Toggle Light / Dark above — all 21 screens switch.</p>
+  <div class="principles"><span class="principle">Plus Jakarta Sans + Inter</span><span class="principle">Illustrated food slots</span><span class="principle">Gradient tints</span><span class="principle">Charcoal + gold at night</span></div>
+</div>
+<div class="sec" id="tokens"><div class="sec-h"><span class="sec-n">01</span><span class="sec-t">Illustrations</span></div>
+<p class="sec-d">Eight two-tone illustrations, one per category, drawn as SVG so they scale from a 28px list thumbnail to a full-width detail header without blurring. Each takes its colours from the tile it sits in, so the set restyles itself in dark mode instead of needing a second set.</p>
+<div class="illrow"><div class="illcell t1"><svg><use href="#i-curry"/></svg></div><div class="illcell t2"><svg><use href="#i-salad"/></svg></div><div class="illcell t3"><svg><use href="#i-egg"/></svg></div><div class="illcell t4"><svg><use href="#i-drink"/></svg></div><div class="illcell t5"><svg><use href="#i-cake"/></svg></div><div class="illcell t6"><svg><use href="#i-grain"/></svg></div><div class="illcell t7"><svg><use href="#i-snack"/></svg></div><div class="illcell t8"><svg><use href="#i-soup"/></svg></div></div>
+<p class="sec-d" style="margin-top:6px">And 41 coloured ingredient illustrations — fruit, vegetables, dairy, spices and drinks — used in pantry chips, ingredient lists and the shopping list. The powders, seeds and leaf sprigs are each ONE drawing recoloured — that is how 157 real ingredients reduce to about 35 shapes to draw.</p>
+<div class="ingrow"><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#F0B84E;--p2:#D08A1E"><use href="#g-powder"/></svg><div>Turmeric</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#E06A5A;--p2:#B8362A"><use href="#g-powder"/></svg><div>Chilli pwd</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#C4B37A;--p2:#8E7C42"><use href="#g-powder"/></svg><div>Coriander pwd</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#C09A6E;--p2:#8E6534"><use href="#g-powder"/></svg><div>Cumin pwd</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#96684A;--p2:#5E3A24"><use href="#g-powder"/></svg><div>Garam masala</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#B98B5A;--p2:#8E6534"><use href="#g-seeds"/></svg><div>Cumin seeds</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#7A6A3A;--p2:#4E4222"><use href="#g-seeds"/></svg><div>Mustard seeds</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#D6C79A;--p2:#A89463"><use href="#g-seeds"/></svg><div>Coriander sd</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#A8BE7E;--p2:#75904E"><use href="#g-seeds"/></svg><div>Fennel</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#3E7A44;--p2:#2A5C30"><use href="#g-sprig"/></svg><div>Curry leaves</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#6FBF6C;--p2:#47954C"><use href="#g-sprig"/></svg><div>Coriander</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style="--p1:#5FC29A;--p2:#3A8E70"><use href="#g-sprig"/></svg><div>Mint</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-tomato"/></svg><div>Tomato</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-onion"/></svg><div>Onion</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-potato"/></svg><div>Potato</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-spinach"/></svg><div>Spinach</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-garlic"/></svg><div>Garlic</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-ginger"/></svg><div>Ginger</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-chilli"/></svg><div>Green chilli</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-carrot"/></svg><div>Carrot</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-cauliflower"/></svg><div>Cauliflower</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-mushroom"/></svg><div>Mushroom</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-coconut"/></svg><div>Coconut</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-tamarind"/></svg><div>Tamarind</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-cinnamon"/></svg><div>Cinnamon</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-cardamom"/></svg><div>Cardamom</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-bayleaf"/></svg><div>Bay leaf</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-hing"/></svg><div>Asafoetida</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-salt"/></svg><div>Salt</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-oil"/></svg><div>Oil</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-ghee"/></svg><div>Ghee</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-jaggery"/></svg><div>Jaggery</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-curd"/></svg><div>Curd</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-cream"/></svg><div>Cream</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-paneer"/></svg><div>Paneer</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-cheese"/></svg><div>Cheese</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-butter"/></svg><div>Butter</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-egg2"/></svg><div>Egg</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-water"/></svg><div>Water</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-rice"/></svg><div>Rice</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-dal"/></svg><div>Dal</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-besan"/></svg><div>Besan</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-lemon"/></svg><div>Lemon</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-mango"/></svg><div>Mango</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-banana"/></svg><div>Banana</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-apple"/></svg><div>Apple</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-orange"/></svg><div>Orange</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-juice"/></svg><div>Juice</div></div><div class="ingcell"><svg viewBox="0 0 40 40" style=""><use href="#g-lassi"/></svg><div>Lassi</div></div></div>
+<div class="swatches"><div class="sw"><div class="sw-c" style="background:#FF4F5A"></div><div class="sw-m"><div class="sw-n">Brand</div><div class="sw-v">#FF4F5A</div></div></div><div class="sw"><div class="sw-c" style="background:#E8434F"></div><div class="sw-m"><div class="sw-n">Action</div><div class="sw-v">#E8434F</div></div></div><div class="sw"><div class="sw-c" style="background:#FDFCFB"></div><div class="sw-m"><div class="sw-n">Canvas</div><div class="sw-v">#FDFCFB</div></div></div><div class="sw"><div class="sw-c" style="background:#F4F1EE"></div><div class="sw-m"><div class="sw-n">Oat</div><div class="sw-v">#F4F1EE</div></div></div><div class="sw"><div class="sw-c" style="background:#22B894"></div><div class="sw-m"><div class="sw-n">Mint (light)</div><div class="sw-v">#22B894</div></div></div><div class="sw"><div class="sw-c" style="background:#E8B45C"></div><div class="sw-m"><div class="sw-n">Gold (dark)</div><div class="sw-v">#E8B45C</div></div></div><div class="sw"><div class="sw-c" style="background:#0D0D10"></div><div class="sw-m"><div class="sw-n">Night</div><div class="sw-v">#0D0D10</div></div></div><div class="sw"><div class="sw-c" style="background:#16161B"></div><div class="sw-m"><div class="sw-n">Panel</div><div class="sw-v">#16161B</div></div></div></div>
+<div class="note"><b style="color:#B4B4C0">Why illustrations rather than photos.</b> These are drawn, so there is no licensing question and nothing to load from a blocked host — and because they are vector and colour-inherited, one file covers light mode, dark mode and every size. They also make the empty state look intentional: a grid of illustrated tiles reads as a design decision, a grid of broken photo frames reads as a bug. When real photography arrives it drops into the same fixed-ratio slots and the illustrations become the fallback.<br><br>
+<b style="color:#B4B4C0">Still open:</b> the accent flips between modes — mint by day, gold by night. Toggle and see whether that reads as a signature or an inconsistency.</div>
+</div>
+<div class="sec" id="onboard"><div class="sec-h"><span class="sec-n">02</span><span class="sec-t">Onboarding</span></div>
+<p class="sec-d">Four screens, one job: get out of the way. The wordmark carries the brand moment so every form after it can be quiet.</p>
+<div class="screens">
+
+<div class="slot"><div class="slot-l">Splash<span>01</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr" style="background:var(--splash)">
+<div class="sbar" style="color:#fff"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body" style="align-items:center;justify-content:center;gap:16px">
+<div style="width:82px;height:82px;border-radius:26px;background:var(--onDark16);display:flex;align-items:center;justify-content:center;color:#fff"><svg class="ic" style="font-size:40px"><use href="#ic-chef-hat"/></svg></div>
+<div style="font-family:var(--disp);font-size:34px;font-weight:800;color:#fff;letter-spacing:-1.2px">Recipedia</div>
+<div style="font-size:13px;color:rgba(255,255,255,.82)">Cook what you already have</div>
+</div>
+<div style="padding:0 20px 34px;color:rgba(255,255,255,.5);font-size:11px;text-align:center">1032 recipes ready</div>
+</div></div></div></div>
+
+<div class="slot"><div class="slot-l">Log in<span>02</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:34px">
+<div class="k-h1">Welcome back</div><div class="k-sub" style="margin-top:6px">Log in to pick up where you left off.</div>
+<div style="margin-top:26px"><div class="k-eyebrow" style="margin-bottom:6px">Email</div><div class="k-in"><svg class="ic"><use href="#ic-mail"/></svg>you@email.com</div></div>
+<div style="margin-top:14px"><div class="k-eyebrow" style="margin-bottom:6px">Password</div><div class="k-in"><svg class="ic"><use href="#ic-lock"/></svg>••••••••<span style="margin-left:auto"><svg class="ic"><use href="#ic-eye"/></svg></span></div></div>
+<div style="text-align:right;margin-top:9px;font-size:12px;color:var(--onTint);font-weight:500">Forgot password?</div>
+<div style="margin-top:18px"><button class="k-btn">Log in</button></div>
+<div class="k-row" style="margin:20px 0;color:var(--tx3);font-size:11px"><div style="flex:1;height:1px;background:var(--bd)"></div>or<div style="flex:1;height:1px;background:var(--bd)"></div></div>
+<button class="k-btn g" style="margin-bottom:10px"><svg class="ic"><use href="#ic-brand-google"/></svg>Continue with Google</button>
+<button class="k-btn g"><svg class="ic"><use href="#ic-brand-apple"/></svg>Continue with Apple</button>
+<div style="text-align:center;margin-top:auto;padding-bottom:22px;font-size:12px;color:var(--tx2)">New here? <b style="color:var(--onTint)">Create account</b></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Welcome<span>03</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:18px">
+<div class="hero t1" style="height:182px">
+<div class="halo" style="width:132px;height:132px"></div><div class="halo" style="width:188px;height:188px;opacity:.55"></div>
+<svg class="heroill"><use href="#i-salad"/></svg>
+<div class="float" style="width:46px;height:46px;left:16px;top:24px;transform:rotate(-9deg)"><svg viewBox="0 0 40 40"><use href="#g-tomato"/></svg></div>
+<div class="float" style="width:42px;height:42px;right:18px;top:34px;transform:rotate(11deg)"><svg viewBox="0 0 40 40"><use href="#g-lemon"/></svg></div>
+<div class="float" style="width:44px;height:44px;right:32px;bottom:18px;transform:rotate(-6deg)"><svg viewBox="0 0 40 40"><use href="#g-chilli"/></svg></div>
+<div class="float" style="width:40px;height:40px;left:28px;bottom:22px;transform:rotate(8deg)"><svg viewBox="0 0 40 40"><use href="#g-carrot"/></svg></div>
+<div class="dot" style="width:7px;height:7px;left:88px;top:14px"></div><div class="dot" style="width:5px;height:5px;right:72px;bottom:12px"></div></div>
+<div class="k-h1" style="margin-top:22px">Cook what you<br>already have</div>
+<div class="k-sub" style="margin-top:8px;font-size:13px">Tell us what's in your kitchen. We'll show you what you can make right now — and what you're one ingredient away from.</div>
+<div style="margin-top:18px">
+<div class="k-row" style="gap:10px;margin-bottom:11px"><div style="width:30px;height:30px;border-radius:11px;background:var(--tint);color:var(--onTint);display:flex;align-items:center;justify-content:center;flex:none"><svg class="ic" style="font-size:15px"><use href="#ic-scan"/></svg></div><span style="font-size:12.5px">Scan your pantry in seconds</span></div>
+<div class="k-row" style="gap:10px;margin-bottom:11px"><div style="width:30px;height:30px;border-radius:11px;background:var(--acT);color:var(--onAc);display:flex;align-items:center;justify-content:center;flex:none"><svg class="ic" style="font-size:15px"><use href="#ic-book-2"/></svg></div><span style="font-size:12.5px">1032 recipes, ranked by what you own</span></div>
+<div class="k-row" style="gap:10px"><div style="width:30px;height:30px;border-radius:11px;background:var(--wn);color:var(--onWn);display:flex;align-items:center;justify-content:center;flex:none"><svg class="ic" style="font-size:15px"><use href="#ic-leaf"/></svg></div><span style="font-size:12.5px">Filtered for your diet and allergies</span></div></div>
+<div style="margin-top:auto;padding-bottom:16px"><button class="k-btn">Get started</button>
+<div style="text-align:center;margin-top:12px;font-size:12px;color:var(--tx2)">Already have an account? <b style="color:var(--onTint)">Log in</b></div></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Onboarding — account<span>04</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px">
+<div class="k-row" style="justify-content:space-between"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><span class="k-meta">Step 1 of 4</span></div>
+<div class="k-row" style="gap:5px;margin-top:14px"><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--sf2)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--sf2)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--sf2)"></div></div>
+<div class="k-h1" style="margin-top:22px">Create your account</div>
+<div class="k-sub" style="margin-top:6px">So your pantry and saved recipes follow you everywhere.</div>
+<div style="margin-top:22px"><div class="k-eyebrow" style="margin-bottom:6px">Name</div><div class="k-in"><svg class="ic"><use href="#ic-user"/></svg>Safin Mahesania</div></div>
+<div style="margin-top:14px"><div class="k-eyebrow" style="margin-bottom:6px">Email</div><div class="k-in"><svg class="ic"><use href="#ic-mail"/></svg>safin@example.com</div></div>
+<div style="margin-top:14px"><div class="k-eyebrow" style="margin-bottom:6px">Password</div><div class="k-in"><svg class="ic"><use href="#ic-lock"/></svg>••••••••<span style="margin-left:auto"><svg class="ic"><use href="#ic-eye"/></svg></span></div>
+<div class="k-row" style="gap:4px;margin-top:8px"><div style="flex:1;height:3px;border-radius:99px;background:var(--okFill)"></div><div style="flex:1;height:3px;border-radius:99px;background:var(--okFill)"></div><div style="flex:1;height:3px;border-radius:99px;background:var(--okFill)"></div><div style="flex:1;height:3px;border-radius:99px;background:var(--sf2)"></div></div>
+<div class="k-meta" style="margin-top:5px;color:var(--onOk)">Strong password</div></div>
+<div class="k-row" style="margin-top:16px;align-items:flex-start;gap:9px"><div style="width:18px;height:18px;border-radius:6px;background:var(--fill);display:flex;align-items:center;justify-content:center;color:#fff;flex:none"><svg class="ic" style="font-size:11px"><use href="#ic-check"/></svg></div><div class="k-sub">I agree to the Terms and Privacy Policy</div></div>
+<div style="margin-top:auto;padding-bottom:16px"><button class="k-btn">Continue</button></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Onboarding — verify<span>05</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px;align-items:center;text-align:center">
+<div class="k-row" style="justify-content:flex-start;width:100%"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div></div>
+<div style="margin-top:auto"></div>
+<div class="hero t2" style="width:100%;height:158px">
+<div class="halo" style="width:118px;height:118px"></div><div class="halo" style="width:170px;height:170px;opacity:.5"></div>
+<div class="float" style="width:104px;height:74px;border-radius:16px;transform:rotate(-5deg)"><svg class="ic" style="font-size:38px;color:var(--onAc)"><use href="#ic-mail"/></svg></div>
+<div class="float" style="width:38px;height:38px;right:44px;bottom:26px;transform:rotate(9deg);background:var(--okFill)"><svg class="ic" style="font-size:19px;color:#fff"><use href="#ic-check"/></svg></div>
+<div class="dot" style="width:6px;height:6px;left:52px;top:30px"></div><div class="dot" style="width:8px;height:8px;right:40px;top:24px"></div><div class="dot" style="width:5px;height:5px;left:64px;bottom:26px"></div></div>
+<div class="k-h1" style="margin-top:22px">Check your inbox</div>
+<div class="k-sub" style="margin-top:8px;font-size:13px">We sent a confirmation link to<br><b style="color:var(--tx)">safin@example.com</b>. Tap it and you're in.</div>
+<div class="k-card" style="padding:12px;margin-top:20px;width:100%;text-align:left"><div class="k-row" style="gap:9px">
+<svg class="ic" style="color:var(--onWn);font-size:17px"><use href="#ic-alert-circle"/></svg>
+<div class="k-sub">Nothing yet? Check spam, or resend in <b style="color:var(--tx)">0:42</b></div></div></div>
+<div style="width:100%;margin-top:16px"><button class="k-btn"><svg class="ic"><use href="#ic-mail"/></svg>Open mail app</button></div>
+<div style="margin-top:auto;padding-bottom:18px;font-size:12px;color:var(--tx2)">Wrong address? <b style="color:var(--onTint)">Change email</b></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Onboarding — diet<span>06</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px">
+<div class="k-row" style="justify-content:space-between"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><span class="k-meta">Step 2 of 4</span></div>
+<div class="k-row" style="gap:5px;margin-top:14px"><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--sf2)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--sf2)"></div></div>
+<div class="k-h1" style="margin-top:22px">How do you eat?</div>
+<div class="k-sub" style="margin-top:6px">We'll use this as your default filter. You can change it any time.</div>
+<div style="margin-top:20px">
+<div class="k-card" style="padding:13px;margin-bottom:10px;border:2px solid var(--br)"><div class="k-row">
+<div class="k-ph t6" style="width:44px;height:44px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-salad"/></svg></div>
+<div style="flex:1"><div class="k-t">Vegetarian</div><div class="k-meta" style="margin-top:2px">712 recipes</div></div>
+<div style="width:22px;height:22px;border-radius:50%;background:var(--fill);color:#fff;display:flex;align-items:center;justify-content:center"><svg class="ic" style="font-size:13px"><use href="#ic-check"/></svg></div></div></div>
+<div class="k-card" style="padding:13px;margin-bottom:10px"><div class="k-row">
+<div class="k-ph t2" style="width:44px;height:44px;flex:none"><svg class="ic" style="font-size:20px"><use href="#ic-leaf"/></svg></div>
+<div style="flex:1"><div class="k-t">Vegan</div><div class="k-meta" style="margin-top:2px">204 recipes</div></div>
+<div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--bd2)"></div></div></div>
+<div class="k-card" style="padding:13px;margin-bottom:10px"><div class="k-row">
+<div class="k-ph t7" style="width:44px;height:44px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-curry"/></svg></div>
+<div style="flex:1"><div class="k-t">Everything</div><div class="k-meta" style="margin-top:2px">1032 recipes</div></div>
+<div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--bd2)"></div></div></div>
+<div class="k-card" style="padding:13px"><div class="k-row">
+<div class="k-ph t3" style="width:44px;height:44px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-grain"/></svg></div>
+<div style="flex:1"><div class="k-t">Jain</div><div class="k-meta" style="margin-top:2px">148 recipes</div></div>
+<div style="width:22px;height:22px;border-radius:50%;border:2px solid var(--bd2)"></div></div></div></div>
+<div style="margin-top:auto;padding-bottom:16px"><button class="k-btn">Continue</button></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Onboarding — allergies<span>07</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px">
+<div class="k-row" style="justify-content:space-between"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><span class="k-meta">Step 3 of 4</span></div>
+<div class="k-row" style="gap:5px;margin-top:14px"><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--sf2)"></div></div>
+<div class="k-h1" style="margin-top:22px">Anything to avoid?</div>
+<div class="k-sub" style="margin-top:6px">We'll flag or hide recipes containing these. Skip if none apply.</div>
+<div class="k-in" style="margin-top:18px"><svg class="ic"><use href="#ic-search"/></svg>Search an ingredient…</div>
+<div class="k-row" style="flex-wrap:wrap;gap:8px;margin-top:14px">
+<span class="k-chip on" style="padding:8px 13px">Peanut <svg class="ic" style="font-size:11px"><use href="#ic-x"/></svg></span>
+<span class="k-chip on" style="padding:8px 13px">Shellfish <svg class="ic" style="font-size:11px"><use href="#ic-x"/></svg></span></div>
+<div class="k-eyebrow" style="margin-top:20px">Common</div>
+<div class="k-row" style="flex-wrap:wrap;gap:8px;margin-top:9px">
+<span class="k-chip" style="padding:8px 13px">Dairy</span><span class="k-chip" style="padding:8px 13px">Gluten</span>
+<span class="k-chip" style="padding:8px 13px">Egg</span><span class="k-chip" style="padding:8px 13px">Soy</span>
+<span class="k-chip" style="padding:8px 13px">Tree nuts</span><span class="k-chip" style="padding:8px 13px">Sesame</span></div>
+<div class="k-card" style="padding:13px;margin-top:20px"><div class="k-row"><div style="flex:1"><div style="font-size:13px;font-weight:700">Hide unsafe recipes</div><div class="k-sub" style="margin-top:2px">Off shows a warning instead</div></div>
+<div style="width:42px;height:25px;border-radius:99px;background:var(--fill);position:relative;flex:none"><div style="position:absolute;right:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff"></div></div></div></div>
+<div style="margin-top:auto;padding-bottom:16px;display:flex;gap:9px"><button class="k-btn g" style="flex:1">Skip</button><button class="k-btn" style="flex:1.6">Continue</button></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Onboarding — kitchen<span>08</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px">
+<div class="k-row" style="justify-content:space-between"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><span class="k-meta">Step 4 of 4</span></div>
+<div class="k-row" style="gap:5px;margin-top:14px"><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div><div style="flex:1;height:4px;border-radius:99px;background:var(--fill)"></div></div>
+<div class="k-h1" style="margin-top:22px">What's always in<br>your kitchen?</div>
+<div class="k-sub" style="margin-top:6px">These never count as missing when we match recipes.</div>
+<div class="k-row" style="flex-wrap:wrap;gap:8px;margin-top:18px">
+<span class="k-chip on" style="padding:8px 13px">Salt</span><span class="k-chip on" style="padding:8px 13px">Oil</span>
+<span class="k-chip on" style="padding:8px 13px">Turmeric</span><span class="k-chip on" style="padding:8px 13px">Cumin</span>
+<span class="k-chip" style="padding:8px 13px">Garlic</span><span class="k-chip" style="padding:8px 13px">Onion</span>
+<span class="k-chip" style="padding:8px 13px">Tomato</span><span class="k-chip" style="padding:8px 13px">Cream</span>
+<span class="k-chip" style="padding:8px 13px">Besan</span></div>
+<div class="k-card" style="padding:13px;margin-top:20px"><div class="k-row" style="gap:10px">
+<div style="width:38px;height:38px;border-radius:13px;background:var(--acT);color:var(--onAc);display:flex;align-items:center;justify-content:center;flex:none"><svg class="ic" style="font-size:18px"><use href="#ic-sparkles"/></svg></div>
+<div class="k-sub">With 4 staples marked, <b style="color:var(--tx)">168 more recipes</b> already count as ready to cook.</div></div></div>
+<div style="margin-top:auto;padding-bottom:16px"><button class="k-btn">Finish setup</button></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Onboarding — all set<span>09</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px;text-align:center">
+<div style="margin-top:auto"></div>
+<div class="k-ph t2" style="width:104px;height:104px;border-radius:36px;margin:0 auto"><svg class="ic" style="font-size:52px"><use href="#ic-check"/></svg></div>
+<div class="k-h1" style="margin-top:22px">You're all set</div>
+<div class="k-sub" style="margin-top:8px;font-size:13px">Add a few ingredients and we'll get straight to what you can cook.</div>
+<div class="k-row" style="gap:8px;margin-top:22px"><div class="k-stat" style="flex:1"><b>Veg</b><span class="k-meta">Diet</span></div><div class="k-stat" style="flex:1"><b>2</b><span class="k-meta">Allergies</span></div><div class="k-stat" style="flex:1"><b>4</b><span class="k-meta">Staples</span></div></div>
+<div style="width:100%;margin-top:20px"><button class="k-btn"><svg class="ic"><use href="#ic-scan"/></svg>Scan my pantry</button></div>
+<div style="margin-top:auto;padding-bottom:18px;font-size:12px;color:var(--tx2)">I'll do this later</div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Forgot password<span>10</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px">
+<div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div>
+<div class="hero t1" style="height:150px;margin-top:18px">
+<div class="halo" style="width:112px;height:112px"></div><div class="halo" style="width:162px;height:162px;opacity:.5"></div>
+<div class="float" style="width:74px;height:74px;border-radius:24px;transform:rotate(-6deg)"><svg class="ic" style="font-size:34px;color:var(--onTint)"><use href="#ic-lock"/></svg></div>
+<div class="float" style="width:44px;height:44px;right:30px;bottom:20px;transform:rotate(14deg)"><svg class="ic" style="font-size:21px;color:var(--onWn)"><use href="#ic-key"/></svg></div>
+<div class="dot" style="width:7px;height:7px;left:44px;top:24px"></div><div class="dot" style="width:5px;height:5px;left:64px;bottom:22px"></div></div>
+<div class="k-h1" style="margin-top:22px">Forgot your<br>password?</div>
+<div class="k-sub" style="margin-top:8px;font-size:13px">Happens to everyone. Enter the email you signed up with and we'll send you a link to set a new one.</div>
+<div style="margin-top:22px"><div class="k-eyebrow" style="margin-bottom:6px">Email</div><div class="k-in"><svg class="ic"><use href="#ic-mail"/></svg>safin@example.com</div></div>
+<div style="margin-top:18px"><button class="k-btn"><svg class="ic"><use href="#ic-mail-forward"/></svg>Send reset link</button></div>
+<div class="k-card" style="padding:12px;margin-top:16px"><div class="k-row" style="gap:9px">
+<svg class="ic" style="color:var(--onAc);font-size:17px"><use href="#ic-shield-lock"/></svg>
+<div class="k-sub">The link works once and expires after an hour.</div></div></div>
+<div style="margin-top:auto;padding-bottom:18px;text-align:center;font-size:12px;color:var(--tx2)">Remembered it? <b style="color:var(--onTint)">Back to log in</b></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Reset link sent<span>11</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad" style="padding-top:6px;text-align:center">
+<div class="k-row" style="justify-content:flex-start;width:100%"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div></div>
+<div style="margin-top:auto"></div>
+<div class="hero t2" style="width:100%;height:158px">
+<div class="halo" style="width:120px;height:120px"></div><div class="halo" style="width:172px;height:172px;opacity:.5"></div>
+<svg viewBox="0 0 200 120" class="trail"><path d="M18 92 C 60 96, 96 74, 128 42" stroke="currentColor" stroke-width="2.4" stroke-dasharray="5 7" stroke-linecap="round" fill="none"/></svg>
+<div class="float" style="width:76px;height:76px;border-radius:26px;transform:rotate(-8deg)"><svg class="ic" style="font-size:35px;color:var(--onAc)"><use href="#ic-mail-forward"/></svg></div>
+<div class="dot" style="width:8px;height:8px;left:34px;bottom:26px"></div><div class="dot" style="width:5px;height:5px;left:56px;bottom:38px"></div></div>
+<div class="k-h1" style="margin-top:22px">Link sent</div>
+<div class="k-sub" style="margin-top:8px;font-size:13px">Check <b style="color:var(--tx)">safin@example.com</b> for a message from Recipedia and follow the link to reset.</div>
+<div style="width:100%;margin-top:20px"><button class="k-btn"><svg class="ic"><use href="#ic-mail"/></svg>Open mail app</button></div>
+<div class="k-card" style="padding:12px;margin-top:12px;width:100%;text-align:left"><div class="k-row" style="gap:9px">
+<svg class="ic" style="color:var(--onWn);font-size:17px"><use href="#ic-alert-circle"/></svg>
+<div class="k-sub">Not there? Check spam, or resend in <b style="color:var(--tx)">0:42</b></div></div></div>
+<div style="margin-top:auto;padding-bottom:18px;font-size:12px;color:var(--tx2)">Wrong address? <b style="color:var(--onTint)">Try another email</b></div>
+</div></div></div></div></div>
+
+</div></div>
+
+<div class="sec" id="core"><div class="sec-h"><span class="sec-n">03</span><span class="sec-t">Core</span></div>
+<p class="sec-d">Home answers "what can I cook tonight?" — it is not a second recipe list. Browse is a grid, detail is a scroll, and scan is the feature nothing else has.</p>
+<div class="screens">
+
+<div class="slot"><div class="slot-l">Home<span>12</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll">
+<div class="k-pad k-row" style="justify-content:space-between;align-items:flex-start;padding-top:4px">
+<div><div class="k-h1">Good evening</div><div class="k-sub" style="margin-top:3px">4 things in your pantry</div></div>
+<div style="width:36px;height:36px;border-radius:50%;background:var(--tint);color:var(--onTint);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">S</div></div>
+<div class="k-pad" style="margin-top:16px"><div style="background:var(--sf);border-radius:var(--r);padding:13px">
+<div class="k-row" style="justify-content:space-between"><span class="k-eyebrow">In your pantry</span><span style="font-size:11px;color:var(--onTint);font-weight:600">Edit</span></div>
+<div class="k-row" style="flex-wrap:wrap;gap:6px;margin-top:9px">
+<span class="k-chip"><svg class="ingi"><use href="#g-tomato"/></svg>Tomato</span><span class="k-chip"><svg class="ingi"><use href="#g-onion"/></svg>Onion</span><span class="k-chip"><svg class="ingi"><use href="#g-potato"/></svg>Potato</span><span class="k-chip"><svg class="ingi"><use href="#g-spinach"/></svg>Spinach</span>
+<span class="k-chip" style="background:var(--fill);border-color:var(--fill);color:#fff;font-weight:600"><svg class="ic" style="font-size:11px"><use href="#ic-scan"/></svg> Scan</span></div></div></div>
+<div class="k-pad k-row" style="justify-content:space-between;margin-top:20px"><span class="k-h2">Ready to cook</span><span class="k-tag o">12</span></div>
+<div class="k-row" style="gap:11px;padding:11px 20px 0;overflow:hidden">
+<div style="width:128px;flex:none"><div class="k-ph t1" style="height:90px"><svg class="ill" aria-hidden="true"><use href="#i-curry"/></svg></div><div class="k-t" style="margin-top:7px">Aloo jeera</div><div class="k-row" style="gap:3px;margin-top:5px"><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i></div><div class="k-meta" style="margin-top:4px">20 min</div></div>
+<div style="width:128px;flex:none"><div class="k-ph t6" style="height:90px"><svg class="ill" aria-hidden="true"><use href="#i-grain"/></svg></div><div class="k-t" style="margin-top:7px">Tamatar shorba</div><div class="k-row" style="gap:3px;margin-top:5px"><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i></div><div class="k-meta" style="margin-top:4px">25 min</div></div>
+<div style="width:60px;flex:none"><div class="k-ph t4" style="height:90px"></div></div></div>
+<div class="k-pad" style="margin-top:20px"><div class="k-h2">Almost there</div><div class="k-sub" style="margin-top:2px">One ingredient away</div>
+<div class="k-card" style="padding:11px;margin-top:11px"><div class="k-row">
+<div class="k-ph t2" style="width:58px;height:58px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-salad"/></svg></div>
+<div style="flex:1;min-width:0"><div class="k-t">Palak paneer</div><div class="k-row" style="gap:3px;margin-top:5px"><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip off"></i></div><div style="margin-top:6px"><span class="k-tag w">Add paneer</span></div></div></div></div>
+<div style="padding:0 16px;margin-top:16px"><div class="k-card" style="padding:12px;display:flex;align-items:center;gap:11px">
+<div style="width:38px;height:38px;border-radius:13px;background:var(--wn);color:var(--onWn);display:flex;align-items:center;justify-content:center;flex:none"><svg class="ic" style="font-size:18px"><use href="#ic-shopping-cart"/></svg></div>
+<div style="flex:1"><div class="k-t">4 things to buy</div><div class="k-meta" style="margin-top:2px">Paneer, besan, cream, chilli</div></div>
+<svg class="ic" style="color:var(--bd2)"><use href="#ic-chevron-right"/></svg></div></div>
+
+<div class="k-row" style="justify-content:space-between;padding:0 16px;margin-top:18px"><span class="k-h2">Quick tonight</span><span class="k-meta">Under 30 min</span></div>
+<div class="k-row" style="gap:11px;padding:10px 16px 0;overflow:hidden">
+<div style="width:128px;flex:none"><div class="k-ph t3" style="height:90px"><svg class="ill" aria-hidden="true"><use href="#i-egg"/></svg><span style="position:absolute;left:10px;bottom:10px;background:var(--ovl);border-radius:99px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--tx)">10 min</span></div><div class="k-t" style="margin-top:7px">Masala omelette</div><div class="k-meta" style="margin-top:4px">Breakfast</div></div>
+<div style="width:128px;flex:none"><div class="k-ph t7" style="height:90px"><svg class="ill" aria-hidden="true"><use href="#i-snack"/></svg><span style="position:absolute;left:10px;bottom:10px;background:var(--ovl);border-radius:99px;padding:2px 8px;font-size:10px;font-weight:700;color:var(--tx)">15 min</span></div><div class="k-t" style="margin-top:7px">Onion pakora</div><div class="k-meta" style="margin-top:4px">Snack</div></div>
+<div style="width:60px;flex:none"><div class="k-ph t8" style="height:90px"></div></div></div>
+
+<div style="padding:0 16px;margin-top:18px"><div class="k-h2">Browse by cuisine</div></div>
+<div class="k-row" style="gap:10px;padding:10px 16px 0;overflow:hidden">
+<div class="k-ph t1" style="width:106px;height:68px;flex:none;align-items:flex-end;justify-content:flex-start;padding:10px"><span style="font-family:var(--disp);font-size:12px;font-weight:800;line-height:1.25">North Indian<br><span style="font-weight:600;opacity:.72;font-size:10px">412 recipes</span></span></div>
+<div class="k-ph t6" style="width:106px;height:68px;flex:none;align-items:flex-end;justify-content:flex-start;padding:10px"><span style="font-family:var(--disp);font-size:12px;font-weight:800;line-height:1.25">South Indian<br><span style="font-weight:600;opacity:.72;font-size:10px">268 recipes</span></span></div>
+<div class="k-ph t4" style="width:106px;height:68px;flex:none;align-items:flex-end;justify-content:flex-start;padding:10px"><span style="font-family:var(--disp);font-size:12px;font-weight:800;line-height:1.25">Bengali<br><span style="font-weight:600;opacity:.72;font-size:10px">96 recipes</span></span></div></div>
+
+<div style="padding:0 16px;margin-top:18px"><div class="k-h2">Pick up where you left off</div></div>
+<div class="k-row" style="gap:11px;padding:10px 16px 0;overflow:hidden">
+<div style="width:128px;flex:none"><div class="k-ph t5" style="height:90px"><svg class="ill" aria-hidden="true"><use href="#i-cake"/></svg></div><div class="k-t" style="margin-top:7px">Gajar halwa</div><div class="k-meta" style="margin-top:4px">Viewed yesterday</div></div>
+<div style="width:128px;flex:none"><div class="k-ph t8" style="height:90px"><svg class="ill" aria-hidden="true"><use href="#i-soup"/></svg></div><div class="k-t" style="margin-top:7px">Tamatar shorba</div><div class="k-meta" style="margin-top:4px">Viewed 3 days ago</div></div>
+<div style="width:60px;flex:none"><div class="k-ph t2" style="height:90px"></div></div></div>
+
+<div style="padding:0 16px;margin-top:18px"><div class="k-h2">New from the community</div><div class="k-sub" style="margin-top:2px">Just approved</div>
+<div class="k-card" style="padding:11px;margin-top:11px"><div class="k-row">
+<div class="k-ph t6" style="width:52px;height:52px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-grain"/></svg></div>
+<div style="flex:1"><div class="k-t">Dal tadka</div><div class="k-meta" style="margin-top:2px">by @aisha · 12 saves</div></div>
+<span class="k-tag">New</span></div></div>
+<div style="height:6px"></div></div>
+</div></div>
+<div class="k-nav"><div class="on"><svg class="ic"><use href="#ic-home-filled"/></svg><span>Home</span></div><div><svg class="ic"><use href="#ic-book-2"/></svg><span>Recipes</span></div><div><svg class="ic"><use href="#ic-scan"/></svg><span>Scan</span></div><div><svg class="ic"><use href="#ic-bookmark"/></svg><span>Saved</span></div><div><svg class="ic"><use href="#ic-user"/></svg><span>Profile</span></div></div>
+</div></div></div></div>
+
+<div class="slot"><div class="slot-l">Recipes — grid<span>13</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll">
+<div class="k-pad"><div class="k-h1">Recipes</div>
+<div class="k-in" style="margin-top:12px"><svg class="ic"><use href="#ic-search"/></svg>Search recipes</div>
+<div class="k-row" style="gap:6px;margin-top:11px;overflow:hidden"><span class="k-chip on">All</span><span class="k-chip">Main</span><span class="k-chip">Juices</span><span class="k-chip">Snacks</span></div>
+<div class="k-row" style="justify-content:space-between;margin-top:12px"><span class="k-chip"><svg class="ic" style="font-size:11px"><use href="#ic-adjustments-horizontal"/></svg> Filters</span><span class="k-meta">1032 recipes</span></div>
+<div class="k-grid2" style="margin-top:13px">
+<div><div class="k-ph t2" style="height:82px"><svg class="ill" aria-hidden="true"><use href="#i-salad"/></svg><span style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--ovl);display:flex;align-items:center;justify-content:center;color:var(--br)"><svg class="ic" style="font-size:12px"><use href="#ic-heart-filled"/></svg></span><span style="position:absolute;left:10px;bottom:10px;background:var(--ovl);border-radius:99px;padding:2px 7px;font-size:10px;font-weight:600;color:var(--tx)">35 min</span></div><div class="k-t" style="margin-top:7px">Palak paneer</div><div class="k-meta" style="margin-top:2px">North Indian</div></div>
+<div><div class="k-ph t3" style="height:82px"><svg class="ill" aria-hidden="true"><use href="#i-egg"/></svg><span style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--ovl);display:flex;align-items:center;justify-content:center;color:var(--tx3)"><svg class="ic" style="font-size:12px"><use href="#ic-heart"/></svg></span><span style="position:absolute;left:10px;bottom:10px;background:var(--ovl);border-radius:99px;padding:2px 7px;font-size:10px;font-weight:600;color:var(--tx)">10 min</span></div><div class="k-t" style="margin-top:7px">Masala omelette</div><div class="k-meta" style="margin-top:2px">Indian</div></div>
+<div><div class="k-ph t8" style="height:82px"><svg class="ill" aria-hidden="true"><use href="#i-soup"/></svg></div><div class="k-t" style="margin-top:7px">Tamatar shorba</div><div class="k-meta" style="margin-top:2px">North Indian</div></div>
+<div><div class="k-ph t5" style="height:82px"><svg class="ill" aria-hidden="true"><use href="#i-cake"/></svg></div><div class="k-t" style="margin-top:7px">Gajar halwa</div><div class="k-meta" style="margin-top:2px">Dessert</div></div>
+</div></div></div>
+<div class="k-nav"><div><svg class="ic"><use href="#ic-home"/></svg><span>Home</span></div><div class="on"><svg class="ic"><use href="#ic-book-2"/></svg><span>Recipes</span></div><div><svg class="ic"><use href="#ic-scan"/></svg><span>Scan</span></div><div><svg class="ic"><use href="#ic-bookmark"/></svg><span>Saved</span></div><div><svg class="ic"><use href="#ic-user"/></svg><span>Profile</span></div></div>
+</div></div></div></div>
+
+<div class="slot"><div class="slot-l">Recipe detail<span>14</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="k-ph t2" style="height:186px;border-radius:0;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-salad"/></svg>
+<div style="position:absolute;top:44px;left:16px;right:16px;display:flex;justify-content:space-between">
+<span style="width:34px;height:34px;border-radius:12px;background:var(--ovl);display:flex;align-items:center;justify-content:center"><svg class="ic"><use href="#ic-arrow-left"/></svg></span>
+<span style="display:flex;gap:8px"><span style="width:34px;height:34px;border-radius:12px;background:var(--ovl);display:flex;align-items:center;justify-content:center;color:var(--br)"><svg class="ic"><use href="#ic-heart-filled"/></svg></span><span style="width:34px;height:34px;border-radius:12px;background:var(--ovl);display:flex;align-items:center;justify-content:center"><svg class="ic"><use href="#ic-share-2"/></svg></span></span></div></div>
+<div class="body k-scroll" style="margin-top:-20px;background:var(--bg);border-radius:22px 22px 0 0;position:relative;z-index:5">
+<div class="k-pad" style="padding-top:16px">
+<div class="k-row" style="gap:6px"><span class="k-tag">Vegetarian</span><span class="k-tag" style="background:var(--sf);color:var(--tx2)">Main course</span></div>
+<div class="k-h1" style="margin-top:9px">Palak paneer</div>
+<div class="k-row" style="gap:16px;margin-top:11px">
+<div><div class="k-meta"><svg class="ic" style="font-size:12px"><use href="#ic-clock"/></svg> Time</div><div class="k-t" style="margin-top:2px">35 min</div></div>
+<div><div class="k-meta"><svg class="ic" style="font-size:12px"><use href="#ic-star"/></svg> Rating</div><div class="k-t" style="margin-top:2px">4.8</div></div>
+<div><div class="k-meta"><svg class="ic" style="font-size:12px"><use href="#ic-basket"/></svg> Items</div><div class="k-t" style="margin-top:2px">9</div></div></div>
+<div style="background:var(--wn);border-radius:var(--r2);padding:10px 12px;margin-top:14px">
+<div class="k-row" style="gap:7px"><svg class="ic" style="color:var(--onWn);font-size:15px"><use href="#ic-alert-circle"/></svg><div style="font-size:11.5px;color:var(--onWn);font-weight:600">Missing 1 · paneer</div></div></div>
+<div class="k-seg" style="margin-top:14px"><span class="on">Ingredients</span><span>Steps</span><span>Reviews</span></div>
+<div class="k-list" style="margin-top:6px">
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;background:var(--fill);display:flex;align-items:center;justify-content:center;color:#fff"><svg class="ic" style="font-size:12px"><use href="#ic-check"/></svg></div><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-spinach"/></svg>Spinach</span><span class="k-meta">250 g</span></div>
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;background:var(--fill);display:flex;align-items:center;justify-content:center;color:#fff"><svg class="ic" style="font-size:12px"><use href="#ic-check"/></svg></div><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-onion"/></svg>Onion</span><span class="k-meta">1 medium</span></div>
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;border:1.5px solid var(--bd2)"></div><span style="flex:1;font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-paneer"/></svg>Paneer</span><span class="k-meta">200 g</span></div>
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;background:var(--fill);display:flex;align-items:center;justify-content:center;color:#fff"><svg class="ic" style="font-size:12px"><use href="#ic-check"/></svg></div><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-garlic"/></svg>Garlic</span><span class="k-meta">4 cloves</span></div>
+</div></div></div>
+<div class="k-pad" style="padding-bottom:16px;padding-top:6px;display:flex;gap:9px;background:var(--bg);border-top:1px solid var(--bd)">
+<button class="k-btn g" style="flex:1"><svg class="ic"><use href="#ic-shopping-cart"/></svg>Add missing</button><button class="k-btn" style="flex:1.3"><svg class="ic"><use href="#ic-flame"/></svg>Start cooking</button></div>
+</div></div></div></div>
+
+<div class="slot"><div class="slot-l">Scan pantry<span>15</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-pad k-scroll">
+<div class="k-h1">What do you have?</div><div class="k-sub" style="margin-top:4px">Add ingredients and we'll rank what you can cook.</div>
+<div class="k-in" style="margin-top:16px"><svg class="ic"><use href="#ic-search"/></svg>Type an ingredient…</div>
+<div class="k-card" style="margin-top:10px;padding:4px 0">
+<div class="k-pad k-row" style="padding:9px 14px;gap:9px"><svg class="ic" style="color:var(--onTint);font-size:15px"><use href="#ic-plus"/></svg><span style="font-size:13px">Paneer</span></div>
+<div class="k-pad k-row" style="padding:9px 14px;gap:9px;border-top:1px solid var(--bd)"><svg class="ic" style="color:var(--onTint);font-size:15px"><use href="#ic-plus"/></svg><span style="font-size:13px">Panner <span class="k-meta">→ paneer</span></span></div></div>
+<div class="k-eyebrow" style="margin-top:20px">Your pantry · 4</div>
+<div class="k-row" style="flex-wrap:wrap;gap:7px;margin-top:9px">
+<span class="k-chip on"><svg class="ingi"><use href="#g-tomato"/></svg>Tomato <svg class="ic" style="font-size:10px"><use href="#ic-x"/></svg></span><span class="k-chip on"><svg class="ingi"><use href="#g-onion"/></svg>Onion <svg class="ic" style="font-size:10px"><use href="#ic-x"/></svg></span>
+<span class="k-chip on"><svg class="ingi"><use href="#g-potato"/></svg>Potato <svg class="ic" style="font-size:10px"><use href="#ic-x"/></svg></span><span class="k-chip on"><svg class="ingi"><use href="#g-spinach"/></svg>Spinach <svg class="ic" style="font-size:10px"><use href="#ic-x"/></svg></span></div>
+<div class="k-eyebrow" style="margin-top:22px">Always in your kitchen</div>
+<div class="k-row" style="flex-wrap:wrap;gap:7px;margin-top:9px">
+<span class="k-chip"><svg class="ingi"><use href="#g-salt"/></svg>Salt</span><span class="k-chip"><svg class="ingi"><use href="#g-oil"/></svg>Oil</span><span class="k-chip"><svg class="ingi"><use href="#g-spice"/></svg>Turmeric</span><span class="k-chip"><svg class="ingi"><use href="#g-spice"/></svg>Cumin</span></div>
+<div style="margin-top:auto;padding-bottom:14px"><button class="k-btn"><svg class="ic"><use href="#ic-sparkles"/></svg>Find recipes</button></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Scan results<span>16</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll">
+<div class="k-pad"><div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><div><div class="k-h2">Matches</div><div class="k-meta">From 4 ingredients</div></div></div>
+<div class="k-seg" style="margin-top:14px"><span class="on">Ready · 12</span><span>Almost · 28</span></div>
+<div class="k-card" style="padding:11px;margin-top:12px"><div class="k-row">
+<div class="k-ph t1" style="width:58px;height:58px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-curry"/></svg></div>
+<div style="flex:1;min-width:0"><div class="k-t">Aloo jeera</div><div class="k-meta" style="margin-top:3px">20 min · North Indian</div>
+<div class="k-row" style="gap:3px;margin-top:6px"><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i></div>
+<div style="margin-top:6px"><span class="k-tag o">Ready to cook</span></div></div></div></div>
+<div class="k-card" style="padding:11px;margin-top:9px"><div class="k-row">
+<div class="k-ph t6" style="width:58px;height:58px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-grain"/></svg></div>
+<div style="flex:1;min-width:0"><div class="k-t">Tamatar shorba</div><div class="k-meta" style="margin-top:3px">25 min · North Indian</div>
+<div class="k-row" style="gap:3px;margin-top:6px"><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i></div>
+<div style="margin-top:6px"><span class="k-tag o">Ready to cook</span></div></div></div></div>
+<div class="k-card" style="padding:11px;margin-top:9px"><div class="k-row">
+<div class="k-ph t2" style="width:58px;height:58px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-salad"/></svg></div>
+<div style="flex:1;min-width:0"><div class="k-t">Palak paneer</div><div class="k-meta" style="margin-top:3px">35 min · North Indian</div>
+<div class="k-row" style="gap:3px;margin-top:6px"><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip"></i><i class="k-pip off"></i></div>
+<div style="margin-top:6px"><span class="k-tag w">Add paneer</span></div></div></div></div>
+</div></div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Saved<span>17</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll">
+<div class="k-pad"><div class="k-h1">Saved</div><div class="k-sub" style="margin-top:3px">38 recipes · 4 collections</div>
+<div class="k-in" style="margin-top:12px"><svg class="ic"><use href="#ic-search"/></svg>Search saved</div>
+<div class="k-row" style="gap:6px;margin-top:11px;overflow:hidden"><span class="k-chip on">All</span><span class="k-chip">Weeknight</span><span class="k-chip">Party</span><span class="k-chip" style="border-style:dashed">+ New</span></div>
+<div class="k-row" style="justify-content:space-between;margin-top:13px"><span class="k-meta">Recently added</span><span class="k-meta"><svg class="ic" style="font-size:12px"><use href="#ic-arrows-sort"/></svg> Sort</span></div>
+<div class="k-list" style="margin-top:4px">
+<div class="k-row"><div class="k-ph t2" style="width:50px;height:50px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-salad"/></svg></div><div style="flex:1"><div class="k-t">Palak paneer</div><div class="k-meta" style="margin-top:2px">35 min · 4.8</div></div><svg class="ic" style="color:var(--br);font-size:17px"><use href="#ic-heart-filled"/></svg></div>
+<div class="k-row"><div class="k-ph t3" style="width:50px;height:50px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-egg"/></svg></div><div style="flex:1"><div class="k-t">Masala omelette</div><div class="k-meta" style="margin-top:2px">10 min · 4.5</div></div><svg class="ic" style="color:var(--br);font-size:17px"><use href="#ic-heart-filled"/></svg></div>
+<div class="k-row"><div class="k-ph t8" style="width:50px;height:50px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-soup"/></svg></div><div style="flex:1"><div class="k-t">Tamatar shorba</div><div class="k-meta" style="margin-top:2px">25 min · 4.2</div></div><svg class="ic" style="color:var(--br);font-size:17px"><use href="#ic-heart-filled"/></svg></div>
+<div class="k-row"><div class="k-ph t5" style="width:50px;height:50px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-cake"/></svg></div><div style="flex:1"><div class="k-t">Gajar halwa</div><div class="k-meta" style="margin-top:2px">45 min · 4.9</div></div><svg class="ic" style="color:var(--br);font-size:17px"><use href="#ic-heart-filled"/></svg></div>
+</div></div></div>
+<div class="k-nav"><div><svg class="ic"><use href="#ic-home"/></svg><span>Home</span></div><div><svg class="ic"><use href="#ic-book-2"/></svg><span>Recipes</span></div><div><svg class="ic"><use href="#ic-scan"/></svg><span>Scan</span></div><div class="on"><svg class="ic"><use href="#ic-bookmark-filled"/></svg><span>Saved</span></div><div><svg class="ic"><use href="#ic-user"/></svg><span>Profile</span></div></div>
+</div></div></div></div>
+
+<div class="slot"><div class="slot-l">Profile<span>18</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:14px">
+<div style="text-align:center"><div style="position:relative;display:inline-block">
+<div style="width:74px;height:74px;border-radius:50%;background:var(--tint);color:var(--onTint);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:27px;font-weight:800">S</div>
+<div style="position:absolute;right:-2px;bottom:-2px;width:26px;height:26px;border-radius:50%;background:var(--fill);border:2px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center"><svg class="ic" style="font-size:12px"><use href="#ic-camera"/></svg></div></div>
+<div class="k-h2" style="margin-top:9px">Safin Mahesania</div><div class="k-meta">@safin · safin@example.com</div>
+<div style="margin-top:7px"><span class="k-tag">Admin</span></div></div>
+<div class="k-row" style="gap:8px;margin-top:18px"><div class="k-stat" style="flex:1"><b>38</b><span class="k-meta">Saved</span></div><div class="k-stat" style="flex:1"><b>6</b><span class="k-meta">Submitted</span></div><div class="k-stat" style="flex:1"><b>14</b><span class="k-meta">Reviews</span></div></div>
+<div class="k-eyebrow" style="margin-top:20px;margin-bottom:8px">Cooking</div>
+<div class="k-card" style="padding:0 13px">
+<div class="k-list">
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-edit"/></svg><span style="flex:1;font-size:13px">My submissions</span><svg class="ic" style="color:var(--bd2)"><use href="#ic-chevron-right"/></svg></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-star"/></svg><span style="flex:1;font-size:13px">My reviews</span><svg class="ic" style="color:var(--bd2)"><use href="#ic-chevron-right"/></svg></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-leaf"/></svg><span style="flex:1;font-size:13px">Diet and allergies</span><span class="k-meta">Veg</span></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-shopping-cart"/></svg><span style="flex:1;font-size:13px">Shopping list</span><span class="k-tag w">4</span></div>
+</div></div>
+<div class="k-eyebrow" style="margin-top:16px;margin-bottom:8px">App</div>
+<div class="k-card" style="padding:0 13px"><div class="k-list">
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-moon"/></svg><span style="flex:1;font-size:13px">Appearance</span><span class="k-meta">System</span></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-shield-lock"/></svg><span style="flex:1;font-size:13px">Account and security</span><svg class="ic" style="color:var(--bd2)"><use href="#ic-chevron-right"/></svg></div>
+</div></div></div>
+<div class="k-nav"><div><svg class="ic"><use href="#ic-home"/></svg><span>Home</span></div><div><svg class="ic"><use href="#ic-book-2"/></svg><span>Recipes</span></div><div><svg class="ic"><use href="#ic-scan"/></svg><span>Scan</span></div><div><svg class="ic"><use href="#ic-bookmark"/></svg><span>Saved</span></div><div class="on"><svg class="ic"><use href="#ic-user-filled"/></svg><span>Profile</span></div></div>
+</div></div></div></div>
+
+</div></div>
+
+<div class="sec" id="cook"><div class="sec-h"><span class="sec-n">04</span><span class="sec-t">Cooking</span></div>
+<p class="sec-d">The loop the whole app is built on: see what's missing, get it, cook it. Cook mode goes full-bleed and keeps the screen awake.</p>
+<div class="screens">
+
+<div class="slot"><div class="slot-l">Shopping list<span>19</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="justify-content:space-between"><div><div class="k-h1">Shopping list</div><div class="k-meta" style="margin-top:3px">3 of 7 done</div></div><svg class="ic" style="color:var(--tx2);font-size:19px"><use href="#ic-share-2"/></svg></div>
+<div style="height:5px;background:var(--sf2);border-radius:99px;margin-top:12px;overflow:hidden"><div style="width:43%;height:100%;background:var(--fill)"></div></div>
+<div class="k-eyebrow" style="margin-top:18px">For palak paneer</div>
+<div class="k-list" style="margin-top:2px">
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;border:1.5px solid var(--bd2)"></div><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-paneer"/></svg>Paneer</span><span class="k-meta">200 g</span></div>
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;background:var(--fill);display:flex;align-items:center;justify-content:center;color:#fff"><svg class="ic" style="font-size:12px"><use href="#ic-check"/></svg></div><span style="flex:1;font-size:13px;color:var(--tx3);text-decoration:line-through;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-cream"/></svg>Cream</span></div></div>
+<div class="k-eyebrow" style="margin-top:16px">For onion pakora</div>
+<div class="k-list" style="margin-top:2px">
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;border:1.5px solid var(--bd2)"></div><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-besan"/></svg>Besan</span><span class="k-meta">1 cup</span></div>
+<div class="k-row"><div style="width:19px;height:19px;border-radius:6px;border:1.5px solid var(--bd2)"></div><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-chilli"/></svg>Green chilli</span></div></div>
+<div style="border:1px dashed var(--bd2);border-radius:var(--r2);padding:11px;text-align:center;font-size:12px;color:var(--tx2);margin-top:14px">+ Add item</div>
+<div style="margin-top:auto;padding-bottom:14px"><button class="k-btn"><svg class="ic"><use href="#ic-basket"/></svg>Move checked to pantry</button></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Diet and allergies<span>20</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><div class="k-h2">Diet and allergies</div></div>
+<div class="k-eyebrow" style="margin-top:20px">Diet</div>
+<div class="k-row" style="flex-wrap:wrap;gap:7px;margin-top:9px"><span class="k-chip on" style="padding:7px 14px">Vegetarian</span><span class="k-chip" style="padding:7px 14px">Vegan</span><span class="k-chip" style="padding:7px 14px">Non-veg</span><span class="k-chip" style="padding:7px 14px">Jain</span></div>
+<div class="k-sub" style="margin-top:8px">Applied as your default filter everywhere.</div>
+<div class="k-eyebrow" style="margin-top:20px">Allergies</div>
+<div class="k-row" style="flex-wrap:wrap;gap:7px;margin-top:9px">
+<span class="k-chip" style="background:var(--dgT);border-color:var(--dgT);color:var(--dg);font-weight:600;padding:7px 12px">Peanut <svg class="ic" style="font-size:10px"><use href="#ic-x"/></svg></span>
+<span class="k-chip" style="background:var(--dgT);border-color:var(--dgT);color:var(--dg);font-weight:600;padding:7px 12px">Shellfish <svg class="ic" style="font-size:10px"><use href="#ic-x"/></svg></span>
+<span class="k-chip" style="border-style:dashed;padding:7px 12px">+ Add</span></div>
+<div class="k-card" style="padding:13px;margin-top:18px"><div class="k-row"><div style="flex:1"><div style="font-size:13px;font-weight:600">Hide unsafe recipes</div><div class="k-sub" style="margin-top:2px">Off shows a warning instead</div></div>
+<div style="width:42px;height:25px;border-radius:99px;background:var(--fill);position:relative;flex:none"><div style="position:absolute;right:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff"></div></div></div></div>
+<div class="k-eyebrow" style="margin-top:20px">Pantry staples</div>
+<div class="k-sub" style="margin-top:5px">Never counted as missing in scan results.</div>
+<div class="k-row" style="flex-wrap:wrap;gap:7px;margin-top:9px"><span class="k-chip on"><svg class="ingi"><use href="#g-salt"/></svg>Salt</span><span class="k-chip on"><svg class="ingi"><use href="#g-oil"/></svg>Oil</span><span class="k-chip on"><svg class="ingi"><use href="#g-spice"/></svg>Turmeric</span><span class="k-chip">+ Add</span></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Cook mode<span>21</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr" style="background:var(--cook)">
+<div class="sbar" style="color:#fff"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body" style="padding:16px 20px;color:#fff">
+<div class="k-row" style="justify-content:space-between"><span style="font-size:11px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:1.2px">STEP 3 OF 7</span><svg class="ic" style="color:rgba(255,255,255,.6)"><use href="#ic-x"/></svg></div>
+<div class="k-row" style="gap:4px;margin-top:11px">
+<div style="flex:1;height:3px;border-radius:99px;background:var(--br)"></div><div style="flex:1;height:3px;border-radius:99px;background:var(--br)"></div><div style="flex:1;height:3px;border-radius:99px;background:var(--br)"></div>
+<div style="flex:1;height:3px;border-radius:99px;background:var(--onDark16)"></div><div style="flex:1;height:3px;border-radius:99px;background:var(--onDark16)"></div>
+<div style="flex:1;height:3px;border-radius:99px;background:var(--onDark16)"></div><div style="flex:1;height:3px;border-radius:99px;background:var(--onDark16)"></div></div>
+<div style="font-family:var(--disp);font-size:23px;font-weight:700;line-height:1.35;margin-top:28px;letter-spacing:-.5px">Blanch the spinach for two minutes, then plunge into ice water to keep the colour.</div>
+<div style="margin-top:26px;background:var(--onDark07);border-radius:20px;padding:20px;text-align:center">
+<div style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1.2px;font-weight:600">TIMER</div>
+<div style="font-family:var(--disp);font-size:46px;font-weight:800;letter-spacing:-2px;font-variant-numeric:tabular-nums;margin-top:4px">1:47</div>
+<div class="k-row" style="justify-content:center;gap:10px;margin-top:12px">
+<span style="width:38px;height:38px;border-radius:50%;background:var(--onDark12);display:flex;align-items:center;justify-content:center"><svg class="ic"><use href="#ic-rotate-clockwise"/></svg></span>
+<span style="width:44px;height:44px;border-radius:50%;background:var(--br);display:flex;align-items:center;justify-content:center"><svg class="ic"><use href="#ic-player-pause-filled"/></svg></span></div></div>
+<div style="margin-top:auto;padding-bottom:12px;display:flex;gap:9px">
+<button class="k-btn g" style="flex:1;background:var(--onDark10);border:none;color:#fff">Back</button>
+<button class="k-btn" style="flex:1.4">Next step</button></div>
+</div></div></div></div></div>
+
+</div></div>
+
+<div class="sec" id="contrib"><div class="sec-h"><span class="sec-n">05</span><span class="sec-t">Contribute</span></div>
+<p class="sec-d">User submissions are the only original content in the catalogue, so the form is short and the status is always visible.</p>
+<div class="screens">
+
+<div class="slot"><div class="slot-l">Submit recipe<span>22</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-x"/></svg></div>
+<div><div class="k-h2">Add your recipe</div><div class="k-meta" style="margin-top:1px">Takes about two minutes</div></div></div>
+<div class="k-eyebrow" style="margin-top:18px;margin-bottom:8px">Photo</div>
+<div class="k-row" style="gap:8px">
+<div style="flex:1;background:var(--sf);border-radius:var(--r2);padding:13px 6px;text-align:center">
+<div style="width:34px;height:34px;border-radius:12px;background:var(--tint);color:var(--onTint);display:flex;align-items:center;justify-content:center;margin:0 auto"><svg class="ic" style="font-size:17px"><use href="#ic-photo"/></svg></div>
+<div style="font-size:10.5px;font-weight:700;margin-top:6px">Gallery</div></div>
+<div style="flex:1;background:var(--sf);border-radius:var(--r2);padding:13px 6px;text-align:center">
+<div style="width:34px;height:34px;border-radius:12px;background:var(--acT);color:var(--onAc);display:flex;align-items:center;justify-content:center;margin:0 auto"><svg class="ic" style="font-size:17px"><use href="#ic-camera"/></svg></div>
+<div style="font-size:10.5px;font-weight:700;margin-top:6px">Camera</div></div>
+<div style="flex:1;background:var(--sf);border-radius:var(--r2);padding:13px 6px;text-align:center">
+<div style="width:34px;height:34px;border-radius:12px;background:var(--wn);color:var(--onWn);display:flex;align-items:center;justify-content:center;margin:0 auto"><svg class="ic" style="font-size:17px"><use href="#ic-link"/></svg></div>
+<div style="font-size:10.5px;font-weight:700;margin-top:6px">Paste URL</div></div></div>
+<div class="k-sub" style="margin-top:8px">Optional — a photo roughly doubles the chance of approval.</div>
+<div style="margin-top:16px"><div class="k-eyebrow" style="margin-bottom:6px">Recipe name</div><div class="k-in">Dal tadka</div>
+<div class="k-sub" style="margin-top:6px">What people would search for. Skip "Grandma\'s" and "best ever".</div></div>
+<div class="k-row" style="gap:9px;margin-top:12px">
+<div style="flex:1"><div class="k-eyebrow" style="margin-bottom:6px">Category</div><div class="k-in" style="font-size:12px">Main course <svg class="ic" style="margin-left:auto"><use href="#ic-chevron-down"/></svg></div></div>
+<div style="flex:1"><div class="k-eyebrow" style="margin-bottom:6px">Diet</div><div class="k-in" style="font-size:12px">Veg <svg class="ic" style="margin-left:auto"><use href="#ic-chevron-down"/></svg></div></div></div>
+<div style="margin-top:12px"><div class="k-eyebrow" style="margin-bottom:6px">Cook time</div>
+<div class="k-row" style="gap:9px"><div class="k-in" style="flex:1;justify-content:space-between"><svg class="ic"><use href="#ic-minus"/></svg><span style="color:var(--tx);font-weight:600">35</span><svg class="ic"><use href="#ic-plus"/></svg></div><div class="k-in" style="width:88px;font-size:12px">minutes</div></div></div>
+<div style="margin-top:12px"><div class="k-eyebrow" style="margin-bottom:6px">Ingredients</div>
+<div class="k-card" style="padding:4px 12px"><div class="k-list">
+<div class="k-row"><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-dal"/></svg>Toor dal</span><span class="k-meta">1 cup</span><svg class="ic" style="color:var(--tx3);font-size:14px"><use href="#ic-x"/></svg></div>
+<div class="k-row"><span style="flex:1;font-size:13px;display:flex;align-items:center;gap:9px"><svg class="ingt"><use href="#g-tomato"/></svg>Tomato</span><span class="k-meta">2</span><svg class="ic" style="color:var(--tx3);font-size:14px"><use href="#ic-x"/></svg></div>
+<div class="k-row" style="color:var(--onTint);font-size:12.5px;font-weight:600"><svg class="ic" style="font-size:14px"><use href="#ic-plus"/></svg> Add ingredient</div></div></div></div>
+<div style="margin-top:auto;padding-bottom:14px;padding-top:14px"><button class="k-btn">Submit for review</button>
+<div class="k-sub" style="text-align:center;margin-top:8px">An admin will review before it goes live.</div></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">My submissions<span>23</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><div class="k-h2">My submissions</div></div>
+<div class="k-seg" style="margin-top:14px"><span class="on">All · 6</span><span>Pending · 2</span><span>Live · 3</span></div>
+<div class="k-card" style="padding:11px;margin-top:12px"><div class="k-row">
+<div class="k-ph t6" style="width:52px;height:52px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-grain"/></svg></div>
+<div style="flex:1"><div class="k-t">Dal tadka</div><div class="k-meta" style="margin-top:2px">Submitted 2 days ago</div></div><span class="k-tag w">Pending</span></div></div>
+<div class="k-card" style="padding:11px;margin-top:9px"><div class="k-row">
+<div class="k-ph t3" style="width:52px;height:52px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-egg"/></svg></div>
+<div style="flex:1"><div class="k-t">Veg pulao</div><div class="k-meta" style="margin-top:2px">Live · 24 saves</div></div><span class="k-tag o">Live</span></div></div>
+<div class="k-card" style="padding:11px;margin-top:9px;border-color:var(--dgB)"><div class="k-row">
+<div class="k-ph t7" style="width:52px;height:52px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-snack"/></svg></div>
+<div style="flex:1"><div class="k-t">Onion pakora</div><div class="k-meta" style="margin-top:2px">Needs a clearer photo</div></div><span class="k-tag" style="background:var(--dgT);color:var(--dg)">Changes</span></div>
+<div style="margin-top:10px"><button class="k-btn g" style="height:38px;font-size:12.5px">Edit and resubmit</button></div></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Write a review<span>24</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-x"/></svg></div><div class="k-h2">Rate this recipe</div></div>
+<div class="k-row" style="gap:11px;margin-top:18px"><div class="k-ph t2" style="width:56px;height:56px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-salad"/></svg></div>
+<div><div class="k-t" style="font-size:15px">Palak paneer</div><div class="k-meta" style="margin-top:2px">You cooked this on 12 Jun</div></div></div>
+<div style="text-align:center;margin-top:26px"><div class="k-row" style="justify-content:center;gap:9px;color:var(--star);font-size:32px">
+<svg class="ic"><use href="#ic-star-filled"/></svg><svg class="ic"><use href="#ic-star-filled"/></svg><svg class="ic"><use href="#ic-star-filled"/></svg><svg class="ic"><use href="#ic-star-filled"/></svg><svg class="ic" style="color:var(--bd2)"><use href="#ic-star"/></svg></div>
+<div class="k-sub" style="margin-top:8px">Tap to rate</div></div>
+<div style="margin-top:22px"><div class="k-eyebrow" style="margin-bottom:6px">Your notes</div>
+<div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r2);padding:13px;min-height:96px;font-size:13px;color:var(--tx2);line-height:1.5">Creamy without being heavy. Added extra garlic and it worked well.</div></div>
+<div class="k-row" style="flex-wrap:wrap;gap:7px;margin-top:12px"><span class="k-chip on">Easy</span><span class="k-chip">Quick</span><span class="k-chip">Spicy</span><span class="k-chip">Family favourite</span></div>
+<div style="margin-top:auto;padding-bottom:14px"><button class="k-btn">Post review</button></div>
+</div></div></div></div></div>
+
+</div></div>
+
+<div class="sec" id="admin"><div class="sec-h"><span class="sec-n">06</span><span class="sec-t">Admin</span></div>
+<p class="sec-d">Same design language, different dialect. Admins optimise for throughput, so rows get denser, numbers get bigger, and every row carries its action inline.</p>
+<div class="screens">
+
+<div class="slot"><div class="slot-l">Admin dashboard<span>25</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="justify-content:space-between"><div><div class="k-h1">Admin</div><div class="k-meta" style="margin-top:3px">Everything needing attention</div></div><svg class="ic" style="font-size:19px;color:var(--tx2)"><use href="#ic-bell"/></svg></div>
+<div class="k-grid2" style="margin-top:16px">
+<div class="k-card" style="padding:13px"><div class="k-row" style="justify-content:space-between"><span class="k-eyebrow">Pending</span><svg class="ic" style="color:var(--onWn);font-size:15px"><use href="#ic-clock-hour-4"/></svg></div><div style="font-family:var(--disp);font-size:27px;font-weight:800;margin-top:5px">7</div></div>
+<div class="k-card" style="padding:13px"><div class="k-row" style="justify-content:space-between"><span class="k-eyebrow">Reports</span><svg class="ic" style="color:var(--dg);font-size:15px"><use href="#ic-flag"/></svg></div><div style="font-family:var(--disp);font-size:27px;font-weight:800;margin-top:5px">3</div></div>
+<div class="k-card" style="padding:13px"><div class="k-row" style="justify-content:space-between"><span class="k-eyebrow">Recipes</span><svg class="ic" style="color:var(--onAc);font-size:15px"><use href="#ic-book-2"/></svg></div><div style="font-family:var(--disp);font-size:27px;font-weight:800;margin-top:5px">1032</div></div>
+<div class="k-card" style="padding:13px"><div class="k-row" style="justify-content:space-between"><span class="k-eyebrow">Users</span><svg class="ic" style="color:var(--a3t);font-size:15px"><use href="#ic-users"/></svg></div><div style="font-family:var(--disp);font-size:27px;font-weight:800;margin-top:5px">418</div></div></div>
+<div class="k-eyebrow" style="margin-top:20px;margin-bottom:8px">Manage</div>
+<div class="k-card" style="padding:0 13px"><div class="k-list">
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-checkup-list"/></svg><span style="flex:1;font-size:13px">Pending approvals</span><span class="k-tag w">7</span></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-book-2"/></svg><span style="flex:1;font-size:13px">All recipes</span><svg class="ic" style="color:var(--bd2)"><use href="#ic-chevron-right"/></svg></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-users"/></svg><span style="flex:1;font-size:13px">Users</span><svg class="ic" style="color:var(--bd2)"><use href="#ic-chevron-right"/></svg></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-flag"/></svg><span style="flex:1;font-size:13px">Reports</span><span class="k-tag" style="background:var(--dgT);color:var(--dg)">3</span></div>
+<div class="k-row"><svg class="ic" style="color:var(--tx2);font-size:17px"><use href="#ic-star"/></svg><span style="flex:1;font-size:13px">Reviews</span><svg class="ic" style="color:var(--bd2)"><use href="#ic-chevron-right"/></svg></div>
+</div></div></div>
+<div class="k-fab" style="bottom:22px"><svg class="ic"><use href="#ic-plus"/></svg></div>
+</div></div></div></div>
+
+<div class="slot"><div class="slot-l">Pending approvals<span>26</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><div><div class="k-h2">Pending</div><div class="k-meta">7 waiting · oldest 4 days</div></div></div>
+<div class="k-card" style="padding:12px;margin-top:14px">
+<div class="k-row"><div class="k-ph t6" style="width:52px;height:52px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-grain"/></svg></div>
+<div style="flex:1"><div class="k-t">Dal tadka</div><div class="k-meta" style="margin-top:2px">by @aisha · 2 days ago</div></div></div>
+<div class="k-row" style="gap:6px;margin-top:9px"><span class="k-tag">Veg</span><span class="k-tag" style="background:var(--sf);color:var(--tx2)">Main</span><span class="k-tag" style="background:var(--sf);color:var(--tx2)">8 items</span></div>
+<div class="k-row" style="gap:8px;margin-top:11px">
+<button class="k-btn g" style="height:36px;font-size:12px;flex:1"><svg class="ic" style="font-size:14px"><use href="#ic-eye"/></svg>Review</button>
+<button class="k-btn g" style="height:36px;font-size:12px;flex:1;color:var(--dg);border-color:var(--dgB)">Reject</button>
+<button class="k-btn" style="height:36px;font-size:12px;flex:1;background:var(--okFill)">Approve</button></div></div>
+<div class="k-card" style="padding:12px;margin-top:10px">
+<div class="k-row"><div class="k-ph t7" style="width:52px;height:52px;flex:none"><svg class="ill" aria-hidden="true"><use href="#i-snack"/></svg></div>
+<div style="flex:1"><div class="k-t">Onion pakora</div><div class="k-meta" style="margin-top:2px">by @rahul · 4 days ago</div></div></div>
+<div class="k-row" style="gap:6px;margin-top:9px"><span class="k-tag">Veg</span><span class="k-tag" style="background:var(--sf);color:var(--tx2)">Snack</span><span class="k-tag w">No photo</span></div>
+<div class="k-row" style="gap:8px;margin-top:11px">
+<button class="k-btn g" style="height:36px;font-size:12px;flex:1"><svg class="ic" style="font-size:14px"><use href="#ic-eye"/></svg>Review</button>
+<button class="k-btn g" style="height:36px;font-size:12px;flex:1;color:var(--dg);border-color:var(--dgB)">Reject</button>
+<button class="k-btn" style="height:36px;font-size:12px;flex:1;background:var(--okFill)">Approve</button></div></div>
+</div></div></div></div></div>
+
+<div class="slot"><div class="slot-l">Users<span>27</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><div class="k-h2">Users</div></div>
+<div class="k-in" style="margin-top:12px"><svg class="ic"><use href="#ic-search"/></svg>Search by name or email</div>
+<div class="k-row" style="gap:6px;margin-top:11px"><span class="k-chip on">All · 418</span><span class="k-chip">Admins · 2</span><span class="k-chip">New · 26</span></div>
+<div class="k-list" style="margin-top:6px">
+<div class="k-row"><div style="width:36px;height:36px;border-radius:50%;background:var(--a1);color:var(--a1t);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">A</div>
+<div style="flex:1"><div style="font-size:13px;font-weight:600">Aisha Khan</div><div class="k-meta">aisha@example.com · 6 recipes</div></div><svg class="ic" style="color:var(--tx3)"><use href="#ic-dots-vertical"/></svg></div>
+<div class="k-row"><div style="width:36px;height:36px;border-radius:50%;background:var(--a2);color:var(--a2t);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">S</div>
+<div style="flex:1"><div class="k-row" style="gap:6px"><span style="font-size:13px;font-weight:600">Safin M.</span><span class="k-tag">Admin</span></div><div class="k-meta">safin@example.com · 6 recipes</div></div><svg class="ic" style="color:var(--tx3)"><use href="#ic-dots-vertical"/></svg></div>
+<div class="k-row"><div style="width:36px;height:36px;border-radius:50%;background:var(--a3);color:var(--a3t);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">R</div>
+<div style="flex:1"><div style="font-size:13px;font-weight:600">Rahul Verma</div><div class="k-meta">rahul@example.com · 1 recipe</div></div><svg class="ic" style="color:var(--tx3)"><use href="#ic-dots-vertical"/></svg></div>
+<div class="k-row"><div style="width:36px;height:36px;border-radius:50%;background:var(--a4);color:var(--a4t);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">M</div>
+<div style="flex:1"><div style="font-size:13px;font-weight:600">Meera Iyer</div><div class="k-meta">meera@example.com · 0 recipes</div></div><svg class="ic" style="color:var(--tx3)"><use href="#ic-dots-vertical"/></svg></div>
+</div></div></div></div></div>
+
+</div>
+
+<div class="slot"><div class="slot-l">Reports<span>28</span></div>
+<div class="phone"><div class="notch"></div><div class="glass k"><div class="scr">
+<div class="sbar"><span>9:41</span><span><svg class="ic"><use href="#ic-antenna-bars-5"/></svg><svg class="ic"><use href="#ic-wifi"/></svg><svg class="ic"><use href="#ic-battery-3"/></svg></span></div>
+<div class="body k-scroll k-pad" style="padding-top:6px">
+<div class="k-row" style="gap:11px"><div class="k-back"><svg class="ic"><use href="#ic-arrow-left"/></svg></div><div><div class="k-h2">Reports</div><div class="k-meta">3 open</div></div></div>
+<div class="k-card" style="padding:12px;margin-top:14px;border-left:3px solid var(--dg)">
+<div class="k-row" style="justify-content:space-between"><span class="k-tag" style="background:var(--dgT);color:var(--dg)">Wrong ingredients</span><span class="k-meta">2 h ago</span></div>
+<div class="k-t" style="margin-top:8px">Palak paneer</div>
+<div class="k-sub" style="margin-top:5px">"Quantity for cream looks wrong — says 2 litres."</div>
+<div class="k-meta" style="margin-top:7px">Reported by @meera</div>
+<div class="k-row" style="gap:8px;margin-top:11px"><button class="k-btn g" style="height:34px;font-size:12px;flex:1">Dismiss</button><button class="k-btn g" style="height:34px;font-size:12px;flex:1">Open recipe</button><button class="k-btn" style="height:34px;font-size:12px;flex:1">Resolve</button></div></div>
+<div class="k-card" style="padding:12px;margin-top:10px;border-left:3px solid var(--onWn)">
+<div class="k-row" style="justify-content:space-between"><span class="k-tag w">Broken image</span><span class="k-meta">1 d ago</span></div>
+<div class="k-t" style="margin-top:8px">Gajar halwa</div>
+<div class="k-sub" style="margin-top:5px">"Photo doesn't load on my phone."</div>
+<div class="k-meta" style="margin-top:7px">Reported by @rahul</div>
+<div class="k-row" style="gap:8px;margin-top:11px"><button class="k-btn g" style="height:34px;font-size:12px;flex:1">Dismiss</button><button class="k-btn g" style="height:34px;font-size:12px;flex:1">Open recipe</button><button class="k-btn" style="height:34px;font-size:12px;flex:1">Resolve</button></div></div>
+</div></div></div></div></div>
+
+</div></div>
+
+
+<div style="padding:64px 0 0;border-top:1px solid #22222A;margin-top:64px;color:#5A5A68;font-size:13px;line-height:1.7">
+<b style="color:#9A9AA8">Kit 05 — House Blend.</b> 21 screens, light and dark, 8 illustrations. Nothing here is wired into the app; this is a reference file.<br>
+Fonts and Icons and illustrations are all embedded in this file — nothing loads from a CDN except the two web fonts, so the interface renders even offline.
+</div>
+</div>
+<script>
+document.querySelectorAll('.jump a').forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();
+  document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth',block:'start'});
+}));
+var bL=document.getElementById('bL'),bD=document.getElementById('bD');
+bL.onclick=function(){document.body.classList.remove('dark');bL.classList.add('on');bD.classList.remove('on');};
+bD.onclick=function(){document.body.classList.add('dark');bD.classList.add('on');bL.classList.remove('on');};
+</script>
+</body></html>

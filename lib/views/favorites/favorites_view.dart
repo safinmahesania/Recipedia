@@ -112,77 +112,7 @@ class FavoritesView extends StatelessWidget {
       ),
     );
   }
-}
 
-class _CollectionBar extends StatelessWidget {
-  final FavoritesController controller;
-  const _CollectionBar({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.tokens;
-    final text = Theme.of(context).textTheme;
-
-    Widget chip(String label, bool active, VoidCallback onTap) => GestureDetector(
-          onTap: onTap,
-          child: Container(
-            height: AppSizes.chipHeight,
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.smd),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: active ? t.brandTint : t.surfaceRaised,
-              border: Border.all(color: active ? t.brandTint : t.border),
-              borderRadius: BorderRadius.circular(AppSizes.radiusPill),
-            ),
-            child: Text(label,
-                style: text.labelSmall?.copyWith(
-                    color: active ? t.onBrandTint : t.textPrimary)),
-          ),
-        );
-
-    return Obx(() => SizedBox(
-      height: AppSizes.chipHeight,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          chip('All', controller.activeCollectionId.value == null,
-              () => controller.setCollection(null)),
-          ...controller.collections.map((col) {
-            final id = col['id'] as String;
-            return Padding(
-              padding: const EdgeInsets.only(left: AppSizes.sm),
-              child: chip(col['name'] as String,
-                  controller.activeCollectionId.value == id,
-                  () => controller.setCollection(id)),
-            );
-          }),
-          Padding(
-            padding: const EdgeInsets.only(left: AppSizes.sm),
-            child: GestureDetector(
-              onTap: () => _newCollectionSheet(context, controller),
-              child: Container(
-                height: AppSizes.chipHeight,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSizes.smd),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: t.borderStrong),
-                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
-                ),
-                child: Text('+ New',
-                    style: text.labelSmall?.copyWith(color: t.textSecondary)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ));
-  }
-
-  /// Put a saved recipe into a collection.
-  ///
-  /// createCollection and moveToCollection both existed; nothing called the
-  /// second one, so collections could be made and filtered by but never filled.
   void _collectionSheet(
       BuildContext context, FavoritesController c, Map<String, dynamic> r) {
     final recipeId = r['id'] as String;
@@ -316,46 +246,77 @@ class _CollectionBar extends StatelessWidget {
     ).then((_) => ctrl.dispose());
   }
 
-  void _newCollectionSheet(BuildContext context, FavoritesController c,
-      {String? moveAfter}) {
-    final ctrl = TextEditingController();
-    Get.bottomSheet(
-      Padding(
-        padding: EdgeInsets.only(
-          left: AppSizes.screenPad,
-          right: AppSizes.screenPad,
-          top: AppSizes.lg,
-          bottom: MediaQuery.of(context).viewInsets.bottom + AppSizes.lg,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('New collection',
-                style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: AppSizes.smd),
-            TextField(
-              controller: ctrl,
-              autofocus: true,
-              decoration: const InputDecoration(hintText: 'Weeknight dinners'),
+}
+
+class _CollectionBar extends StatelessWidget {
+  final FavoritesController controller;
+  const _CollectionBar({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+
+    Widget chip(String label, bool active, VoidCallback onTap) => GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: AppSizes.chipHeight,
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.smd),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: active ? t.brandTint : t.surfaceRaised,
+              border: Border.all(color: active ? t.brandTint : t.border),
+              borderRadius: BorderRadius.circular(AppSizes.radiusPill),
             ),
-            const SizedBox(height: AppSizes.md),
-            FilledButton(
-              onPressed: () async {
-                final id = await c.createCollection(ctrl.text);
-                if (moveAfter != null && id != null) {
-                  await c.moveToCollection(moveAfter, id);
-                }
-                Get.back();
-              },
-              child: const Text('Create collection'),
+            child: Text(label,
+                style: text.labelSmall?.copyWith(
+                    color: active ? t.onBrandTint : t.textPrimary)),
+          ),
+        );
+
+    return Obx(() => SizedBox(
+      height: AppSizes.chipHeight,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          chip('All', controller.activeCollectionId.value == null,
+              () => controller.setCollection(null)),
+          ...controller.collections.map((col) {
+            final id = col['id'] as String;
+            return Padding(
+              padding: const EdgeInsets.only(left: AppSizes.sm),
+              child: chip(col['name'] as String,
+                  controller.activeCollectionId.value == id,
+                  () => controller.setCollection(id)),
+            );
+          }),
+          Padding(
+            padding: const EdgeInsets.only(left: AppSizes.sm),
+            child: GestureDetector(
+              onTap: () => _newCollectionSheet(context, controller),
+              child: Container(
+                height: AppSizes.chipHeight,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AppSizes.smd),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border.all(color: t.borderStrong),
+                  borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+                ),
+                child: Text('+ New',
+                    style: text.labelSmall?.copyWith(color: t.textSecondary)),
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      backgroundColor: context.tokens.surfaceRaised,
-    );
+    ));
   }
+
+  /// Put a saved recipe into a collection.
+  ///
+  /// createCollection and moveToCollection both existed; nothing called the
+  /// second one, so collections could be made and filtered by but never filled.
 }
 
 class _SortRow extends StatelessWidget {
@@ -433,4 +394,48 @@ class _Empty extends StatelessWidget {
       ),
     );
   }
+}
+
+
+/// Shared by the collection bar and the per-recipe sheet, so it lives at
+/// file level rather than inside either widget.
+void _newCollectionSheet(BuildContext context, FavoritesController c,
+    {String? moveAfter}) {
+  final ctrl = TextEditingController();
+  Get.bottomSheet(
+    Padding(
+      padding: EdgeInsets.only(
+        left: AppSizes.screenPad,
+        right: AppSizes.screenPad,
+        top: AppSizes.lg,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppSizes.lg,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('New collection',
+              style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: AppSizes.smd),
+          TextField(
+            controller: ctrl,
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'Weeknight dinners'),
+          ),
+          const SizedBox(height: AppSizes.md),
+          FilledButton(
+            onPressed: () async {
+              final id = await c.createCollection(ctrl.text);
+              if (moveAfter != null && id != null) {
+                await c.moveToCollection(moveAfter, id);
+              }
+              Get.back();
+            },
+            child: const Text('Create collection'),
+          ),
+        ],
+      ),
+    ),
+    backgroundColor: context.tokens.surfaceRaised,
+  );
 }
