@@ -1,221 +1,230 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../controllers/scan_controller.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/recipe_card.dart';
+import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
 
-/// Scan a vegetable/fruit (or type ingredients) and find matching recipes.
-/// Detected items are shown as editable chips so a wrong guess is a one-tap
-/// fix rather than a dead end.
-class ScanView extends StatelessWidget {
+/// Scan a vegetable or fruit — or just type ingredients — and rank recipes by
+/// what you already have. Detected items show as editable chips so a wrong
+/// guess is a one-tap fix rather than a dead end.
+///
+/// StatefulWidget because the manual-entry controller was previously created
+/// inside build() on a StatelessWidget: never disposed, and any parent rebuild
+/// wiped whatever the user had typed.
+class ScanView extends StatefulWidget {
   const ScanView({super.key});
 
   @override
+  State<ScanView> createState() => _ScanViewState();
+}
+
+class _ScanViewState extends State<ScanView> {
+  final ScanController c = Get.put(ScanController());
+  final _manual = TextEditingController();
+
+  @override
+  void dispose() {
+    _manual.dispose();
+    super.dispose();
+  }
+
+  void _add(String value) {
+    c.addIngredient(value);
+    _manual.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final ScanController c = Get.put(ScanController());
-    final manual = TextEditingController();
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
 
     return Scaffold(
+      backgroundColor: t.canvas,
       appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: const Text('Find by ingredients',
-            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
+        title: const Text('Find by ingredients'),
         actions: [
           IconButton(
-              icon: const Icon(Icons.refresh, color: AppColors.textSecondary),
-              onPressed: c.reset),
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Start over',
+            onPressed: c.reset,
+          ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSizes.screenPad),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // image preview / capture
             Obx(() {
               final img = c.image.value;
               return Container(
                 height: 180,
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(14),
+                  color: t.surface,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                   image: img == null
                       ? null
                       : DecorationImage(image: FileImage(img), fit: BoxFit.cover),
                 ),
                 child: img != null
                     ? null
-                    : const Center(
+                    : Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.photo_camera_outlined, size: 34, color: AppColors.border),
-                            SizedBox(height: 6),
+                            Icon(Icons.photo_camera_outlined,
+                                size: AppSizes.iconXl, color: t.textTertiary),
+                            const SizedBox(height: AppSizes.sm),
                             Text('Scan or add ingredients below',
-                                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                                style: text.bodySmall
+                                    ?.copyWith(color: t.textSecondary)),
                           ],
                         ),
                       ),
               );
             }),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSizes.smd),
             Row(children: [
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => c.pickImage(ImageSource.camera),
-                  icon: const Icon(Icons.camera_alt_outlined, size: 18),
+                  icon: const Icon(Icons.camera_alt_outlined,
+                      size: AppSizes.iconSm),
                   label: const Text('Camera'),
-                  style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textPrimary,
-                      side: const BorderSide(color: AppColors.border)),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSizes.smd),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => c.pickImage(ImageSource.gallery),
-                  icon: const Icon(Icons.image_outlined, size: 18),
+                  icon: const Icon(Icons.image_outlined, size: AppSizes.iconSm),
                   label: const Text('Gallery'),
-                  style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textPrimary,
-                      side: const BorderSide(color: AppColors.border)),
                 ),
               ),
             ]),
 
-            // model-not-ready notice
             if (!c.modelReady)
               Padding(
-                padding: const EdgeInsets.only(top: 12),
+                padding: const EdgeInsets.only(top: AppSizes.smd),
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSizes.smd),
                   decoration: BoxDecoration(
-                      color: AppColors.primaryTint, borderRadius: BorderRadius.circular(10)),
-                  child: const Row(children: [
-                    Icon(Icons.info_outline, size: 18, color: AppColors.primary),
-                    SizedBox(width: 8),
+                    color: t.brandTint,
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                  ),
+                  child: Row(children: [
+                    Icon(Icons.info_outline,
+                        size: AppSizes.iconMd, color: t.onBrandTint),
+                    const SizedBox(width: AppSizes.sm),
                     Expanded(
-                      child: Text('Automatic detection is coming soon. Add ingredients manually for now.',
-                          style: TextStyle(fontSize: 12, color: AppColors.primary)),
+                      child: Text(
+                        'Automatic detection is coming soon. Add ingredients '
+                        'manually for now.',
+                        style: text.labelSmall?.copyWith(color: t.onBrandTint),
+                      ),
                     ),
                   ]),
                 ),
               ),
 
-            const SizedBox(height: 20),
-            const Text('Ingredients',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSizes.lg),
+            Text('Ingredients', style: text.titleLarge?.copyWith(fontSize: 17)),
+            const SizedBox(height: AppSizes.sm),
 
-            // manual add
             Row(children: [
               Expanded(
                 child: TextField(
-                  controller: manual,
+                  controller: _manual,
                   onChanged: c.suggest,
-                  onSubmitted: (v) {
-                    c.addIngredient(v);
-                    manual.clear();
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'e.g. potato',
-                    filled: true,
-                    fillColor: AppColors.surface,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                  ),
+                  onSubmitted: _add,
+                  textInputAction: TextInputAction.done,
+                  decoration: const InputDecoration(hintText: 'e.g. potato'),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSizes.sm),
               IconButton(
-                icon: const Icon(Icons.add_circle, color: AppColors.primary, size: 32),
-                onPressed: () {
-                  c.addIngredient(manual.text);
-                  manual.clear();
-                },
+                icon: Icon(Icons.add_circle, color: t.brand, size: 32),
+                tooltip: 'Add ingredient',
+                onPressed: () => _add(_manual.text),
               ),
             ]),
-            // autocomplete — pick a name that actually exists in the data,
-            // so "potato" does not miss recipes stored as "aloo"
+
+            // Autocomplete matters more than it looks: picking a name that
+            // exists in the data is what stops "potato" from missing recipes
+            // stored as "aloo".
             Obx(() {
               if (c.suggestions.isEmpty) return const SizedBox.shrink();
               return Container(
-                margin: const EdgeInsets.only(top: 8),
+                margin: const EdgeInsets.only(top: AppSizes.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(12),
+                  color: t.surface,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                 ),
                 child: Column(
                   children: c.suggestions
                       .map((name) => ListTile(
                             dense: true,
                             visualDensity: VisualDensity.compact,
-                            title: Text(name,
-                                style: const TextStyle(
-                                    fontSize: 14, color: AppColors.textPrimary)),
-                            trailing: const Icon(Icons.add,
-                                size: 18, color: AppColors.primary),
-                            onTap: () {
-                              c.addIngredient(name);
-                              manual.clear();
-                            },
+                            title: Text(name, style: text.bodyMedium),
+                            trailing: Icon(Icons.add,
+                                size: AppSizes.iconMd, color: t.onBrandTint),
+                            onTap: () => _add(name),
                           ))
                       .toList(),
                 ),
               );
             }),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSizes.smd),
 
-            // chips
             Obx(() {
               if (c.isDetecting.value) {
                 return const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+                  padding: EdgeInsets.all(AppSizes.smd),
+                  child: Center(child: CircularProgressIndicator()),
                 );
               }
               if (c.ingredients.isEmpty) {
-                return const Text('No ingredients added yet',
-                    style: TextStyle(fontSize: 13, color: AppColors.textSecondary));
+                return Text('No ingredients added yet',
+                    style: text.bodySmall?.copyWith(color: t.textSecondary));
               }
               return Wrap(
-                spacing: 8,
-                runSpacing: 8,
+                spacing: AppSizes.sm,
+                runSpacing: AppSizes.sm,
                 children: c.ingredients
                     .map((name) => Chip(
                           label: Text(name),
-                          backgroundColor: AppColors.accentTint,
-                          labelStyle: const TextStyle(color: AppColors.accentDark, fontSize: 13),
-                          deleteIconColor: AppColors.accentDark,
+                          backgroundColor: t.accentTint,
+                          side: BorderSide.none,
+                          labelStyle:
+                              text.labelSmall?.copyWith(color: t.onAccentTint),
+                          deleteIconColor: t.onAccentTint,
                           onDeleted: () => c.removeIngredient(name),
                         ))
                     .toList(),
               );
             }),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSizes.lg),
             Obx(() => PrimaryButton(
                   label: 'Find recipes',
                   loading: c.isSearching.value,
                   onTap: c.findRecipes,
                 )),
 
-            // results
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSizes.lg),
             Obx(() {
               if (!c.searched.value) return const SizedBox.shrink();
               if (c.results.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.all(20),
+                return Padding(
+                  padding: const EdgeInsets.all(AppSizes.lg),
                   child: Center(
                     child: Text('No recipes match those ingredients',
-                        style: TextStyle(color: AppColors.textSecondary)),
+                        style: text.bodyMedium?.copyWith(color: t.textSecondary)),
                   ),
                 );
               }
@@ -230,55 +239,87 @@ class ScanView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (ready.isNotEmpty) ...[
-                    const Text('You can make these now',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500,
-                            color: AppColors.textPrimary)),
-                    const SizedBox(height: 4),
-                    ...ready.map((r) => RecipeCard(
-                          recipe: r,
-                          onTap: () =>
-                              Get.to(() => RecipeDetailsView(recipeId: r['id'])),
-                        )),
-                    const SizedBox(height: 20),
+                    _ResultHeader(
+                      title: 'You can make these now',
+                      count: ready.length,
+                    ),
+                    ..._cards(ready),
+                    const SizedBox(height: AppSizes.lg),
                   ],
                   if (almost.isNotEmpty) ...[
-                    const Text('Almost there',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500,
-                            color: AppColors.textPrimary)),
-                    const Text('A few ingredients short',
-                        style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                    const SizedBox(height: 6),
-                    ...almost.map((r) {
-                      final missing =
-                          (r['missing_names'] as List?)?.cast<String>() ?? [];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RecipeCard(
-                            recipe: r,
-                            onTap: () => Get.to(
-                                () => RecipeDetailsView(recipeId: r['id'])),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 76, bottom: 8),
-                            child: Text(
-                              'Missing: ${missing.take(4).join(', ')}'
-                              '${missing.length > 4 ? ' +${missing.length - 4}' : ''}',
-                              style: const TextStyle(
-                                  fontSize: 11, color: AppColors.warning),
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
+                    _ResultHeader(
+                      title: 'Almost there',
+                      subtitle: 'A few ingredients short',
+                      count: almost.length,
+                    ),
+                    // No separate "Missing: x, y" line any more — RecipeCard
+                    // renders the match meter and names the missing item
+                    // itself whenever the scan RPC returns those fields.
+                    ..._cards(almost),
                   ],
                 ],
               );
             }),
           ],
         ),
+      ),
+    );
+  }
+
+  List<Widget> _cards(List<Map<String, dynamic>> rows) => [
+        for (final r in rows)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSizes.smd),
+            child: RecipeCard(
+              recipe: r,
+              onTap: () => Get.to(() => RecipeDetailsView(recipeId: r['id'])),
+            ),
+          ),
+      ];
+}
+
+class _ResultHeader extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final int count;
+
+  const _ResultHeader({required this.title, this.subtitle, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSizes.smd),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: text.titleLarge?.copyWith(fontSize: 17)),
+                if (subtitle != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(subtitle!,
+                        style: text.bodySmall?.copyWith(color: t.textSecondary)),
+                  ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.sm, vertical: AppSizes.xxs),
+            decoration: BoxDecoration(
+              color: t.successTint,
+              borderRadius: BorderRadius.circular(AppSizes.radiusPill),
+            ),
+            child: Text('$count',
+                style: text.labelSmall?.copyWith(
+                    color: t.onSuccessTint, fontWeight: FontWeight.w700)),
+          ),
+        ],
       ),
     );
   }
