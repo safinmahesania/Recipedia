@@ -7,6 +7,7 @@ import '../../controllers/review_controller.dart';
 import '../../services/cache_service.dart';
 import '../../services/recipe_service.dart';
 import '../../services/share_service.dart';
+import '../../shared/widgets/ingredient_icon.dart';
 import '../../shared/widgets/recipe_image.dart';
 import '../../theme/app_tokens.dart';
 import 'review_rating_view.dart';
@@ -138,20 +139,12 @@ class RecipeDetailsView extends StatelessWidget {
                         final name = (ing?['name'] ?? '') as String;
                         final qty = (ri['quantity'] ?? '') as String;
                         return Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: AppSizes.xs),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: AppSizes.xs + 1),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 7),
-                                child: Container(
-                                  width: 6,
-                                  height: 6,
-                                  decoration: BoxDecoration(
-                                      color: t.brand, shape: BoxShape.circle),
-                                ),
-                              ),
+                              IngredientIconFromRow(
+                                  row: ri as Map<String, dynamic>, size: 22),
                               const SizedBox(width: AppSizes.smd),
                               Expanded(child: Text(name, style: text.bodyLarge)),
                               if (qty.isNotEmpty)

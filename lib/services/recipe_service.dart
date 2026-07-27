@@ -37,7 +37,8 @@ class RecipeService {
     return await supabase
         .from('recipes')
         .select(
-            '*, categories(name), recipe_ingredients(role, quantity, ingredients(name, is_pantry))')
+            '*, categories(name), '
+            'recipe_ingredients(role, quantity, ingredients(name, is_pantry, icon_key, category))')
         .eq('id', recipeId)
         .single();
   }

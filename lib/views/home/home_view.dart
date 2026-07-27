@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/home_controller.dart';
 import '../../controllers/profile_controller.dart';
+import '../../shared/widgets/ingredient_icon.dart';
 import '../../shared/widgets/recipe_card.dart';
 import '../../shared/widgets/section_header.dart';
 import '../../theme/app_tokens.dart';
@@ -243,7 +244,7 @@ class _Chip extends StatelessWidget {
     final t = context.tokens;
     return Container(
       height: AppSizes.chipHeight,
-      padding: const EdgeInsets.only(left: AppSizes.smd, right: AppSizes.sm),
+      padding: const EdgeInsets.only(left: AppSizes.sm, right: AppSizes.sm),
       decoration: BoxDecoration(
         color: t.surfaceRaised,
         border: Border.all(color: t.cardBorder),
@@ -252,6 +253,8 @@ class _Chip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          IngredientIcon(name: label, size: 16, tile: false),
+          const SizedBox(width: AppSizes.xs + 2),
           Text(label, style: Theme.of(context).textTheme.labelSmall),
           const SizedBox(width: AppSizes.xs),
           GestureDetector(

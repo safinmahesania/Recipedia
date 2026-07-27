@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/scan_controller.dart';
+import '../../shared/widgets/ingredient_icon.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/recipe_card.dart';
 import '../../theme/app_tokens.dart';
@@ -169,6 +170,7 @@ class _ScanViewState extends State<ScanView> {
                       .map((name) => ListTile(
                             dense: true,
                             visualDensity: VisualDensity.compact,
+                            leading: IngredientIcon(name: name, size: 22),
                             title: Text(name, style: text.bodyMedium),
                             trailing: Icon(Icons.add,
                                 size: AppSizes.iconMd, color: t.onBrandTint),
@@ -197,6 +199,8 @@ class _ScanViewState extends State<ScanView> {
                 runSpacing: AppSizes.sm,
                 children: c.ingredients
                     .map((name) => Chip(
+                          avatar: IngredientIcon(
+                              name: name, size: 18, tile: false),
                           label: Text(name),
                           backgroundColor: t.accentTint,
                           side: BorderSide.none,

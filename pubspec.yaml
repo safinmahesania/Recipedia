@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # backend
+  flutter_svg: ^2.0.0
   supabase_flutter: ^2.5.0
 
   # state / navigation
@@ -68,6 +69,8 @@ flutter:
         - asset: fonts/Plus_Jakarta_Sans/PlusJakartaSans-ExtraBold.ttf
           weight: 800
 
+  assets:
+    - assets/ing/
+
   # Uncomment when the trained model is added:
-  # assets:
   #   - assets/ml/
