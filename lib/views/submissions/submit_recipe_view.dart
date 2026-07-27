@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
+import '../../theme/app_tokens.dart';
 import '../../controllers/submission_controller.dart';
 import '../../services/image_service.dart';
 import '../../shared/widgets/duration_field.dart';
@@ -96,7 +97,8 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
       // clear confirmation the user cannot miss
       Get.dialog(
         AlertDialog(
-          icon: const Icon(Icons.check_circle, color: AppColors.success, size: 40),
+          icon: Icon(Icons.check_circle,
+              color: context.tokens.onSuccessTint, size: 40),
           title: const Text('Submitted for review'),
           content: const Text(
               'An admin will review your recipe before it goes live. '
@@ -104,7 +106,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
           actions: [
             TextButton(
               onPressed: () => Get.back(),
-              child: const Text('OK', style: TextStyle(color: AppColors.primary)),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -114,12 +116,11 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
     return Scaffold(
+      backgroundColor: t.canvas,
       appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: Text(isEdit ? 'Edit submission' : 'Submit a recipe',
-            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
+        title: Text(isEdit ? 'Edit submission' : 'Add your recipe'),
       ),
       body: Form(
         key: _formKey,
@@ -129,15 +130,23 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSizes.smd),
                 decoration: BoxDecoration(
-                    color: AppColors.primaryTint, borderRadius: BorderRadius.circular(10)),
-                child: const Row(children: [
-                  Icon(Icons.info_outline, size: 18, color: AppColors.primary),
-                  SizedBox(width: 8),
+                  color: t.brandTint,
+                  borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                ),
+                child: Row(children: [
+                  Icon(Icons.info_outline,
+                      size: AppSizes.iconMd, color: t.onBrandTint),
+                  const SizedBox(width: AppSizes.sm),
                   Expanded(
-                    child: Text('Your recipe is reviewed by an admin before it goes live.',
-                        style: TextStyle(fontSize: 12, color: AppColors.primary)),
+                    child: Text(
+                      'Your recipe is reviewed by an admin before it goes live.',
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          ?.copyWith(color: t.onBrandTint),
+                    ),
                   ),
                 ]),
               ),
@@ -193,10 +202,13 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
                   validator: (v) => (v == null || v.trim().isEmpty)
                       ? 'Add at least one main ingredient'
                       : null),
-              const Padding(
-                padding: EdgeInsets.only(top: 4),
+              Padding(
+                padding: const EdgeInsets.only(top: AppSizes.xs),
                 child: Text('These decide which scans match your recipe.',
-                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(color: t.textSecondary)),
               ),
               const SizedBox(height: 16),
 
@@ -221,27 +233,20 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
   }
 
   // ---------- helpers ----------
-  Widget _label(String t) => Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: Text(t,
-            style: const TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary)),
+  Widget _label(String label) => Builder(
+        builder: (context) => Padding(
+          padding: const EdgeInsets.only(bottom: AppSizes.sm),
+          child: Text(label,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(color: context.tokens.textSecondary)),
+        ),
       );
 
-  InputDecoration _decoration(String hint) => InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor: AppColors.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary)),
-        errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.error)),
-      );
+  /// Fill, radius, focus ring and error styling all come from
+  /// inputDecorationTheme now, so this only carries the hint.
+  InputDecoration _decoration(String hint) => InputDecoration(hintText: hint);
 
   Widget _field(TextEditingController ctrl, String hint,
           {String? Function(String?)? validator, int maxLines = 1}) =>
@@ -276,7 +281,6 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
               onPressed: () => _pick(ImageSource.gallery),
               icon: const Icon(Icons.image_outlined, size: 18),
               label: const Text('Gallery'),
-              style: _outlined(),
             ),
           ),
           const SizedBox(width: 8),
@@ -285,7 +289,6 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
               onPressed: () => _pick(ImageSource.camera),
               icon: const Icon(Icons.camera_alt_outlined, size: 18),
               label: const Text('Camera'),
-              style: _outlined(),
             ),
           ),
         ]),
@@ -299,16 +302,18 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
     );
   }
 
-  Widget _emptyImage() => Container(
-        height: 160,
-        decoration: BoxDecoration(
-            color: AppColors.surface, borderRadius: BorderRadius.circular(12)),
-        child: const Center(
-          child: Icon(Icons.add_a_photo_outlined, size: 32, color: AppColors.border),
+  Widget _emptyImage() => Builder(
+        builder: (context) => Container(
+          height: 160,
+          decoration: BoxDecoration(
+            color: context.tokens.surface,
+            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+          ),
+          child: Center(
+            child: Icon(Icons.add_a_photo_outlined,
+                size: 32, color: context.tokens.textTertiary),
+          ),
         ),
       );
 
-  ButtonStyle _outlined() => OutlinedButton.styleFrom(
-      foregroundColor: AppColors.textPrimary,
-      side: const BorderSide(color: AppColors.border));
 }

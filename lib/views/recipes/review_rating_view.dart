@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../controllers/review_controller.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../theme/app_tokens.dart';
 
-/// Rate + review a recipe, and read others' reviews.
+/// Rate and review a recipe, and read what others said.
 class ReviewRatingView extends StatefulWidget {
   final String recipeId;
   final String recipeTitle;
-  const ReviewRatingView({super.key, required this.recipeId, this.recipeTitle = ''});
+  const ReviewRatingView(
+      {super.key, required this.recipeId, this.recipeTitle = ''});
 
   @override
   State<ReviewRatingView> createState() => _ReviewRatingViewState();
@@ -16,7 +18,7 @@ class ReviewRatingView extends StatefulWidget {
 
 class _ReviewRatingViewState extends State<ReviewRatingView> {
   final ReviewController c = Get.put(ReviewController());
-  final comment = TextEditingController();
+  final _comment = TextEditingController();
   int rating = 0;
 
   @override
@@ -26,107 +28,152 @@ class _ReviewRatingViewState extends State<ReviewRatingView> {
   }
 
   @override
+  void dispose() {
+    _comment.dispose(); // was leaking: created in State, never released
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        foregroundColor: AppColors.textPrimary,
-        title: const Text('Reviews',
-            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500)),
-      ),
+      backgroundColor: t.canvas,
+      appBar: AppBar(title: const Text('Reviews')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSizes.screenPad),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (widget.recipeTitle.isNotEmpty)
-              Text(widget.recipeTitle,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-            const SizedBox(height: 6),
+              Text(widget.recipeTitle, style: text.titleLarge),
+            const SizedBox(height: AppSizes.sm),
             Obx(() => Row(children: [
                   ...List.generate(
-                      5,
-                      (i) => Icon(
-                          i < c.average.value.round() ? Icons.star : Icons.star_border,
-                          size: 18, color: AppColors.star)),
-                  const SizedBox(width: 8),
+                    5,
+                    (i) => Icon(
+                      i < c.average.value.round()
+                          ? Icons.star
+                          : Icons.star_border,
+                      size: AppSizes.iconMd,
+                      color: t.star,
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.sm),
                   Text(c.average.value.toStringAsFixed(1),
-                      style: const TextStyle(color: AppColors.textSecondary)),
+                      style: text.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600)),
                   Text('  (${c.reviews.length})',
-                      style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      style: text.labelSmall?.copyWith(color: t.textSecondary)),
                 ])),
-            const SizedBox(height: 24),
 
-            const Text('Your rating',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSizes.lg),
+            Text('Your rating', style: text.titleLarge?.copyWith(fontSize: 17)),
+            const SizedBox(height: AppSizes.sm),
             Row(
               children: List.generate(
                 5,
                 (i) => IconButton(
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 40),
+                  constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+                  tooltip: '${i + 1} star${i == 0 ? '' : 's'}',
                   icon: Icon(i < rating ? Icons.star : Icons.star_border,
-                      size: 30, color: AppColors.star),
+                      size: 30, color: t.star),
                   onPressed: () => setState(() => rating = i + 1),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSizes.smd),
             TextField(
-              controller: comment,
+              controller: _comment,
               maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Share your thoughts (optional)',
-                filled: true,
-                fillColor: AppColors.surface,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-              ),
+              decoration: const InputDecoration(
+                  hintText: 'Share your thoughts (optional)'),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.md),
             Obx(() => PrimaryButton(
                   label: 'Submit review',
                   loading: c.isSubmitting.value,
-                  onTap: () => c.submit(widget.recipeId, rating, comment.text),
+                  onTap: () => c.submit(widget.recipeId, rating, _comment.text),
                 )),
 
-            const SizedBox(height: 28),
-            const Text('All reviews',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSizes.xl),
+            Text('All reviews', style: text.titleLarge?.copyWith(fontSize: 17)),
+            const SizedBox(height: AppSizes.smd),
             Obx(() {
               if (c.isLoading.value) {
-                return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+                return const Center(child: CircularProgressIndicator());
               }
               if (c.reviews.isEmpty) {
-                return const Text('No reviews yet',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 13));
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSizes.lg),
+                  child: Center(
+                    child: Column(children: [
+                      Icon(Icons.rate_review_outlined,
+                          size: AppSizes.iconXl, color: t.borderStrong),
+                      const SizedBox(height: AppSizes.sm),
+                      Text('No reviews yet',
+                          style: text.bodyMedium
+                              ?.copyWith(color: t.textSecondary)),
+                      const SizedBox(height: 2),
+                      Text('Be the first to cook it and say how it went.',
+                          textAlign: TextAlign.center,
+                          style: text.bodySmall
+                              ?.copyWith(color: t.textTertiary)),
+                    ]),
+                  ),
+                );
               }
               return Column(
                 children: c.reviews.map((r) {
-                  final name = (r['profiles'] as Map<String, dynamic>?)?['name'] ?? 'User';
-                  final stars = r['rating'] ?? 0;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  final name =
+                      (r['profiles'] as Map<String, dynamic>?)?['name'] ?? 'User';
+                  final stars = (r['rating'] ?? 0) as int;
+                  final comment = (r['comment'] ?? '').toString();
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: AppSizes.smd),
+                    padding: const EdgeInsets.all(AppSizes.smd),
+                    decoration: BoxDecoration(
+                      color: t.surfaceRaised,
+                      border: Border.all(color: t.cardBorder),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                      boxShadow: t.cardShadow,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(children: [
-                          Text(name,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
-                          const Spacer(),
+                          CircleAvatar(
+                            radius: 14,
+                            backgroundColor: t.brandTint,
+                            child: Text(
+                              name.toString().isEmpty
+                                  ? '?'
+                                  : name.toString()[0].toUpperCase(),
+                              style: text.labelSmall
+                                  ?.copyWith(color: t.onBrandTint),
+                            ),
+                          ),
+                          const SizedBox(width: AppSizes.sm),
+                          Expanded(
+                            child: Text('$name',
+                                style: text.bodyMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600)),
+                          ),
                           ...List.generate(
-                              5,
-                              (s) => Icon(s < stars ? Icons.star : Icons.star_border,
-                                  size: 13, color: AppColors.star)),
+                            5,
+                            (s) => Icon(
+                                s < stars ? Icons.star : Icons.star_border,
+                                size: AppSizes.iconXs + 2,
+                                color: t.star),
+                          ),
                         ]),
-                        if ((r['comment'] ?? '').toString().isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(r['comment'],
-                              style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                        if (comment.isNotEmpty) ...[
+                          const SizedBox(height: AppSizes.sm),
+                          Text(comment,
+                              style: text.bodyMedium
+                                  ?.copyWith(color: t.textSecondary, height: 1.45)),
                         ],
                       ],
                     ),

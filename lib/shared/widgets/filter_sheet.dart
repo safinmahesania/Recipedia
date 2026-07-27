@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
 import '../../controllers/recipe_controller.dart';
+import '../../theme/app_tokens.dart';
 
-/// Bottom sheet for combining category + cuisine + diet filters.
-/// Counts come from the database so the user can see how much each option holds.
+/// Bottom sheet combining category, cuisine and diet.
+/// Counts come from the database so the user can see how much each option holds
+/// before committing to it.
 class FilterSheet extends StatelessWidget {
   const FilterSheet({super.key});
 
@@ -12,8 +14,9 @@ class FilterSheet extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: context.tokens.surfaceRaised,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSizes.radiusXl)),
       ),
       builder: (_) => const FilterSheet(),
     );
@@ -22,6 +25,8 @@ class FilterSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final RecipeController c = Get.find<RecipeController>();
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -30,21 +35,21 @@ class FilterSheet extends StatelessWidget {
       expand: false,
       builder: (_, scrollController) => Column(
         children: [
-          // grabber
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            width: 40, height: 4,
+            margin: const EdgeInsets.symmetric(vertical: AppSizes.smd),
+            width: 40,
+            height: 4,
             decoration: BoxDecoration(
-                color: AppColors.border, borderRadius: BorderRadius.circular(2)),
+              color: t.borderStrong,
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 12, 4),
+            padding: const EdgeInsets.fromLTRB(
+                AppSizes.screenPad, 0, AppSizes.smd, AppSizes.xs),
             child: Row(
               children: [
-                const Text('Filters',
-                    style: TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary)),
+                Text('Filters', style: text.titleLarge),
                 const Spacer(),
                 Obx(() => c.activeFilterCount > 0
                     ? TextButton(
@@ -52,45 +57,49 @@ class FilterSheet extends StatelessWidget {
                           c.clearFilters();
                           Navigator.pop(context);
                         },
-                        child: const Text('Clear all',
-                            style: TextStyle(color: AppColors.primary)),
+                        child: const Text('Clear all'),
                       )
                     : const SizedBox.shrink()),
                 IconButton(
-                  icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                  icon: Icon(Icons.close, color: t.textSecondary),
+                  tooltip: 'Close',
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.border),
+          Divider(height: 1, color: t.border),
           Expanded(
             child: ListView(
               controller: scrollController,
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+              padding: const EdgeInsets.fromLTRB(AppSizes.screenPad,
+                  AppSizes.md, AppSizes.screenPad, AppSizes.xl),
               children: [
-                _section('Diet'),
-                Obx(() => _chips(
+                const _Section('Diet'),
+                Obx(() => _Chips(
                       options: c.diets
-                          .map((d) => _Opt(d['value'] as String, d['recipe_count'] as int))
+                          .map((d) => _Opt(
+                              d['value'] as String, d['recipe_count'] as int))
                           .toList(),
                       selected: c.diet.value,
                       onTap: (o) => c.setDiet(o?.label),
                     )),
-                const SizedBox(height: 24),
-                _section('Course'),
-                Obx(() => _chips(
+                const SizedBox(height: AppSizes.lg),
+                const _Section('Course'),
+                Obx(() => _Chips(
                       options: c.categories
-                          .map((cat) => _Opt(cat['name'] as String, null, id: cat['id'] as String))
+                          .map((cat) => _Opt(cat['name'] as String, null,
+                              id: cat['id'] as String))
                           .toList(),
                       selected: c.categoryName.value,
                       onTap: (o) => c.setCategory(o?.id, o?.label),
                     )),
-                const SizedBox(height: 24),
-                _section('Cuisine'),
-                Obx(() => _chips(
+                const SizedBox(height: AppSizes.lg),
+                const _Section('Cuisine'),
+                Obx(() => _Chips(
                       options: c.cuisines
-                          .map((cu) => _Opt(cu['value'] as String, cu['recipe_count'] as int))
+                          .map((cu) => _Opt(
+                              cu['value'] as String, cu['recipe_count'] as int))
                           .toList(),
                       selected: c.cuisine.value,
                       onTap: (o) => c.setCuisine(o?.label),
@@ -102,43 +111,63 @@ class FilterSheet extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _section(String title) => Padding(
-        padding: const EdgeInsets.only(bottom: 10),
+class _Section extends StatelessWidget {
+  final String title;
+  const _Section(this.title);
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: AppSizes.smd),
         child: Text(title,
-            style: const TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 16)),
       );
+}
 
-  /// One callback shape for every section: passes the tapped option,
-  /// or null when the user taps the selected chip to clear it.
-  Widget _chips({
-    required List<_Opt> options,
-    required String? selected,
-    required void Function(_Opt?) onTap,
-  }) {
+/// One callback shape for every section: passes the tapped option, or null when
+/// the user taps the selected chip to clear it.
+class _Chips extends StatelessWidget {
+  final List<_Opt> options;
+  final String? selected;
+  final void Function(_Opt?) onTap;
+
+  const _Chips({
+    required this.options,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+
     if (options.isEmpty) {
-      return const Text('—', style: TextStyle(color: AppColors.textSecondary));
+      return Text('—', style: text.bodyMedium?.copyWith(color: t.textSecondary));
     }
+
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: AppSizes.sm,
+      runSpacing: AppSizes.sm,
       children: options.map((o) {
         final isSelected = selected == o.label;
         return GestureDetector(
-          // tapping the selected chip clears that filter
           onTap: () => onTap(isSelected ? null : o),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          child: AnimatedContainer(
+            duration: AppSizes.durFast,
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.md, vertical: AppSizes.sm),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary : AppColors.surface,
-              borderRadius: BorderRadius.circular(20),
+              // brandFill, not brand: white on #FF4F5A is 3.14:1 and fails AA.
+              color: isSelected ? t.brandFill : t.surface,
+              borderRadius: BorderRadius.circular(AppSizes.radiusPill),
             ),
             child: Text(
               o.count == null ? o.label : '${o.label}  ${o.count}',
-              style: TextStyle(
-                fontSize: 13,
-                color: isSelected ? Colors.white : AppColors.textSecondary,
+              style: text.labelSmall?.copyWith(
+                color: isSelected ? t.onBrandFill : t.textSecondary,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
               ),
             ),
           ),

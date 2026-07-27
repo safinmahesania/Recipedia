@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
+import '../../theme/app_tokens.dart';
 
 /// Cook-time input: type a number, or step it with +/-.
 /// The unit ("min") is fixed and shown inline, so the user never types it.
@@ -59,10 +60,12 @@ class _DurationFieldState extends State<DurationField> {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        color: t.surface,
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
       ),
       child: Row(
         children: [
@@ -79,15 +82,14 @@ class _DurationFieldState extends State<DurationField> {
                 border: InputBorder.none,
                 isDense: true,
               ),
-              style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+              style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           // fixed unit — user never types this
-          const Padding(
-            padding: EdgeInsets.only(right: 12),
+          Padding(
+            padding: const EdgeInsets.only(right: AppSizes.smd),
             child: Text('min',
-                style: TextStyle(fontSize: 14, color: AppColors.textSecondary)),
+                style: text.bodyMedium?.copyWith(color: t.textSecondary)),
           ),
           _stepButton(Icons.add, () => _bump(widget.step)),
         ],
@@ -95,14 +97,17 @@ class _DurationFieldState extends State<DurationField> {
     );
   }
 
-  Widget _stepButton(IconData icon, VoidCallback onTap) => Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Icon(icon, size: 20, color: AppColors.primary),
+  Widget _stepButton(IconData icon, VoidCallback onTap) => Builder(
+        builder: (context) => Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Icon(icon,
+                  size: AppSizes.iconMd, color: context.tokens.brand),
+            ),
           ),
         ),
       );
