@@ -132,7 +132,7 @@ class _CollectionBar extends StatelessWidget {
           ),
         );
 
-    return SizedBox(
+    return Obx(() => SizedBox(
       height: AppSizes.chipHeight,
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -168,7 +168,7 @@ class _CollectionBar extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   void _newCollectionSheet(BuildContext context, FavoritesController c) {
@@ -224,7 +224,7 @@ class _SortRow extends StatelessWidget {
       FavoriteSort.cookTime: 'Quickest first',
     };
 
-    return Row(
+    return Obx(() => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(labels[controller.sort.value]!,
@@ -246,7 +246,7 @@ class _SortRow extends StatelessWidget {
           ),
         ),
       ],
-    );
+    ));
   }
 }
 

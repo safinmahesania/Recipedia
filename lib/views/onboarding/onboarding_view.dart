@@ -71,9 +71,12 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
-    final step = controller.step.value;
 
-    return Padding(
+    // Own Obx: this widget's build runs outside the parent's tracking scope,
+    // so reading step.value up there would never subscribe.
+    return Obx(() {
+      final step = controller.step.value;
+      return Padding(
       padding: const EdgeInsets.fromLTRB(
           AppSizes.screenPad, AppSizes.md, AppSizes.screenPad, 0),
       child: Column(
@@ -127,6 +130,7 @@ class _Header extends StatelessWidget {
         ],
       ),
     );
+    });
   }
 }
 
@@ -140,7 +144,7 @@ class _DietStep extends StatelessWidget {
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
 
-    return ListView(
+    return Obx(() => ListView(
       padding: const EdgeInsets.fromLTRB(AppSizes.screenPad, AppSizes.lg,
           AppSizes.screenPad, AppSizes.md),
       children: [
@@ -173,7 +177,7 @@ class _DietStep extends StatelessWidget {
           ),
         ],
       ],
-    );
+    ));
   }
 }
 
@@ -264,7 +268,7 @@ class _AllergyStep extends StatelessWidget {
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
 
-    return ListView(
+    return Obx(() => ListView(
       padding: const EdgeInsets.fromLTRB(AppSizes.screenPad, AppSizes.lg,
           AppSizes.screenPad, AppSizes.md),
       children: [
@@ -393,7 +397,7 @@ class _AllergyStep extends StatelessWidget {
           ]),
         ),
       ],
-    );
+    ));
   }
 }
 
@@ -407,7 +411,7 @@ class _StapleStep extends StatelessWidget {
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
 
-    return ListView(
+    return Obx(() => ListView(
       padding: const EdgeInsets.fromLTRB(AppSizes.screenPad, AppSizes.lg,
           AppSizes.screenPad, AppSizes.md),
       children: [
@@ -468,7 +472,7 @@ class _StapleStep extends StatelessWidget {
           ),
         ],
       ],
-    );
+    ));
   }
 }
 
@@ -572,10 +576,10 @@ class _Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final onDiet = controller.step.value == 0;
-    final canAdvance = !onDiet || controller.diet.value != null;
-
-    return Padding(
+    return Obx(() {
+      final onDiet = controller.step.value == 0;
+      final canAdvance = !onDiet || controller.diet.value != null;
+      return Padding(
       padding: const EdgeInsets.fromLTRB(AppSizes.screenPad, AppSizes.sm,
           AppSizes.screenPad, AppSizes.md),
       child: Row(children: [
@@ -601,5 +605,6 @@ class _Footer extends StatelessWidget {
         ),
       ]),
     );
+    });
   }
 }

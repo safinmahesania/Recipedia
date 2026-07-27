@@ -331,10 +331,10 @@ class _Empty extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
-    final filtered = controller.activeFilterCount > 0;
-    final term = controller.searchTerm.value;
-
-    return ListView(
+    return Obx(() {
+      final filtered = controller.activeFilterCount > 0;
+      final term = controller.searchTerm.value;
+      return ListView(
       // Stays scrollable so pull-to-refresh still works when empty.
       padding: const EdgeInsets.all(AppSizes.xl),
       children: [
@@ -365,5 +365,6 @@ class _Empty extends StatelessWidget {
         ],
       ],
     );
+    });
   }
 }
