@@ -197,7 +197,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                       onChanged: c.search,
                       decoration: const InputDecoration(
                         hintText: 'Search all recipes',
-                        prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
+                        prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconInput),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),

@@ -70,16 +70,19 @@ class ProfileView extends StatelessWidget {
                             right: -2,
                             bottom: -2,
                             child: Container(
-                              width: 26,
-                              height: 26,
+                              width: 22,
+                              height: 22,
+                              alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: t.brandFill,
                                 shape: BoxShape.circle,
                                 border:
                                     Border.all(color: t.canvas, width: 2),
                               ),
-                              child: AppIcon('camera_alt', fallback: Icons.camera_alt,
-                                  size: 13, color: t.onBrandFill),
+                              child: AppIcon('camera_alt',
+                                  fallback: Icons.camera_alt,
+                                  size: 11,
+                                  color: t.onBrandFill),
                             ),
                           ),
                         ],
@@ -104,17 +107,30 @@ class ProfileView extends StatelessWidget {
                     // Editing lives on the identity it edits, rather than
                     // buried in a list below it.
                     Padding(
-                      padding: const EdgeInsets.only(top: AppSizes.xs),
-                      child: OutlinedButton.icon(
-                        onPressed: () => Get.to(() => const EditProfileView()),
-                        icon: const AppIcon('edit_outlined',
-                            fallback: Icons.edit_outlined,
-                            size: AppSizes.iconSm),
-                        label: const Text('Edit profile'),
-                        style: OutlinedButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.only(top: AppSizes.smd),
+                      child: GestureDetector(
+                        onTap: () => Get.to(() => const EditProfileView()),
+                        child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: AppSizes.md),
+                              horizontal: AppSizes.md, vertical: AppSizes.sm),
+                          decoration: BoxDecoration(
+                            color: t.surface,
+                            borderRadius:
+                                BorderRadius.circular(AppSizes.radiusPill),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AppIcon('edit_outlined',
+                                  fallback: Icons.edit_outlined,
+                                  size: AppSizes.iconSm,
+                                  color: t.textSecondary),
+                              const SizedBox(width: AppSizes.sm),
+                              Text('Edit profile',
+                                  style: text.labelMedium
+                                      ?.copyWith(color: t.textSecondary)),
+                            ],
+                          ),
                         ),
                       ),
                     ),

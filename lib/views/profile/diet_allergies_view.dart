@@ -75,7 +75,7 @@ class _DietAllergiesViewState extends State<DietAllergiesView> {
               onChanged: c.search,
               decoration: const InputDecoration(
                 hintText: 'Search an ingredient',
-                prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
+                prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconInput),
               ),
             ),
             if (c.searchResults.isNotEmpty) ...[

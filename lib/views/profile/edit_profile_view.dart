@@ -159,8 +159,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                     child: GestureDetector(
                       onTap: _photoSheet,
                       child: Container(
-                        width: 32,
-                        height: 32,
+                        width: 26,
+                        height: 26,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: t.brandFill,
@@ -169,7 +169,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ),
                         child: AppIcon('camera_alt',
                             fallback: Icons.camera_alt,
-                            size: 15,
+                            size: 12,
                             color: t.onBrandFill),
                       ),
                     ),

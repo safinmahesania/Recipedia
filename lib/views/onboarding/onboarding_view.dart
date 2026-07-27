@@ -283,7 +283,7 @@ class _AllergyStep extends StatelessWidget {
           onChanged: controller.search,
           decoration: const InputDecoration(
             hintText: 'Search an ingredient',
-            prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
+            prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconInput),
           ),
         ),
         if (controller.searchResults.isNotEmpty) ...[
