@@ -123,11 +123,46 @@ class AdminService {
         .order('created_at', ascending: false);
   }
 
+  /// Reports are polymorphic: target_type is 'recipe' | 'review' | 'user' and
+  /// target_id is a bare uuid, so there is no foreign key PostgREST can embed
+  /// — asking for `recipes(...)` here fails with PGRST200. The reporter embed
+  /// works because reporter_id does have a real FK to profiles.
+  ///
+  /// Titles for recipe-targeted reports are resolved in a second query and
+  /// merged in as `target_title`, so a moderator sees what was reported
+  /// without opening each one.
   Future<List<Map<String, dynamic>>> getReports() async {
-    return await supabase
+    final rows = await supabase
         .from('reports')
-        .select('*, profiles(name), recipes(id, title)')
+        .select('*, profiles(name)')
         .order('created_at', ascending: false);
+    final reports = List<Map<String, dynamic>>.from(rows as List);
+
+    final recipeIds = <String>{
+      for (final r in reports)
+        if (r['target_type'] == 'recipe' && r['target_id'] != null)
+          r['target_id'] as String
+    };
+    if (recipeIds.isEmpty) return reports;
+
+    try {
+      final titleRows = await supabase
+          .from('recipes')
+          .select('id, title')
+          .inFilter('id', recipeIds.toList());
+      final titles = {
+        for (final t in (titleRows as List))
+          (t as Map)['id'] as String: (t['title'] ?? '') as String
+      };
+      for (final r in reports) {
+        if (r['target_type'] == 'recipe') {
+          r['target_title'] = titles[r['target_id']];
+        }
+      }
+    } catch (_) {
+      // Titles are a nicety; a report is still actionable without one.
+    }
+    return reports;
   }
 
   Future<void> resolveReport(String reportId, String status) async {

@@ -142,10 +142,8 @@ class _ReportsViewState extends State<ReportsView> {
                       ),
                     ]),
                     const SizedBox(height: AppSizes.smd),
-                    if (((r['recipes'] as Map?)?['title'] ?? '')
-                        .toString()
-                        .isNotEmpty) ...[
-                      Text(((r['recipes'] as Map)['title']) as String,
+                    if ((r['target_title'] ?? '').toString().isNotEmpty) ...[
+                      Text((r['target_title']) as String,
                           style: text.titleMedium),
                       const SizedBox(height: AppSizes.xs),
                     ],
@@ -169,7 +167,8 @@ class _ReportsViewState extends State<ReportsView> {
                             child: const Text('Dismiss'),
                           ),
                         ),
-                        if ((r['recipes'] as Map?)?['id'] != null) ...[
+                        if (r['target_type'] == 'recipe' &&
+                            r['target_id'] != null) ...[
                           const SizedBox(width: AppSizes.sm),
                           Expanded(
                             child: OutlinedButton(
@@ -180,8 +179,7 @@ class _ReportsViewState extends State<ReportsView> {
                               // Judging a report without seeing what was
                               // reported is guesswork.
                               onPressed: () => Get.to(() => RecipeDetailsView(
-                                  recipeId:
-                                      (r['recipes'] as Map)['id'] as String)),
+                                  recipeId: r['target_id'] as String)),
                               child: const Text('Open recipe'),
                             ),
                           ),
