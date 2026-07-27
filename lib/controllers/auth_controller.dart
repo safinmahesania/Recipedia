@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/auth_service.dart';
 import '../constants/app_strings.dart';
+import '../services/onboarding_service.dart';
 import '../views/auth/login_view.dart';
+import '../views/onboarding/onboarding_view.dart';
 import '../views/home/main_shell.dart';
 
 /// The "C": auth state + orchestration. Views only call these + read isLoading.
@@ -18,7 +20,10 @@ class AuthController extends GetxController {
         _error(AppStrings.loginFailed);
         return;
       }
-      Get.offAll(() => const MainShell());
+      final uid = _service.currentUser?.id;
+      final needs =
+          uid == null ? false : await OnboardingService().needsOnboarding(uid);
+      Get.offAll(() => needs ? const OnboardingView() : const MainShell());
     } on AuthException catch (e) {
       _error(e.message);
     } catch (_) {

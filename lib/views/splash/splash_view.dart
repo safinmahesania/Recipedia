@@ -5,6 +5,8 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_sizes.dart';
 import '../../constants/app_strings.dart';
 import '../../services/auth_service.dart';
+import '../../services/onboarding_service.dart';
+import '../onboarding/onboarding_view.dart';
 import '../auth/login_view.dart';
 import '../home/main_shell.dart';
 
@@ -25,13 +27,22 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), _route);
+    Timer(const Duration(seconds: 2), () => _route());
   }
 
-  void _route() {
+  Future<void> _route() async {
     if (!mounted) return;
-    final loggedIn = AuthService().currentUser != null;
-    Get.offAll(() => loggedIn ? const MainShell() : const LoginView());
+    final user = AuthService().currentUser;
+    if (user == null) {
+      Get.offAll(() => const LoginView());
+      return;
+    }
+    // A null diet_preference means this profile has never been through
+    // onboarding. Failures return false, so a bad connection lands you in the
+    // app rather than trapping you in setup.
+    final needs = await OnboardingService().needsOnboarding(user.id);
+    if (!mounted) return;
+    Get.offAll(() => needs ? const OnboardingView() : const MainShell());
   }
 
   @override
