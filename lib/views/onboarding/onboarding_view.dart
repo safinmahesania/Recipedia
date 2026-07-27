@@ -102,25 +102,29 @@ class _Header extends StatelessWidget {
                 )
               else
                 const SizedBox(width: 38, height: 38),
-              Text('Step ${step + 1} of ${OnboardingController.totalSteps}',
+              Text('Step ${step + 1 + OnboardingController.stepOffset} of '
+                  '${OnboardingController.totalWithAccount}',
                   style: text.labelSmall?.copyWith(color: t.textSecondary)),
             ],
           ),
           const SizedBox(height: AppSizes.smd),
           Row(
             children: List.generate(
-              OnboardingController.totalSteps,
+              OnboardingController.totalWithAccount,
               (i) => Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
-                      right: i == OnboardingController.totalSteps - 1
+                      right: i == OnboardingController.totalWithAccount - 1
                           ? 0
                           : AppSizes.xs + 1),
                   child: AnimatedContainer(
                     duration: AppSizes.durBase,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: i <= step ? t.brandFill : t.surface,
+                      // Step 1 (account) is already behind us on this screen.
+                      color: i <= step + OnboardingController.stepOffset
+                          ? t.brandFill
+                          : t.surface,
                       borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                     ),
                   ),
@@ -464,8 +468,11 @@ class _StapleStep extends StatelessWidget {
               const SizedBox(width: AppSizes.smd),
               Expanded(
                 child: Text(
-                  '${controller.staples.length} staples marked. Recipes that '
-                  'only needed these now count as ready to cook.',
+                  controller.payoff.value > 0
+                      ? 'With ${controller.staples.length} staples marked, '
+                          '${controller.payoff.value} more recipes already '
+                          'count as ready to cook.'
+                      : '${controller.staples.length} staples marked.',
                   style: text.bodyMedium?.copyWith(color: t.onAccentTint),
                 ),
               ),

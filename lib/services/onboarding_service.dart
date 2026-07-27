@@ -88,6 +88,36 @@ class OnboardingService {
     ]);
   }
 
+  /// How many recipes become fully covered once these staples stop counting as
+  /// missing. Counts recipes whose ONLY outstanding core ingredients are in the
+  /// chosen set — which is exactly what marking them as staples changes.
+  Future<int> staplePayoff(List<String> ingredientIds) async {
+    if (ingredientIds.isEmpty) return 0;
+    try {
+      final rows = await supabase
+          .from('recipe_ingredients')
+          .select('recipe_id, ingredient_id')
+          .eq('role', 'core');
+      final byRecipe = <String, List<String>>{};
+      for (final r in (rows as List)) {
+        final m = r as Map;
+        (byRecipe[m['recipe_id'] as String] ??= [])
+            .add(m['ingredient_id'] as String);
+      }
+      final chosen = ingredientIds.toSet();
+      var n = 0;
+      for (final ings in byRecipe.values) {
+        // Every core ingredient covered by a staple, and at least one of them
+        // actually is a staple — otherwise a recipe with no core ingredients
+        // would count.
+        if (ings.isNotEmpty && ings.every(chosen.contains)) n++;
+      }
+      return n;
+    } catch (_) {
+      return 0;
+    }
+  }
+
   Future<void> saveStaples(String uid, List<String> ingredientIds) async {
     await supabase.from('user_pantry_staples').delete().eq('user_id', uid);
     if (ingredientIds.isEmpty) return;

@@ -11,7 +11,11 @@ class OnboardingController extends GetxController {
   final AuthService _auth = AuthService();
 
   final step = 0.obs;
-  static const totalSteps = 3; // diet, allergies, staples
+  /// Diet, allergies, staples — steps 2 through 4. Account creation is step 1
+  /// and lives on the signup screen, so the bar counts four throughout.
+  static const totalSteps = 3;
+  static const stepOffset = 1;
+  static const totalWithAccount = totalSteps + stepOffset;
 
   final isLoading = false.obs;
   final isSaving = false.obs;
@@ -64,8 +68,10 @@ class OnboardingController extends GetxController {
 
   bool isAllergy(String id) => allergies.any((a) => a['id'] == id);
 
-  void toggleStaple(String id) =>
-      staples.contains(id) ? staples.remove(id) : staples.add(id);
+  void toggleStaple(String id) {
+    staples.contains(id) ? staples.remove(id) : staples.add(id);
+    _recountPayoff();
+  }
 
   Future<void> search(String q) async {
     if (q.trim().length < 2) {
@@ -75,10 +81,18 @@ class OnboardingController extends GetxController {
     searchResults.value = await _service.searchIngredients(q);
   }
 
-  /// How many more recipes count as ready once these staples stop being
-  /// treated as missing. Uses the real staple count rather than a made-up
-  /// number, because a promise the app cannot keep is worse than no promise.
-  int get staplePayoff => staples.length * 42;
+  /// Recipes that become ready once these staples are marked. Counted against
+  /// the real catalogue rather than estimated — a number invented to sell a
+  /// setting is a promise the app cannot keep.
+  final payoff = 0.obs;
+
+  Future<void> _recountPayoff() async {
+    if (staples.isEmpty) {
+      payoff.value = 0;
+      return;
+    }
+    payoff.value = await _service.staplePayoff(staples.toList());
+  }
 
   Future<bool> saveCurrentStep() async {
     final uid = _uid;

@@ -42,13 +42,12 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: AppSizes.xl),
-              Text(AppStrings.appName,
-                  textAlign: TextAlign.center,
-                  style: text.displayLarge?.copyWith(color: t.brand)),
-              const SizedBox(height: AppSizes.xs + 2),
-              Text('Log in to continue',
-                  textAlign: TextAlign.center,
+              const SizedBox(height: AppSizes.lg),
+              // Left-aligned like every other screen. A centred wordmark read
+              // as a splash rather than the top of a form.
+              Text('Welcome back', style: text.headlineMedium),
+              const SizedBox(height: AppSizes.sm),
+              Text('Log in to pick up where you left off.',
                   style: text.bodyMedium?.copyWith(color: t.textSecondary)),
               const SizedBox(height: AppSizes.xl),
               AppTextField(
@@ -103,12 +102,12 @@ class _LoginViewState extends State<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account? ",
+                  Text('New here? ',
                       style:
                           text.bodySmall?.copyWith(color: t.textSecondary)),
                   GestureDetector(
                     onTap: () => Get.to(() => const SignupView()),
-                    child: Text('Sign up',
+                    child: Text('Create account',
                         style:
                             text.labelMedium?.copyWith(color: t.onBrandTint)),
                   ),

@@ -40,10 +40,10 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [x] Welcome screen
 - [x] Mail-sent screen with resend cooldown
 - [x] Splash routes on session and onboarding state
-- [ ] **Login copy matches kit** — "Welcome back", "Log in to pick up where you left off.", "New here?"
-- [ ] **Signup as onboarding step 1 of 4** — kit treats account creation as part of onboarding
-- [ ] **Password strength meter** on signup
-- [ ] **Terms and Privacy checkbox** on signup
+- [x] Login copy matches kit — "Welcome back", "Log in to pick up where you left off.", "New here?"
+- [x] Signup as onboarding step 1 of 4
+- [x] Password strength meter on signup
+- [~] Terms and Privacy checkbox on signup — gates the button; links inert until a policy is hosted and url_launcher added
 - [ ] Google sign-in — needs OAuth credentials
 - [ ] Apple sign-in — needs OAuth credentials
 - [ ] Password reset deep link handling
@@ -56,8 +56,8 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [x] Confirmation step with summary stats
 - [x] Saves per step, not batched
 - [x] Routes on null `diet_preference`
-- [ ] **Relabel to "Step N of 4"** once signup becomes step 1
-- [ ] **Staples payoff copy** — kit shows "168 more recipes already count as ready to cook"
+- [x] Steps labelled N of 4
+- [x] Staples payoff counted against the real catalogue, not estimated
 
 ## 5. Core screens
 
