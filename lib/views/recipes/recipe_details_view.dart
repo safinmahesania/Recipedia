@@ -4,7 +4,9 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/favorites_controller.dart';
 import '../../controllers/recent_controller.dart';
 import '../../controllers/review_controller.dart';
+import '../../services/auth_service.dart';
 import '../../services/cache_service.dart';
+import '../../services/cooked_service.dart';
 import '../../services/recipe_service.dart';
 import '../../services/share_service.dart';
 import '../../shared/recipe_steps.dart';
@@ -110,6 +112,7 @@ class RecipeDetailsView extends StatelessWidget {
                       Text((r['title'] ?? '') as String,
                           style: text.headlineMedium),
                       const SizedBox(height: AppSizes.smd),
+                      _CookedBadge(recipeId: recipeId),
                       Wrap(
                         spacing: AppSizes.sm,
                         runSpacing: AppSizes.sm,
@@ -358,4 +361,78 @@ class _DetailSkeleton extends StatelessWidget {
           ],
         ),
       );
+}
+
+/// "You have made this before" — the app already recorded every cook and
+/// never mentioned it. Self-contained so the detail screen does not need a
+/// controller just for one line.
+class _CookedBadge extends StatefulWidget {
+  final String recipeId;
+  const _CookedBadge({required this.recipeId});
+
+  @override
+  State<_CookedBadge> createState() => _CookedBadgeState();
+}
+
+class _CookedBadgeState extends State<_CookedBadge> {
+  ({int count, DateTime? last})? _stats;
+
+  static const _months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final uid = AuthService().currentUser?.id;
+    if (uid == null) return;
+    try {
+      final s = await CookedService().statsFor(uid, widget.recipeId);
+      if (mounted && s.count > 0) setState(() => _stats = s);
+    } catch (_) {
+      // A missing badge is better than a broken screen.
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = _stats;
+    if (s == null) return const SizedBox.shrink();
+    final t = context.tokens;
+    final text = Theme.of(context).textTheme;
+    final d = s.last;
+    final when = d == null ? '' : ' · last on ${d.day} ${_months[d.month - 1]}';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSizes.smd),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.smd, vertical: AppSizes.sm),
+        decoration: BoxDecoration(
+          color: t.successTint,
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        ),
+        child: Row(children: [
+          AppIcon('local_fire_department',
+              fallback: Icons.local_fire_department,
+              size: AppSizes.iconSm,
+              color: t.onSuccessTint),
+          const SizedBox(width: AppSizes.sm),
+          Expanded(
+            child: Text(
+              s.count == 1
+                  ? 'You cooked this once$when'
+                  : 'You cooked this ${s.count} times$when',
+              style: text.labelSmall?.copyWith(color: t.onSuccessTint),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
 }

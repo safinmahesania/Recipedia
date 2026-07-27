@@ -7,6 +7,7 @@ import '../../theme/app_tokens.dart';
 import '../admin/admin_portal_view.dart';
 import 'account_security_view.dart';
 import 'diet_allergies_view.dart';
+import 'cooking_history_view.dart';
 import 'edit_profile_view.dart';
 import 'notifications_view.dart';
 import 'my_reviews_view.dart';
@@ -92,8 +93,8 @@ class ProfileView extends StatelessWidget {
                             right: -2,
                             bottom: -2,
                             child: Container(
-                              width: 30,
-                              height: 30,
+                              width: 22,
+                              height: 22,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: t.brandFill,
@@ -103,7 +104,7 @@ class ProfileView extends StatelessWidget {
                               ),
                               child: AppIcon('camera_alt',
                                   fallback: Icons.camera_alt,
-                                  size: 17,
+                                  size: 11,
                                   color: t.onBrandFill),
                             ),
                           ),
@@ -126,35 +127,6 @@ class ProfileView extends StatelessWidget {
                             textAlign: TextAlign.center,
                             style: text.bodySmall),
                       ),
-                    // Edit Button
-                    /*Padding(
-                      padding: const EdgeInsets.only(top: AppSizes.smd),
-                      child: GestureDetector(
-                        onTap: () => Get.to(() => const EditProfileView()),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppSizes.md, vertical: AppSizes.sm),
-                          decoration: BoxDecoration(
-                            color: t.surface,
-                            borderRadius:
-                            BorderRadius.circular(AppSizes.radiusPill),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AppIcon('edit_outlined',
-                                  fallback: Icons.edit_outlined,
-                                  size: AppSizes.iconSm,
-                                  color: t.textSecondary),
-                              const SizedBox(width: AppSizes.sm),
-                              Text('Edit profile',
-                                  style: text.labelMedium
-                                      ?.copyWith(color: t.textSecondary)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),*/
                     if (p?.isAdmin == true)
                       Padding(
                         padding: const EdgeInsets.only(top: AppSizes.sm),
@@ -192,6 +164,11 @@ class ProfileView extends StatelessWidget {
                   icon: 'edit_note',
                   label: 'My submissions',
                   onTap: () => Get.to(() => const MySubmissionsView()),
+                ),
+                _Tile(
+                  icon: 'local_fire_department',
+                  label: 'Cooking history',
+                  onTap: () => Get.to(() => const CookingHistoryView()),
                 ),
                 _Tile(
                   icon: 'star_outline',
