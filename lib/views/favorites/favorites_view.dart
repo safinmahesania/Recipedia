@@ -43,7 +43,7 @@ class FavoritesView extends StatelessWidget {
                       onChanged: c.setQuery,
                       decoration: const InputDecoration(
                         hintText: 'Search saved',
-                        prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
+                        prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconXs),
                         isDense: true,
                       ),
                     ),

@@ -28,8 +28,8 @@ class _ReportsViewState extends State<ReportsView> {
     final t = DateTime.tryParse((iso ?? '').toString());
     if (t == null) return '';
     final d = DateTime.now().difference(t);
-    if (d.inDays >= 1) return ' · \${d.inDays} d ago';
-    if (d.inHours >= 1) return ' · \${d.inHours} h ago';
+    if (d.inDays >= 1) return ' · ${d.inDays} d ago';
+    if (d.inHours >= 1) return ' · ${d.inHours} h ago';
     return ' · just now';
   }
 
@@ -88,26 +88,29 @@ class _ReportsViewState extends State<ReportsView> {
                   (r['profiles'] as Map<String, dynamic>?)?['name'] ?? 'User';
               final open = r['status'] == 'open';
 
+              // The spine is a child, not a border. BoxDecoration asserts a
+              // borderRadius needs uniform border colours, so a coloured left
+              // edge with hairline sides is invalid — as is color + gradient,
+              // which was the previous attempt. Clip a strip inside instead:
+              // valid, and it hugs the corner radius properly.
               return Container(
-                padding: const EdgeInsets.all(AppSizes.md),
                 decoration: BoxDecoration(
                   color: t.surfaceRaised,
-                  // Open reports get a coloured left spine so the queue can be
-                  // triaged without reading every card. A gradient cannot be
-                  // used here: BoxDecoration asserts color and gradient are
-                  // mutually exclusive, which would crash on the first open
-                  // report.
-                  border: Border(
-                    left: BorderSide(
-                        color: open ? t.warning : t.cardBorder, width: open ? 3 : 1),
-                    top: BorderSide(color: t.cardBorder),
-                    right: BorderSide(color: t.cardBorder),
-                    bottom: BorderSide(color: t.cardBorder),
-                  ),
+                  border: Border.all(color: t.cardBorder),
                   borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                   boxShadow: t.cardShadow,
                 ),
-                child: Column(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (open) Container(width: 3, color: t.warning),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppSizes.md),
+                            child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(children: [
@@ -199,6 +202,12 @@ class _ReportsViewState extends State<ReportsView> {
                       ]),
                     ],
                   ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             },
