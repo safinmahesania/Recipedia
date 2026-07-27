@@ -46,7 +46,7 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [~] Terms and Privacy checkbox on signup — gates the button; links inert until a policy is hosted and url_launcher added
 - [ ] Google sign-in — needs OAuth credentials
 - [ ] Apple sign-in — needs OAuth credentials
-- [ ] Password reset deep link handling
+- [x] Password reset completes — recovery event opens a set-password screen
 
 ## 4. Onboarding
 
@@ -96,8 +96,9 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [x] CI: analyze + test on every branch
 - [x] `design_system_test`
 - [x] `getx_reactivity_test`
+- [x] `static_safety_test` — paint asserts, escaped interpolation, icon manifest, PostgREST embeds, layering rules
 - [x] `flutter analyze` clean
-- [ ] Widget tests for critical flows
+- [~] Widget tests for critical flows — static safety suite added; interactive widget tests still open
 - [ ] Integration test: scan → shopping list → pantry
 
 ## 8. Release

@@ -7,6 +7,8 @@ import 'services/supabase_client.dart';
 import 'constants/app_sizes.dart';
 import 'theme/app_theme.dart';
 import 'views/splash/splash_view.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'views/auth/set_password_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +16,16 @@ void main() async {
   // Non-blocking: populates from the local cache immediately and refreshes in
   // the background. A cold cache just means letter chips for one session.
   unawaited(IngredientArt.warm());
+
+  // A reset link opens the app and Supabase raises passwordRecovery. Without a
+  // listener the user lands on Home, still signed in with the old password and
+  // no idea what happened.
+  supabase.auth.onAuthStateChange.listen((state) {
+    if (state.event == AuthChangeEvent.passwordRecovery) {
+      Get.to(() => const SetPasswordView());
+    }
+  });
+
   runApp(const RecipediaApp());
 }
 
