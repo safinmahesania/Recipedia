@@ -65,17 +65,20 @@ class _ReportsViewState extends State<ReportsView> {
                 padding: const EdgeInsets.all(AppSizes.md),
                 decoration: BoxDecoration(
                   color: t.surfaceRaised,
-                  border: Border.all(color: t.cardBorder),
+                  // Open reports get a coloured left spine so the queue can be
+                  // triaged without reading every card. A gradient cannot be
+                  // used here: BoxDecoration asserts color and gradient are
+                  // mutually exclusive, which would crash on the first open
+                  // report.
+                  border: Border(
+                    left: BorderSide(
+                        color: open ? t.warning : t.cardBorder, width: open ? 3 : 1),
+                    top: BorderSide(color: t.cardBorder),
+                    right: BorderSide(color: t.cardBorder),
+                    bottom: BorderSide(color: t.cardBorder),
+                  ),
                   borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                   boxShadow: t.cardShadow,
-                  // Open reports carry a coloured spine so the queue can be
-                  // triaged without reading every card.
-                  gradient: open
-                      ? LinearGradient(
-                          colors: [t.warningTint, t.surfaceRaised],
-                          stops: const [0.0, 0.02],
-                        )
-                      : null,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

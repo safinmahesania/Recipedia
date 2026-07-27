@@ -34,8 +34,13 @@ jobs:
       # The gate that matters. This is the step that catches the "X not found"
       # class of error that has bitten this project repeatedly — a file edited
       # locally, referenced elsewhere, and pushed without building.
+      # --no-fatal-infos so style lints report without blocking. Errors and
+      # warnings still fail the build, which is the class of problem this gate
+      # exists for. Without it, a single `prefer_const_constructors` info from
+      # a 7,800-line legacy codebase turns the pipeline red and the signal is
+      # lost.
       - name: Analyze
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
 
       - name: Test
         run: flutter test
