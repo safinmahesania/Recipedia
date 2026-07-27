@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'profile_controller.dart';
 import 'package:image_picker/image_picker.dart';
+import '../services/auth_service.dart';
+import '../services/pantry_service.dart';
 import '../services/recipe_service.dart';
 import '../services/scan_service.dart';
 
@@ -11,6 +13,8 @@ class ScanController extends GetxController {
   final ScanService _scan = ScanService();
   final RecipeService _recipes = RecipeService();
   final ImagePicker _picker = ImagePicker();
+  final PantryService _pantry = PantryService();
+  final AuthService _auth = AuthService();
 
   final isDetecting = false.obs;
   final isSearching = false.obs;
@@ -23,7 +27,32 @@ class ScanController extends GetxController {
   final searched = false.obs;
   final suggestions = <String>[].obs;
 
+  /// Pantry staples, shown separately so it is obvious why a recipe matched
+  /// without them being entered.
+  final staples = <Map<String, dynamic>>[].obs;
+
   bool get modelReady => _scan.isModelAvailable;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _restore();
+  }
+
+  /// Home and Scan were keeping two different lists both called "your pantry".
+  /// They are one thing now: Scan reads and writes the same store Home does.
+  Future<void> _restore() async {
+    ingredients.value = await _pantry.get();
+    final uid = _auth.currentUser?.id;
+    if (uid == null) return;
+    try {
+      staples.value = await _scan.myStaples(uid);
+    } catch (_) {
+      staples.clear();
+    }
+  }
+
+  Future<void> _persist() => _pantry.save(ingredients.toList());
 
   Future<void> pickImage(ImageSource source) async {
     final picked = await _picker.pickImage(source: source, imageQuality: 85);
@@ -62,16 +91,27 @@ class ScanController extends GetxController {
     if (clean.isEmpty || ingredients.contains(clean)) return;
     ingredients.add(clean);
     suggestions.clear();
+    _persist();
   }
 
-  void removeIngredient(String name) => ingredients.remove(name);
+  void removeIngredient(String name) {
+    ingredients.remove(name);
+    _persist();
+  }
 
   void reset() {
     image.value = null;
     ingredients.clear();
     results.clear();
     searched.value = false;
+    _persist();
   }
+
+  List<Map<String, dynamic>> get ready =>
+      results.where((r) => (r['missing_count'] ?? 0) == 0).toList();
+
+  List<Map<String, dynamic>> get almost =>
+      results.where((r) => (r['missing_count'] ?? 0) > 0).toList();
 
   Future<void> findRecipes() async {
     if (ingredients.isEmpty) return;

@@ -20,6 +20,21 @@ class ScanService {
     return _runModel(image);
   }
 
+  /// The user's own pantry staples, for the "Always in your kitchen" row.
+  /// These never count as missing, so showing them explains why a recipe
+  /// matched without them being scanned.
+  Future<List<Map<String, dynamic>>> myStaples(String uid) async {
+    final rows = await supabase
+        .from('user_pantry_staples')
+        .select('ingredients(id, name, icon_key, category)')
+        .eq('user_id', uid);
+    return [
+      for (final r in (rows as List))
+        if ((r as Map)['ingredients'] != null)
+          Map<String, dynamic>.from(r['ingredients'] as Map)
+    ];
+  }
+
   /// Ingredient names that actually exist in the database, for autocomplete.
   /// Typing free text is unreliable — "potato" vs "aloo" — so the user picks
   /// from real names instead of guessing.
