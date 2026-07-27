@@ -5,6 +5,7 @@ import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
 import '../../shared/widgets/skeletons.dart';
 import '../../shared/widgets/app_icon.dart';
+import '../recipes/recipe_details_view.dart';
 
 /// Moderation queue for reported recipes, reviews and users.
 class ReportsView extends StatefulWidget {
@@ -23,6 +24,15 @@ class _ReportsViewState extends State<ReportsView> {
     c.loadReports();
   }
 
+  String _ago(dynamic iso) {
+    final t = DateTime.tryParse((iso ?? '').toString());
+    if (t == null) return '';
+    final d = DateTime.now().difference(t);
+    if (d.inDays >= 1) return ' · \${d.inDays} d ago';
+    if (d.inHours >= 1) return ' · \${d.inHours} h ago';
+    return ' · just now';
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
@@ -30,7 +40,22 @@ class _ReportsViewState extends State<ReportsView> {
 
     return Scaffold(
       backgroundColor: t.canvas,
-      appBar: AppBar(title: const Text('Reports')),
+      appBar: AppBar(
+        titleSpacing: AppSizes.screenPad,
+        title: Obx(() {
+          final open = c.reports.where((r) => r['status'] == 'open').length;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Reports', style: Theme.of(context).textTheme.titleLarge),
+              Text(open == 0 ? 'Nothing open' : '$open open',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: context.tokens.textSecondary)),
+            ],
+          );
+        }),
+      ),
       body: Obx(() {
         if (c.isLoading.value) {
           return const ListSkeleton(thumb: 0, card: true);
@@ -117,10 +142,17 @@ class _ReportsViewState extends State<ReportsView> {
                       ),
                     ]),
                     const SizedBox(height: AppSizes.smd),
+                    if (((r['recipes'] as Map?)?['title'] ?? '')
+                        .toString()
+                        .isNotEmpty) ...[
+                      Text(((r['recipes'] as Map)['title']) as String,
+                          style: text.titleMedium),
+                      const SizedBox(height: AppSizes.xs),
+                    ],
                     Text((r['reason'] ?? '') as String,
                         style: text.bodyLarge?.copyWith(height: 1.45)),
                     const SizedBox(height: AppSizes.xs),
-                    Text('reported by $reporter',
+                    Text('reported by $reporter${_ago(r['created_at'])}',
                         style:
                             text.labelSmall?.copyWith(color: t.textSecondary)),
                     if (open) ...[
@@ -137,6 +169,23 @@ class _ReportsViewState extends State<ReportsView> {
                             child: const Text('Dismiss'),
                           ),
                         ),
+                        if ((r['recipes'] as Map?)?['id'] != null) ...[
+                          const SizedBox(width: AppSizes.sm),
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(
+                                    AppSizes.buttonHeightSm),
+                              ),
+                              // Judging a report without seeing what was
+                              // reported is guesswork.
+                              onPressed: () => Get.to(() => RecipeDetailsView(
+                                  recipeId:
+                                      (r['recipes'] as Map)['id'] as String)),
+                              child: const Text('Open recipe'),
+                            ),
+                          ),
+                        ],
                         const SizedBox(width: AppSizes.smd),
                         Expanded(
                           child: FilledButton(

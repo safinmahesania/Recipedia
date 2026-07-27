@@ -3,6 +3,30 @@ import 'supabase_client.dart';
 /// Admin-only data operations. RLS enforces that only admins can write —
 /// this class is just the client-side surface.
 class AdminService {
+  /// Counts for the dashboard. Head requests return the row count without
+  /// transferring the rows, so this stays cheap even at 1032 recipes.
+  Future<Map<String, int>> counts() async {
+    Future<int> countOf(String table, {String? col, Object? eq}) async {
+      var q = supabase.from(table).select('id');
+      if (col != null) q = q.eq(col, eq!);
+      final rows = await q;
+      return (rows as List).length;
+    }
+
+    final results = await Future.wait([
+      countOf('recipes', col: 'status', eq: 'pending'),
+      countOf('reports', col: 'status', eq: 'open'),
+      countOf('recipes', col: 'status', eq: 'approved'),
+      countOf('profiles'),
+    ]);
+    return {
+      'pending': results[0],
+      'reports': results[1],
+      'recipes': results[2],
+      'users': results[3],
+    };
+  }
+
   // ---------- recipes ----------
   Future<List<Map<String, dynamic>>> getAllRecipes() async {
     return await supabase
@@ -11,13 +35,14 @@ class AdminService {
         .order('created_at', ascending: false);
   }
 
-  /// Submissions waiting for review (FR35).
+  /// Submissions waiting for review (FR35). recipe_ingredients comes along so
+  /// a reviewer can see "8 items" without opening each one.
   Future<List<Map<String, dynamic>>> getPendingRecipes() async {
     return await supabase
         .from('recipes')
-        .select('*, categories(name), profiles(name)')
+        .select('*, categories(name), profiles(name), recipe_ingredients(id)')
         .eq('status', 'pending')
-        .order('created_at', ascending: false);
+        .order('created_at', ascending: true);
   }
 
   Future<void> approveRecipe(String recipeId) async {
@@ -80,8 +105,14 @@ class AdminService {
   }
 
   // ---------- users ----------
+  /// Profiles with how many recipes each has authored — the number that tells
+  /// an admin who is actually contributing.
   Future<List<Map<String, dynamic>>> getUsers() async {
-    return await supabase.from('profiles').select().order('created_at', ascending: false);
+    final rows = await supabase
+        .from('profiles')
+        .select('*, recipes(id)')
+        .order('created_at', ascending: false);
+    return List<Map<String, dynamic>>.from(rows as List);
   }
 
   // ---------- reviews / reports ----------
@@ -95,7 +126,7 @@ class AdminService {
   Future<List<Map<String, dynamic>>> getReports() async {
     return await supabase
         .from('reports')
-        .select('*, profiles(name)')
+        .select('*, profiles(name), recipes(id, title)')
         .order('created_at', ascending: false);
   }
 

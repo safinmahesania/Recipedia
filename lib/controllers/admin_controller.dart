@@ -13,6 +13,18 @@ class AdminController extends GetxController {
   final reviews = <Map<String, dynamic>>[].obs;
   final reports = <Map<String, dynamic>>[].obs;
 
+  /// Dashboard tallies. Kept separate from the lists so the portal does not
+  /// have to fetch every recipe just to show a number.
+  final counts = <String, int>{}.obs;
+
+  Future<void> loadCounts() async {
+    try {
+      counts.value = await _service.counts();
+    } catch (_) {
+      counts.clear();
+    }
+  }
+
   Future<void> loadRecipes() async {
     try {
       isLoading.value = true;
