@@ -5,6 +5,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/profile_controller.dart';
 import '../../theme/app_tokens.dart';
 import '../admin/admin_portal_view.dart';
+import 'diet_allergies_view.dart';
 import '../shopping/shopping_list_view.dart';
 import '../submissions/my_submissions_view.dart';
 import 'settings_view.dart';
@@ -139,7 +140,7 @@ class ProfileView extends StatelessWidget {
                   icon: Icons.eco_outlined,
                   label: 'Diet and allergies',
                   trailingText: p?.dietPreference ?? 'Any',
-                  onTap: () => _soon('Diet and allergies'),
+                  onTap: () => Get.to(() => const DietAllergiesView()),
                 ),
                 _Tile(
                   icon: Icons.shopping_basket_outlined,

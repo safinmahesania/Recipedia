@@ -60,15 +60,18 @@ class RecipeService {
   }
 
   // ---------- SCAN MATCHING ----------
-  /// Runs in Postgres (see match_recipes_by_ingredients).
-  /// A recipe matches when every CORE, non-pantry ingredient was scanned;
-  /// pantry and optional ingredients never block a match.
+  /// Runs in Postgres (see match_recipes_for_user, migration ...000009).
+  ///
+  /// v3, not v2. The older match_recipes_by_ingredients ignores who is asking,
+  /// so a user's pantry staples still counted as missing and their allergens
+  /// were never flagged — onboarding collected both and nothing used them.
+  /// This one excludes the signed-in user's staples and returns has_allergen.
   Future<List<Map<String, dynamic>>> getRecipesByScannedIngredients(
       List<String> scannedNames) async {
     if (scannedNames.isEmpty) return [];
     final scanned = scannedNames.map((e) => e.toLowerCase().trim()).toList();
     final rows = await supabase.rpc(
-      'match_recipes_by_ingredients',
+      'match_recipes_for_user',
       params: {'scanned': scanned},
     );
     return List<Map<String, dynamic>>.from(rows as List);

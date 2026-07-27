@@ -85,6 +85,36 @@ class OnboardingService {
     ]);
   }
 
+  /// Current values, for the editable screen in Profile. Onboarding writes
+  /// these once; without a read path there is no way to change them later.
+  Future<Map<String, dynamic>> loadPreferences(String uid) async {
+    final profile = await supabase
+        .from('profiles')
+        .select('diet_preference, hide_unsafe')
+        .eq('id', uid)
+        .single();
+    final allergies = await supabase
+        .from('user_allergies')
+        .select('ingredients(id, name, icon_key, category)')
+        .eq('user_id', uid);
+    final staples = await supabase
+        .from('user_pantry_staples')
+        .select('ingredient_id')
+        .eq('user_id', uid);
+    return {
+      'diet': profile['diet_preference'],
+      'hide_unsafe': profile['hide_unsafe'] ?? true,
+      'allergies': [
+        for (final a in (allergies as List))
+          if ((a as Map)['ingredients'] != null)
+            Map<String, dynamic>.from(a['ingredients'] as Map)
+      ],
+      'staples': [
+        for (final s in (staples as List)) (s as Map)['ingredient_id'] as String
+      ],
+    };
+  }
+
   /// A finished profile always has a diet set — the diet step cannot be
   /// skipped, and "no preference" is stored as 'any'. So a null here means the
   /// user has never been through the flow, which avoids adding a column.

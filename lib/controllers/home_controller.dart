@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'profile_controller.dart';
 import '../services/cache_service.dart';
 import '../services/home_service.dart';
 import '../services/pantry_service.dart';
@@ -18,9 +19,10 @@ class HomeController extends GetxController {
   final recentlyViewed = <Map<String, dynamic>>[].obs;
   final newest = <Map<String, dynamic>>[].obs;
 
-  /// Hide recipes containing the user's allergens, or just flag them.
-  /// Mirrors profiles.hide_unsafe; defaults to the safer option.
-  final hideUnsafe = true.obs;
+  /// Mirrors profiles.hide_unsafe. Read from the profile rather than assumed,
+  /// so the setting the user chose in onboarding is the one that applies.
+  bool get hideUnsafe =>
+      Get.put(ProfileController()).profile.value?.hideUnsafe ?? true;
 
   @override
   void onInit() {
@@ -40,7 +42,7 @@ class HomeController extends GetxController {
       ]);
 
       final matches = results[0];
-      final visible = hideUnsafe.value
+      final visible = hideUnsafe
           ? matches.where((r) => r['has_allergen'] != true).toList()
           : matches;
 

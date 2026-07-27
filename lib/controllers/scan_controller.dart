@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:get/get.dart';
+import 'profile_controller.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/recipe_service.dart';
 import '../services/scan_service.dart';
@@ -76,7 +77,12 @@ class ScanController extends GetxController {
     if (ingredients.isEmpty) return;
     try {
       isSearching.value = true;
-      results.value = await _recipes.getRecipesByScannedIngredients(ingredients);
+      final rows = await _recipes.getRecipesByScannedIngredients(ingredients);
+      // Default to hiding: if the profile has not loaded we err toward not
+      // showing someone a recipe containing their allergen.
+      final hide = Get.put(ProfileController()).profile.value?.hideUnsafe ?? true;
+      results.value =
+          hide ? rows.where((r) => r['has_allergen'] != true).toList() : rows;
       searched.value = true;
     } finally {
       isSearching.value = false;
