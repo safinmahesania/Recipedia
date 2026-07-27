@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
-import '../../shared/widgets/app_icon.dart';
 import '../../shared/widgets/skeletons.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
