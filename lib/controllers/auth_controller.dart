@@ -6,6 +6,7 @@ import '../services/onboarding_service.dart';
 import '../views/auth/login_view.dart';
 import '../views/onboarding/onboarding_view.dart';
 import '../views/home/main_shell.dart';
+import '../views/auth/mail_sent_view.dart';
 
 /// The "C": auth state + orchestration. Views only call these + read isLoading.
 class AuthController extends GetxController {
@@ -37,8 +38,15 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await _service.signUp(email, password, name: name);
-      Get.snackbar(AppStrings.appName, AppStrings.verifyEmailSent);
-      Get.offAll(() => const LoginView());
+      // A snackbar and a bounce to the login form told the user nothing about
+      // what to do next. Send them to the screen that explains it.
+      Get.offAll(() => MailSentView(
+            title: 'Check your inbox',
+            email: email,
+            message: 'We sent a confirmation link to ',
+            changeLabel: 'Change email',
+            onResend: () => _service.signUp(email, password, name: name),
+          ));
     } on AuthException catch (e) {
       _error(e.message);
     } catch (_) {

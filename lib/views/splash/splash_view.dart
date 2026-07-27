@@ -7,9 +7,9 @@ import '../../constants/app_strings.dart';
 import '../../services/auth_service.dart';
 import '../../services/onboarding_service.dart';
 import '../onboarding/onboarding_view.dart';
-import '../auth/login_view.dart';
 import '../home/main_shell.dart';
 import '../../shared/widgets/app_icon.dart';
+import '../auth/welcome_view.dart';
 
 /// Splash: brief brand moment, then route by Supabase session.
 ///
@@ -35,7 +35,7 @@ class _SplashViewState extends State<SplashView> {
     if (!mounted) return;
     final user = AuthService().currentUser;
     if (user == null) {
-      Get.offAll(() => const LoginView());
+      Get.offAll(() => const WelcomeView());
       return;
     }
     // A null diet_preference means this profile has never been through
