@@ -37,7 +37,7 @@ class _FeedbackViewState extends State<FeedbackView> {
         }
         if (c.reviews.isEmpty) {
           return const EmptyState(
-            icon: Icons.star_outline,
+            icon: 'star_outline',
             title: 'No reviews yet',
             message: 'Ratings and comments across the catalogue show up here.',
           );

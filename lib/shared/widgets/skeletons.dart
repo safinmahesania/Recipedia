@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../constants/app_sizes.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Shared loading placeholders.
 ///
@@ -164,7 +165,7 @@ class BlockSkeleton extends StatelessWidget {
 /// Empty state with a consistent shape: glyph, headline, one line of guidance,
 /// optional action. Every screen was rolling its own.
 class EmptyState extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String title;
   final String message;
   final Widget? action;
@@ -187,7 +188,7 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: AppSizes.iconXl, color: t.borderStrong),
+            AppIcon(icon, fallback: Icons.circle_outlined, size: AppSizes.iconXl, color: t.borderStrong),
             const SizedBox(height: AppSizes.smd),
             Text(title,
                 textAlign: TextAlign.center,

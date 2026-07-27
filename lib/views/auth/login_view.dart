@@ -124,6 +124,10 @@ class _LoginViewState extends State<LoginView> {
 
 class _SsoButton extends StatelessWidget {
   final String label;
+
+  /// IconData, not a Tabler name: Tabler has no Google or Apple mark, and a
+  /// generic fallback glyph on a "Continue with Google" button is worse than
+  /// using Material's.
   final IconData icon;
   final VoidCallback onTap;
 

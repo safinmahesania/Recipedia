@@ -9,6 +9,7 @@ import '../../shared/widgets/primary_button.dart';
 import '../../shared/widgets/recipe_card.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Scan a vegetable or fruit — or just type ingredients — and rank recipes by
 /// what you already have. Detected items show as editable chips so a wrong
@@ -51,7 +52,7 @@ class _ScanViewState extends State<ScanView> {
         title: const Text('Find by ingredients'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const AppIcon('refresh', fallback: Icons.refresh),
             tooltip: 'Start over',
             onPressed: c.reset,
           ),
@@ -79,7 +80,7 @@ class _ScanViewState extends State<ScanView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.photo_camera_outlined,
+                            AppIcon('photo_camera_outlined', fallback: Icons.photo_camera_outlined,
                                 size: AppSizes.iconXl, color: t.textTertiary),
                             const SizedBox(height: AppSizes.sm),
                             Text('Scan or add ingredients below',
@@ -95,7 +96,7 @@ class _ScanViewState extends State<ScanView> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => c.pickImage(ImageSource.camera),
-                  icon: const Icon(Icons.camera_alt_outlined,
+                  icon: const AppIcon('camera_alt_outlined', fallback: Icons.camera_alt_outlined,
                       size: AppSizes.iconSm),
                   label: const Text('Camera'),
                 ),
@@ -104,7 +105,7 @@ class _ScanViewState extends State<ScanView> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => c.pickImage(ImageSource.gallery),
-                  icon: const Icon(Icons.image_outlined, size: AppSizes.iconSm),
+                  icon: const AppIcon('image_outlined', fallback: Icons.image_outlined, size: AppSizes.iconSm),
                   label: const Text('Gallery'),
                 ),
               ),
@@ -120,7 +121,7 @@ class _ScanViewState extends State<ScanView> {
                     borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                   ),
                   child: Row(children: [
-                    Icon(Icons.info_outline,
+                    AppIcon('info_outline', fallback: Icons.info_outline,
                         size: AppSizes.iconMd, color: t.onBrandTint),
                     const SizedBox(width: AppSizes.sm),
                     Expanded(
@@ -150,7 +151,7 @@ class _ScanViewState extends State<ScanView> {
               ),
               const SizedBox(width: AppSizes.sm),
               IconButton(
-                icon: Icon(Icons.add_circle, color: t.brand, size: 32),
+                icon: AppIcon('add_circle', fallback: Icons.add_circle, color: t.brand, size: 32),
                 tooltip: 'Add ingredient',
                 onPressed: () => _add(_manual.text),
               ),
@@ -174,7 +175,7 @@ class _ScanViewState extends State<ScanView> {
                             visualDensity: VisualDensity.compact,
                             leading: IngredientIcon(name: name, size: 22),
                             title: Text(name, style: text.bodyMedium),
-                            trailing: Icon(Icons.add,
+                            trailing: AppIcon('add', fallback: Icons.add,
                                 size: AppSizes.iconMd, color: t.onBrandTint),
                             onTap: () => _add(name),
                           ))

@@ -5,6 +5,7 @@ import '../../controllers/shopping_controller.dart';
 import '../../shared/widgets/ingredient_icon.dart';
 import '../../theme/app_tokens.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// The other half of the scan. `missing_names` tells you what you lack; this
 /// turns it into something you can act on, and checked items flow back into
@@ -30,7 +31,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
         title: const Text('Shopping list'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const AppIcon('add', fallback: Icons.add),
             tooltip: 'Add item',
             onPressed: () => _addSheet(context),
           ),
@@ -90,7 +91,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                       ));
                     }
                   },
-                  icon: const Icon(Icons.shopping_basket_outlined,
+                  icon: const AppIcon('shopping_basket_outlined', fallback: Icons.shopping_basket_outlined,
                       size: AppSizes.iconSm),
                   label: const Text('Move checked to pantry'),
                 ),
@@ -168,7 +169,7 @@ class _Row extends StatelessWidget {
           color: t.errorTint,
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         ),
-        child: Icon(Icons.delete_outline, color: t.onErrorTint),
+        child: AppIcon('delete_outline', fallback: Icons.delete_outline, color: t.onErrorTint),
       ),
       onDismissed: (_) => controller.remove(item),
       child: InkWell(
@@ -191,7 +192,7 @@ class _Row extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSizes.radiusXs),
                 ),
                 child: checked
-                    ? Icon(Icons.check, size: 14, color: t.onBrandFill)
+                    ? AppIcon('check', fallback: Icons.check, size: 14, color: t.onBrandFill)
                     : null,
               ),
               const SizedBox(width: AppSizes.smd),
@@ -233,7 +234,7 @@ class _Empty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.shopping_basket_outlined,
+            AppIcon('shopping_basket_outlined', fallback: Icons.shopping_basket_outlined,
                 size: AppSizes.iconXl, color: t.borderStrong),
             const SizedBox(height: AppSizes.smd),
             Text('Nothing to buy',

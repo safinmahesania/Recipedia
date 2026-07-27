@@ -51,7 +51,7 @@ class PreferencesController extends GetxController {
       diet.value = prefs['diet'] as String?;
       hideUnsafe.value = prefs['hide_unsafe'] == true;
       allergies.value = List<Map<String, dynamic>>.from(prefs['allergies'] as List);
-      staples.value = Set<String>.from(prefs['staples'] as List);
+      staples.assignAll(Set<String>.from(prefs['staples'] as List));
     } catch (_) {
       Get.snackbar('Offline', 'Could not load your preferences.');
     } finally {

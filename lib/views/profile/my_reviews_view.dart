@@ -7,6 +7,7 @@ import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
 import '../recipes/review_rating_view.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Everything the user has written. The data existed from the start — there
 /// was simply no screen that read it back.
@@ -39,7 +40,7 @@ class _MyReviewsViewState extends State<MyReviewsView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.rate_review_outlined,
+                  AppIcon('rate_review_outlined', fallback: Icons.rate_review_outlined,
                       size: AppSizes.iconXl, color: t.borderStrong),
                   const SizedBox(height: AppSizes.smd),
                   Text('No reviews yet',
@@ -89,7 +90,7 @@ class _MyReviewsViewState extends State<MyReviewsView> {
                     color: t.errorTint,
                     borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                   ),
-                  child: Icon(Icons.delete_outline, color: t.onErrorTint),
+                  child: AppIcon('delete_outline', fallback: Icons.delete_outline, color: t.onErrorTint),
                 ),
                 onDismissed: (_) => c.remove(r),
                 child: InkWell(
@@ -142,7 +143,7 @@ class _MyReviewsViewState extends State<MyReviewsView> {
                           ),
                           if (id.isNotEmpty)
                             IconButton(
-                              icon: Icon(Icons.edit_outlined,
+                              icon: AppIcon('edit_outlined', fallback: Icons.edit_outlined,
                                   size: AppSizes.iconMd, color: t.textSecondary),
                               tooltip: 'Edit review',
                               onPressed: () async {

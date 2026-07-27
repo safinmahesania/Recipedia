@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/recipe_controller.dart';
 import '../../theme/app_tokens.dart';
 import 'filter_sheet.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Filter button + chips showing what is currently applied.
 /// Belongs to the Recipes tab only — Home holds no filter state.
@@ -52,7 +53,7 @@ class ActiveFiltersBar extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.tune, size: AppSizes.iconSm, color: fg),
+                    AppIcon('tune', fallback: Icons.tune, size: AppSizes.iconSm, color: fg),
                     const SizedBox(width: AppSizes.xs + 2),
                     Text(
                       active ? 'Filters (${c.activeFilterCount})' : 'Filters',
@@ -103,7 +104,7 @@ class _FilterChip extends StatelessWidget {
           IconButton(
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-            icon: Icon(Icons.close,
+            icon: AppIcon('close', fallback: Icons.close,
                 size: AppSizes.iconXs + 2, color: t.onAccentTint),
             tooltip: 'Remove $label filter',
             onPressed: onRemove,

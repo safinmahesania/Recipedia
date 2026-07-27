@@ -8,6 +8,7 @@ import '../../controllers/submission_controller.dart';
 import '../../services/image_service.dart';
 import '../../shared/widgets/duration_field.dart';
 import '../../shared/widgets/primary_button.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Submit a new recipe, or edit one of your own (FR34/36).
 /// Validated form + dropdowns + image (gallery / camera / URL).
@@ -97,7 +98,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
       // clear confirmation the user cannot miss
       Get.dialog(
         AlertDialog(
-          icon: Icon(Icons.check_circle,
+          icon: AppIcon('check_circle', fallback: Icons.check_circle,
               color: context.tokens.onSuccessTint, size: 40),
           title: const Text('Submitted for review'),
           content: const Text(
@@ -136,7 +137,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                 ),
                 child: Row(children: [
-                  Icon(Icons.info_outline,
+                  AppIcon('info_outline', fallback: Icons.info_outline,
                       size: AppSizes.iconMd, color: t.onBrandTint),
                   const SizedBox(width: AppSizes.sm),
                   Expanded(
@@ -279,7 +280,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
           Expanded(
             child: OutlinedButton.icon(
               onPressed: () => _pick(ImageSource.gallery),
-              icon: const Icon(Icons.image_outlined, size: 18),
+              icon: const AppIcon('image_outlined', fallback: Icons.image_outlined, size: 18),
               label: const Text('Gallery'),
             ),
           ),
@@ -287,7 +288,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
           Expanded(
             child: OutlinedButton.icon(
               onPressed: () => _pick(ImageSource.camera),
-              icon: const Icon(Icons.camera_alt_outlined, size: 18),
+              icon: const AppIcon('camera_alt_outlined', fallback: Icons.camera_alt_outlined, size: 18),
               label: const Text('Camera'),
             ),
           ),
@@ -310,7 +311,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
           ),
           child: Center(
-            child: Icon(Icons.add_a_photo_outlined,
+            child: AppIcon('add_a_photo_outlined', fallback: Icons.add_a_photo_outlined,
                 size: 32, color: context.tokens.textTertiary),
           ),
         ),

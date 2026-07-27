@@ -9,6 +9,7 @@ import '../../services/onboarding_service.dart';
 import '../onboarding/onboarding_view.dart';
 import '../auth/login_view.dart';
 import '../home/main_shell.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Splash: brief brand moment, then route by Supabase session.
 ///
@@ -53,7 +54,7 @@ class _SplashViewState extends State<SplashView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.restaurant_menu,
+            const AppIcon('restaurant_menu', fallback: Icons.restaurant_menu,
                 size: 72, color: Colors.white),
             const SizedBox(height: AppSizes.md),
             Text(

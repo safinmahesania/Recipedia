@@ -14,6 +14,7 @@ import '../../theme/app_tokens.dart';
 import 'cook_mode_view.dart';
 import 'review_rating_view.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Recipe detail — hero, meta, ingredients, instructions, and the favorite,
 /// share, review and report actions.
@@ -81,7 +82,7 @@ class RecipeDetailsView extends StatelessWidget {
                     );
                   }),
                   IconButton(
-                    icon: const Icon(Icons.share),
+                    icon: const AppIcon('share', fallback: Icons.share),
                     tooltip: 'Share',
                     onPressed: () => ShareService().shareRecipe(r),
                   ),
@@ -114,11 +115,11 @@ class RecipeDetailsView extends StatelessWidget {
                         runSpacing: AppSizes.sm,
                         children: [
                           if (r['cook_time'] != null)
-                            _Meta(Icons.schedule, '${r['cook_time']}'),
+                            _Meta('schedule', '${r['cook_time']}'),
                           if (r['diet'] != null)
-                            _Meta(Icons.eco, '${r['diet']}', accent: true),
+                            _Meta('eco', '${r['diet']}', accent: true),
                           if (r['cuisine'] != null)
-                            _Meta(Icons.public, '${r['cuisine']}'),
+                            _Meta('public', '${r['cuisine']}'),
                         ],
                       ),
 
@@ -191,7 +192,7 @@ class RecipeDetailsView extends StatelessWidget {
                             onPressed: () => Get.to(() => ReviewRatingView(
                                 recipeId: recipeId,
                                 recipeTitle: (r['title'] ?? '') as String)),
-                            icon: const Icon(Icons.star_border,
+                            icon: const AppIcon('star_border', fallback: Icons.star_border,
                                 size: AppSizes.iconSm),
                             label: const Text('Reviews'),
                           ),
@@ -199,12 +200,11 @@ class RecipeDetailsView extends StatelessWidget {
                         const SizedBox(width: AppSizes.smd),
                         Expanded(
                           child: FilledButton.icon(
-                            onPressed: steps.isEmpty
-                                ? null
-                                : () => Get.to(() => CookModeView(
+                            onPressed: () => Get.to(() => CookModeView(
                                       recipeId: recipeId,
                                       title: (r['title'] ?? '') as String,
-                                      steps: steps,
+                                      steps: RecipeSteps.stepsOrWhole(
+                                          (r['instructions'] ?? '') as String),
                                       ingredients: [
                                         for (final ri in ingredients)
                                           [
@@ -214,7 +214,7 @@ class RecipeDetailsView extends StatelessWidget {
                                           ].where((x) => x.isNotEmpty).join('  ')
                                       ],
                                     )),
-                            icon: const Icon(Icons.local_fire_department,
+                            icon: const AppIcon('local_fire_department', fallback: Icons.local_fire_department,
                                 size: AppSizes.iconSm),
                             label: const Text('Start cooking'),
                           ),
@@ -224,7 +224,7 @@ class RecipeDetailsView extends StatelessWidget {
                       Center(
                         child: TextButton.icon(
                           onPressed: () => _reportDialog(context, recipeId),
-                          icon: Icon(Icons.flag_outlined,
+                          icon: AppIcon('flag_outlined', fallback: Icons.flag_outlined,
                               size: AppSizes.iconSm, color: t.textSecondary),
                           label: Text('Report this recipe',
                               style: text.labelSmall
@@ -296,7 +296,7 @@ class _SectionTitle extends StatelessWidget {
 }
 
 class _Meta extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String label;
   final bool accent;
   const _Meta(this.icon, this.label, {this.accent = false});
@@ -312,7 +312,7 @@ class _Meta extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.radiusPill),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon,
+        AppIcon(icon, fallback: Icons.circle_outlined,
             size: AppSizes.iconSm,
             color: accent ? t.onAccentTint : t.textSecondary),
         const SizedBox(width: AppSizes.xs + 1),

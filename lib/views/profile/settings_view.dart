@@ -7,6 +7,7 @@ import '../admin/admin_portal_view.dart';
 import '../submissions/my_submissions_view.dart';
 import 'about_view.dart';
 import 'faq_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Settings: submissions, admin (admins only), about, FAQ, logout.
 class SettingsView extends StatelessWidget {
@@ -23,22 +24,22 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
-          _Tile(Icons.edit_note, 'My submissions',
+          _Tile('edit_note', 'My submissions',
               () => Get.to(() => const MySubmissionsView())),
 
           // Admins are normal users with one extra entry. Hiding it is a
           // convenience; RLS is what actually enforces the permission.
           Obx(() => profile.profile.value?.isAdmin == true
-              ? _Tile(Icons.admin_panel_settings_outlined, 'Admin portal',
+              ? _Tile('admin_panel_settings_outlined', 'Admin portal',
                   () => Get.to(() => const AdminPortalView()))
               : const SizedBox.shrink()),
 
           Divider(height: 1, color: t.border),
-          _Tile(Icons.info_outline, 'About us',
+          _Tile('info_outline', 'About us',
               () => Get.to(() => const AboutView())),
-          _Tile(Icons.help_outline, 'FAQs', () => Get.to(() => const FaqView())),
+          _Tile('help_outline', 'FAQs', () => Get.to(() => const FaqView())),
           Divider(height: 1, color: t.border),
-          _Tile(Icons.logout, 'Log out', () => _confirmLogout(context, auth),
+          _Tile('logout', 'Log out', () => _confirmLogout(context, auth),
               danger: true),
         ],
       ),
@@ -69,7 +70,7 @@ class SettingsView extends StatelessWidget {
 }
 
 class _Tile extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String title;
   final VoidCallback onTap;
   final bool danger;
@@ -80,12 +81,12 @@ class _Tile extends StatelessWidget {
     final t = context.tokens;
     final fg = danger ? t.error : null;
     return ListTile(
-      leading: Icon(icon, color: fg ?? t.textSecondary),
+      leading: AppIcon(icon, fallback: Icons.circle_outlined, color: fg ?? t.textSecondary),
       title: Text(title,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: fg)),
       trailing: danger
           ? null
-          : Icon(Icons.chevron_right, color: t.borderStrong),
+          : AppIcon('chevron_right', fallback: Icons.chevron_right, color: t.borderStrong),
       onTap: onTap,
     );
   }

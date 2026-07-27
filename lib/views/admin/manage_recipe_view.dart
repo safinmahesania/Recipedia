@@ -5,6 +5,7 @@ import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
 import 'edit_recipe_view.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Full recipe catalogue with edit and delete. StatefulWidget because
 /// loadRecipes() was firing from build() on every rebuild.
@@ -37,7 +38,7 @@ class _ManageRecipeViewState extends State<ManageRecipeView> {
         backgroundColor: t.brandFill,
         foregroundColor: t.onBrandFill,
         tooltip: 'Add recipe',
-        child: const Icon(Icons.add),
+        child: const AppIcon('add', fallback: Icons.add),
       ),
       body: Obx(() {
         if (c.isLoading.value) {
@@ -45,7 +46,7 @@ class _ManageRecipeViewState extends State<ManageRecipeView> {
         }
         if (c.recipes.isEmpty) {
           return const EmptyState(
-            icon: Icons.menu_book_outlined,
+            icon: 'menu_book_outlined',
             title: 'No recipes',
             message: 'Add one with the button below, or approve a submission.',
           );
@@ -80,13 +81,13 @@ class _ManageRecipeViewState extends State<ManageRecipeView> {
               ),
               trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                 IconButton(
-                  icon: Icon(Icons.edit_outlined,
+                  icon: AppIcon('edit_outlined', fallback: Icons.edit_outlined,
                       color: t.textSecondary, size: AppSizes.iconMd),
                   tooltip: 'Edit',
                   onPressed: () => Get.to(() => EditRecipeView(recipe: r)),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete_outline,
+                  icon: AppIcon('delete_outline', fallback: Icons.delete_outline,
                       color: t.error, size: AppSizes.iconMd),
                   tooltip: 'Delete',
                   onPressed: () => _confirmDelete(context, c,

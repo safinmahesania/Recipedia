@@ -5,6 +5,7 @@ import '../../controllers/review_controller.dart';
 import '../../shared/widgets/primary_button.dart';
 import '../../theme/app_tokens.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Rate and review a recipe, and read what others said.
 class ReviewRatingView extends StatefulWidget {
@@ -112,7 +113,7 @@ class _ReviewRatingViewState extends State<ReviewRatingView> {
                   padding: const EdgeInsets.symmetric(vertical: AppSizes.lg),
                   child: Center(
                     child: Column(children: [
-                      Icon(Icons.rate_review_outlined,
+                      AppIcon('rate_review_outlined', fallback: Icons.rate_review_outlined,
                           size: AppSizes.iconXl, color: t.borderStrong),
                       const SizedBox(height: AppSizes.sm),
                       Text('No reviews yet',

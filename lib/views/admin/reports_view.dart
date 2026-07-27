@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Moderation queue for reported recipes, reviews and users.
 class ReportsView extends StatefulWidget {
@@ -39,7 +40,7 @@ class _ReportsViewState extends State<ReportsView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.flag_outlined,
+                AppIcon('flag_outlined', fallback: Icons.flag_outlined,
                     size: AppSizes.iconXl, color: t.borderStrong),
                 const SizedBox(height: AppSizes.smd),
                 Text('Nothing reported',

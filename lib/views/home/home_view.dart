@@ -10,6 +10,7 @@ import '../../shared/widgets/section_header.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
 import '../scan/scan_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Home — "what can I cook tonight?"
 ///
@@ -215,7 +216,7 @@ class _PantryCard extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.add,
+                          AppIcon('add', fallback: Icons.add,
                               size: AppSizes.iconSm, color: t.onBrandFill),
                           const SizedBox(width: 3),
                           Text('Scan',
@@ -260,7 +261,7 @@ class _Chip extends StatelessWidget {
           const SizedBox(width: AppSizes.xs),
           GestureDetector(
             onTap: onRemove,
-            child: Icon(Icons.close,
+            child: AppIcon('close', fallback: Icons.close,
                 size: AppSizes.iconSm, color: t.textSecondary),
           ),
         ],

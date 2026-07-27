@@ -10,6 +10,7 @@ import '../../services/auth_service.dart';
 import '../../services/cooked_service.dart';
 import '../../shared/recipe_steps.dart';
 import 'review_rating_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Full-screen, one step at a time, for a phone propped against a jar.
 ///
@@ -142,12 +143,12 @@ class _CookModeViewState extends State<CookModeView> {
                   Row(children: [
                     if (widget.ingredients.isNotEmpty)
                       IconButton(
-                        icon: const Icon(Icons.list_alt, color: _muted),
+                        icon: const AppIcon('list_alt', fallback: Icons.list_alt, color: _muted),
                         tooltip: 'Ingredients',
                         onPressed: _showIngredients,
                       ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: _muted),
+                      icon: const AppIcon('close', fallback: Icons.close, color: _muted),
                       tooltip: 'Exit cook mode',
                       onPressed: Get.back,
                     ),
@@ -344,13 +345,13 @@ class _TimerPanel extends StatelessWidget {
             children: [
               if (active) ...[
                 _CircleButton(
-                    icon: Icons.refresh, onTap: onReset, muted: muted),
+                    icon: 'refresh', onTap: onReset, muted: muted),
                 const SizedBox(width: AppSizes.smd),
               ],
               _CircleButton(
                 icon: !active
-                    ? Icons.play_arrow
-                    : (running ? Icons.pause : Icons.play_arrow),
+                    ? 'play_arrow'
+                    : (running ? 'pause' : 'play_arrow'),
                 onTap: active ? onToggle : onStart,
                 primary: true,
                 muted: muted,
@@ -364,7 +365,7 @@ class _TimerPanel extends StatelessWidget {
 }
 
 class _CircleButton extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final VoidCallback onTap;
   final bool primary;
   final Color muted;
@@ -389,7 +390,7 @@ class _CircleButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: primary ? AppColors.primary : const Color(0x1FFFFFFF),
         ),
-        child: Icon(icon,
+        child: AppIcon(icon, fallback: Icons.circle_outlined,
             color: primary ? Colors.white : muted, size: primary ? 26 : 20),
       ),
     );

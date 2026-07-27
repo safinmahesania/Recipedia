@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/app_sizes.dart';
 import '../../constants/app_strings.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/app_icon.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
@@ -26,7 +27,7 @@ class AboutView extends StatelessWidget {
                 color: t.brandTint,
                 borderRadius: BorderRadius.circular(AppSizes.radiusMd),
               ),
-              child: Icon(Icons.restaurant_menu,
+              child: AppIcon('restaurant_menu', fallback: Icons.restaurant_menu,
                   size: 30, color: t.onBrandTint),
             ),
             const SizedBox(height: AppSizes.md),

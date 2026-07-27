@@ -6,17 +6,47 @@
 class RecipeSteps {
   RecipeSteps._();
 
-  /// Splits on line breaks and strips any leading "1." / "2)" numbering, since
-  /// the UI supplies its own. Returns an empty list when there is only one
-  /// block, which is the signal to render it as a paragraph instead.
+  /// Splits instructions into steps.
+  ///
+  /// Line breaks first. When there are none — which is the case for most of the
+  /// imported catalogue, where instructions are one long blob — fall back to
+  /// sentence boundaries. Returning an empty list here used to disable "Start
+  /// cooking" on nearly every recipe.
   static List<String> split(String raw) {
-    final parts = raw
+    final byLine = raw
         .split(RegExp(r'\r?\n+'))
-        .map((s) => s.trim().replaceFirst(RegExp(r'^\d+[.)]\s*'), ''))
+        .map(_clean)
         .where((s) => s.isNotEmpty)
         .toList();
-    return parts.length > 1 ? parts : const [];
+    if (byLine.length > 1) return byLine;
+
+    final blob = _clean(raw);
+    if (blob.isEmpty) return const [];
+
+    // Split after . ! ? followed by a space and a capital. Decimals ("1.5 cm")
+    // and abbreviations survive because the next character is not upper case.
+    final bySentence = blob
+        .split(RegExp(r'(?<=[.!?])\s+(?=[A-Z])'))
+        .map(_clean)
+        .where((s) => s.length > 3)
+        .toList();
+
+    // One sentence is not a set of steps — better to show a paragraph than a
+    // one-step cook mode.
+    return bySentence.length > 1 ? bySentence : const [];
   }
+
+  /// Always returns something cookable, even for a single-paragraph recipe.
+  /// Used by cook mode, which must never be handed an empty list.
+  static List<String> stepsOrWhole(String raw) {
+    final parts = split(raw);
+    if (parts.isNotEmpty) return parts;
+    final whole = _clean(raw);
+    return whole.isEmpty ? const [] : [whole];
+  }
+
+  static String _clean(String s) =>
+      s.trim().replaceFirst(RegExp(r'^\d+[.)]\s*'), '');
 
   static final _duration = RegExp(
     r'(\d+)\s*(?:-|to|–)?\s*(\d+)?\s*(hours?|hrs?|minutes?|mins?|seconds?|secs?)',

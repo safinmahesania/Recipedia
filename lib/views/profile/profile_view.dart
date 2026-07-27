@@ -13,6 +13,7 @@ import '../shopping/shopping_list_view.dart';
 import '../submissions/my_submissions_view.dart';
 import 'settings_view.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Profile — identity, activity, and the settings that change how the app
 /// behaves. Submissions and Admin were buried in Settings before, which is why
@@ -73,7 +74,7 @@ class ProfileView extends StatelessWidget {
                                 border:
                                     Border.all(color: t.canvas, width: 2),
                               ),
-                              child: Icon(Icons.camera_alt,
+                              child: AppIcon('camera_alt', fallback: Icons.camera_alt,
                                   size: 13, color: t.onBrandFill),
                             ),
                           ),
@@ -130,29 +131,29 @@ class ProfileView extends StatelessWidget {
               _GroupLabel('COOKING'),
               _Group(children: [
                 _Tile(
-                  icon: Icons.edit_note,
+                  icon: 'edit_note',
                   label: 'My submissions',
                   onTap: () => Get.to(() => const MySubmissionsView()),
                 ),
                 _Tile(
-                  icon: Icons.star_outline,
+                  icon: 'star_outline',
                   label: 'My reviews',
                   trailingText: '${c.reviewCount.value}',
                   onTap: () => Get.to(() => const MyReviewsView()),
                 ),
                 _Tile(
-                  icon: Icons.eco_outlined,
+                  icon: 'eco_outlined',
                   label: 'Diet and allergies',
                   trailingText: p?.dietPreference ?? 'Any',
                   onTap: () => Get.to(() => const DietAllergiesView()),
                 ),
                 _Tile(
-                  icon: Icons.shopping_basket_outlined,
+                  icon: 'shopping_basket_outlined',
                   label: 'Shopping list',
                   onTap: () => Get.to(() => const ShoppingListView()),
                 ),
                 _Tile(
-                  icon: Icons.calendar_month_outlined,
+                  icon: 'calendar_month_outlined',
                   label: 'Meal planner',
                   onTap: () => Get.to(() => const MealPlanView()),
                   isLast: true,
@@ -162,18 +163,18 @@ class ProfileView extends StatelessWidget {
               _GroupLabel('APP'),
               _Group(children: [
                 _Tile(
-                  icon: Icons.dark_mode_outlined,
+                  icon: 'dark_mode_outlined',
                   label: 'Appearance',
                   trailingText: _themeLabel(p?.themeMode ?? 'system'),
                   onTap: () => _themeSheet(context, c),
                 ),
                 _Tile(
-                  icon: Icons.notifications_none,
+                  icon: 'notifications_none',
                   label: 'Notifications',
                   onTap: () => _soon('Notifications'),
                 ),
                 _Tile(
-                  icon: Icons.shield_outlined,
+                  icon: 'shield_outlined',
                   label: 'Account and security',
                   onTap: () => Get.to(() => const AccountSecurityView()),
                   isLast: true,
@@ -184,7 +185,7 @@ class ProfileView extends StatelessWidget {
                 _GroupLabel('ADMIN'),
                 _Group(children: [
                   _Tile(
-                    icon: Icons.admin_panel_settings_outlined,
+                    icon: 'admin_panel_settings_outlined',
                     label: 'Admin portal',
                     onTap: () => Get.to(() => const AdminPortalView()),
                     isLast: true,
@@ -194,7 +195,7 @@ class ProfileView extends StatelessWidget {
               const SizedBox(height: AppSizes.md),
               _Group(children: [
                 _Tile(
-                  icon: Icons.settings_outlined,
+                  icon: 'settings_outlined',
                   label: 'More settings',
                   onTap: () => Get.to(() => const SettingsView()),
                   isLast: true,
@@ -225,7 +226,7 @@ class ProfileView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
+              leading: const AppIcon('photo_library_outlined', fallback: Icons.photo_library_outlined),
               title: const Text('Choose from gallery'),
               onTap: () {
                 Get.back();
@@ -233,7 +234,7 @@ class ProfileView extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
+              leading: const AppIcon('photo_camera_outlined', fallback: Icons.photo_camera_outlined),
               title: const Text('Take a photo'),
               onTap: () {
                 Get.back();
@@ -257,7 +258,7 @@ class ProfileView extends StatelessWidget {
               ListTile(
                 title: Text(_themeLabel(mode)),
                 trailing: c.profile.value?.themeMode == mode
-                    ? const Icon(Icons.check)
+                    ? const AppIcon('check', fallback: Icons.check)
                     : null,
                 onTap: () {
                   Get.back();
@@ -339,7 +340,7 @@ class _Group extends StatelessWidget {
 }
 
 class _Tile extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String label;
   final String? trailingText;
   final VoidCallback onTap;
@@ -369,14 +370,14 @@ class _Tile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, size: AppSizes.iconMd, color: t.textSecondary),
+            AppIcon(icon, fallback: Icons.circle_outlined, size: AppSizes.iconMd, color: t.textSecondary),
             const SizedBox(width: AppSizes.smd),
             Expanded(child: Text(label, style: text.bodyMedium)),
             if (trailingText != null)
               Text(trailingText!,
                   style: text.labelSmall?.copyWith(color: t.textSecondary)),
             const SizedBox(width: AppSizes.xs),
-            Icon(Icons.chevron_right,
+            AppIcon('chevron_right', fallback: Icons.chevron_right,
                 size: AppSizes.iconMd, color: t.borderStrong),
           ],
         ),

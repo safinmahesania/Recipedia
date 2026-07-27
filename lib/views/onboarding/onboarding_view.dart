@@ -7,6 +7,7 @@ import '../../shared/widgets/primary_button.dart';
 import '../../theme/app_tokens.dart';
 import '../home/main_shell.dart';
 import '../scan/scan_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Three preference steps, then a confirmation.
 ///
@@ -96,7 +97,7 @@ class _Header extends StatelessWidget {
                       color: t.surface,
                       borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
-                    child: const Icon(Icons.arrow_back, size: AppSizes.iconMd),
+                    child: const AppIcon('arrow_back', fallback: Icons.arrow_back, size: AppSizes.iconMd),
                   ),
                 )
               else
@@ -246,7 +247,7 @@ class _Choice extends StatelessWidget {
                       : Border.all(color: t.borderStrong, width: 2),
                 ),
                 child: selected
-                    ? Icon(Icons.check, size: 14, color: t.onBrandFill)
+                    ? AppIcon('check', fallback: Icons.check, size: 14, color: t.onBrandFill)
                     : null,
               ),
             ],
@@ -282,7 +283,7 @@ class _AllergyStep extends StatelessWidget {
           onChanged: controller.search,
           decoration: const InputDecoration(
             hintText: 'Search an ingredient',
-            prefixIcon: Icon(Icons.search, size: AppSizes.iconMd),
+            prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
           ),
         ),
         if (controller.searchResults.isNotEmpty) ...[
@@ -458,7 +459,7 @@ class _StapleStep extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSizes.radiusLg),
             ),
             child: Row(children: [
-              Icon(Icons.auto_awesome,
+              AppIcon('auto_awesome', fallback: Icons.auto_awesome,
                   size: AppSizes.iconLg, color: t.onAccentTint),
               const SizedBox(width: AppSizes.smd),
               Expanded(
@@ -502,7 +503,7 @@ class _Done extends StatelessWidget {
                 color: t.accentTint,
                 borderRadius: BorderRadius.circular(AppSizes.radiusXl),
               ),
-              child: Icon(Icons.check_rounded, size: 52, color: t.onAccentTint),
+              child: AppIcon('check_rounded', fallback: Icons.check_rounded, size: 52, color: t.onAccentTint),
             ),
           ),
           const SizedBox(height: AppSizes.lg),

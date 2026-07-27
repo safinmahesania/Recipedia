@@ -8,6 +8,7 @@ import 'manage_recipe_view.dart';
 import 'pending_recipes_view.dart';
 import 'reports_view.dart';
 import 'users_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Admin dashboard — entry point to every admin tool.
 class AdminPortalView extends StatelessWidget {
@@ -19,15 +20,15 @@ class AdminPortalView extends StatelessWidget {
     final text = Theme.of(context).textTheme;
 
     final items = <_Item>[
-      _Item(Icons.restaurant_menu, 'Recipes', 'Add, edit, delete', 0,
+      _Item('restaurant_menu', 'Recipes', 'Add, edit, delete', 0,
           () => Get.to(() => const ManageRecipeView())),
-      _Item(Icons.pending_actions, 'Pending submissions', 'Approve or reject', 1,
+      _Item('pending_actions', 'Pending submissions', 'Approve or reject', 1,
           () => Get.to(() => const PendingRecipesView())),
-      _Item(Icons.people_outline, 'Users', 'View all users', 3,
+      _Item('people_outline', 'Users', 'View all users', 3,
           () => Get.to(() => const UsersView())),
-      _Item(Icons.star_outline, 'Reviews', 'Ratings and comments', 2,
+      _Item('star_outline', 'Reviews', 'Ratings and comments', 2,
           () => Get.to(() => const FeedbackView())),
-      _Item(Icons.flag_outlined, 'Reports', 'Moderation queue', 6,
+      _Item('flag_outlined', 'Reports', 'Moderation queue', 6,
           () => Get.to(() => const ReportsView())),
     ];
 
@@ -58,7 +59,9 @@ class AdminPortalView extends StatelessWidget {
                     color: t.categoryTints[it.tint],
                     borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                   ),
-                  child: Icon(it.icon, color: t.categoryGlyphs[it.tint]),
+                  child: AppIcon(it.icon,
+                      fallback: Icons.circle_outlined,
+                      color: t.categoryGlyphs[it.tint]),
                 ),
                 const SizedBox(width: AppSizes.md),
                 Expanded(
@@ -73,7 +76,7 @@ class AdminPortalView extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_right, color: t.borderStrong),
+                AppIcon('chevron_right', fallback: Icons.chevron_right, color: t.borderStrong),
               ]),
             ),
           );
@@ -84,7 +87,7 @@ class AdminPortalView extends StatelessWidget {
 }
 
 class _Item {
-  final IconData icon;
+  final String icon;
   final String title;
   final String subtitle;
   /// Index into the category tint ramp, so each tool reads as its own thing

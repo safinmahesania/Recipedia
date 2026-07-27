@@ -5,6 +5,7 @@ import '../../controllers/submission_controller.dart';
 import '../../theme/app_tokens.dart';
 import 'submit_recipe_view.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// The user's own submissions and where each one stands.
 ///
@@ -39,7 +40,7 @@ class _MySubmissionsViewState extends State<MySubmissionsView> {
         backgroundColor: t.brandFill,
         foregroundColor: t.onBrandFill,
         tooltip: 'Add a recipe',
-        child: const Icon(Icons.add),
+        child: const AppIcon('add', fallback: Icons.add),
       ),
       body: Obx(() {
         if (c.isLoading.value) {
@@ -52,7 +53,7 @@ class _MySubmissionsViewState extends State<MySubmissionsView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.edit_note,
+                  AppIcon('edit_note', fallback: Icons.edit_note,
                       size: AppSizes.iconXl, color: t.borderStrong),
                   const SizedBox(height: AppSizes.smd),
                   Text('Nothing submitted yet',
@@ -126,7 +127,7 @@ class _MySubmissionsViewState extends State<MySubmissionsView> {
                         TextButton.icon(
                           onPressed: () =>
                               Get.to(() => SubmitRecipeView(existing: r)),
-                          icon: const Icon(Icons.edit_outlined,
+                          icon: const AppIcon('edit_outlined', fallback: Icons.edit_outlined,
                               size: AppSizes.iconSm),
                           label: const Text('Edit'),
                           style: TextButton.styleFrom(
@@ -135,7 +136,7 @@ class _MySubmissionsViewState extends State<MySubmissionsView> {
                         TextButton.icon(
                           onPressed: () =>
                               _confirmDelete(context, c, r['id'] as String),
-                          icon: const Icon(Icons.delete_outline,
+                          icon: const AppIcon('delete_outline', fallback: Icons.delete_outline,
                               size: AppSizes.iconSm),
                           label: const Text('Delete'),
                           style: TextButton.styleFrom(foregroundColor: t.error),

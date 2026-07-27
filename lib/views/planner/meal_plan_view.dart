@@ -7,6 +7,7 @@ import '../../shared/widgets/recipe_image.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// A week of meals, one day at a time.
 ///
@@ -49,7 +50,7 @@ class _MealPlanViewState extends State<MealPlanView> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.chevron_left),
+                    icon: const AppIcon('chevron_left', fallback: Icons.chevron_left),
                     tooltip: 'Previous week',
                     onPressed: () => c.shiftWeek(-1),
                   ),
@@ -62,7 +63,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.chevron_right),
+                    icon: const AppIcon('chevron_right', fallback: Icons.chevron_right),
                     tooltip: 'Next week',
                     onPressed: () => c.shiftWeek(1),
                   ),
@@ -150,7 +151,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.shopping_basket_outlined,
+                            icon: const AppIcon('shopping_basket_outlined', fallback: Icons.shopping_basket_outlined,
                                 size: AppSizes.iconSm),
                             label: const Text("Shop for this week"),
                           ),
@@ -196,7 +197,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                       onChanged: c.search,
                       decoration: const InputDecoration(
                         hintText: 'Search all recipes',
-                        prefixIcon: Icon(Icons.search, size: AppSizes.iconMd),
+                        prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),
@@ -308,7 +309,7 @@ class _Slot extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                   ),
                   child: Row(children: [
-                    Icon(Icons.add, size: AppSizes.iconMd, color: t.textTertiary),
+                    AppIcon('add', fallback: Icons.add, size: AppSizes.iconMd, color: t.textTertiary),
                     const SizedBox(width: AppSizes.sm),
                     Text('Add a recipe',
                         style: text.bodyMedium
@@ -357,7 +358,7 @@ class _Slot extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close,
+                    icon: AppIcon('close', fallback: Icons.close,
                         size: AppSizes.iconMd, color: t.textSecondary),
                     tooltip: 'Remove',
                     onPressed: () => controller.remove(entry!),

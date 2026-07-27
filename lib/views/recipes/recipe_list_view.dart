@@ -7,6 +7,7 @@ import '../../shared/widgets/active_filters_bar.dart';
 import '../../shared/widgets/recipe_grid_card.dart';
 import '../../theme/app_tokens.dart';
 import 'recipe_details_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Recipe browser: search, category rail, filters, and a two-column grid.
 ///
@@ -83,7 +84,7 @@ class _RecipeListViewState extends State<RecipeListView> {
               foregroundColor: t.textPrimary,
               elevation: 2,
               tooltip: 'Back to top',
-              child: const Icon(Icons.arrow_upward),
+              child: const AppIcon('arrow_upward', fallback: Icons.arrow_upward),
             )
           : const SizedBox.shrink()),
       body: SafeArea(
@@ -107,13 +108,13 @@ class _RecipeListViewState extends State<RecipeListView> {
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: 'Search recipes',
-                  prefixIcon: const Icon(Icons.search, size: AppSizes.iconMd),
+                  prefixIcon: const AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
                   suffixIcon: ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _searchCtrl,
                     builder: (_, value, __) => value.text.isEmpty
                         ? const SizedBox.shrink()
                         : IconButton(
-                            icon: const Icon(Icons.close,
+                            icon: const AppIcon('close', fallback: Icons.close,
                                 size: AppSizes.iconMd),
                             tooltip: 'Clear search',
                             onPressed: _clearSearch,
@@ -339,7 +340,7 @@ class _Empty extends StatelessWidget {
       padding: const EdgeInsets.all(AppSizes.xl),
       children: [
         const SizedBox(height: AppSizes.xl),
-        Icon(Icons.search_off, size: AppSizes.iconXl, color: t.borderStrong),
+        AppIcon('search_off', fallback: Icons.search_off, size: AppSizes.iconXl, color: t.borderStrong),
         const SizedBox(height: AppSizes.smd),
         Text(
           term.isNotEmpty ? 'Nothing matches "$term"' : 'No recipes match',

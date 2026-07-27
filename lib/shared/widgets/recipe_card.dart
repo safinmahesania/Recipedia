@@ -3,6 +3,7 @@ import '../../constants/app_sizes.dart';
 import '../../theme/app_tokens.dart';
 import 'match_meter.dart';
 import 'recipe_image.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Horizontal recipe row — the workhorse across browse, saved, scan and Home.
 ///
@@ -114,7 +115,7 @@ class RecipeCard extends StatelessWidget {
                     const SizedBox(height: AppSizes.xs + 1),
                     Row(
                       children: [
-                        Icon(Icons.schedule,
+                        AppIcon('schedule', fallback: Icons.schedule,
                             size: AppSizes.iconXs + 1,
                             color: t.textSecondary),
                         const SizedBox(width: 4),
@@ -162,7 +163,7 @@ class RecipeCard extends StatelessWidget {
                                     AppSizes.radiusPill),
                               ),
                               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                Icon(Icons.add,
+                                AppIcon('add', fallback: Icons.add,
                                     size: AppSizes.iconXs + 2,
                                     color: t.textSecondary),
                                 const SizedBox(width: 3),
@@ -313,7 +314,7 @@ class _AllergenFlag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.warning_amber_rounded,
+          AppIcon('warning_amber_rounded', fallback: Icons.warning_amber_rounded,
               size: AppSizes.iconXs, color: t.onErrorTint),
           const SizedBox(width: 3),
           Text('Allergen',

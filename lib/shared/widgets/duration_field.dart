@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../constants/app_sizes.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Cook-time input: type a number, or step it with +/-.
 /// The unit ("min") is fixed and shown inline, so the user never types it.
@@ -69,7 +70,7 @@ class _DurationFieldState extends State<DurationField> {
       ),
       child: Row(
         children: [
-          _stepButton(Icons.remove, () => _bump(-widget.step)),
+          _stepButton('remove', () => _bump(-widget.step)),
           Expanded(
             child: TextField(
               controller: _ctrl,
@@ -91,13 +92,13 @@ class _DurationFieldState extends State<DurationField> {
             child: Text('min',
                 style: text.bodyMedium?.copyWith(color: t.textSecondary)),
           ),
-          _stepButton(Icons.add, () => _bump(widget.step)),
+          _stepButton('add', () => _bump(widget.step)),
         ],
       ),
     );
   }
 
-  Widget _stepButton(IconData icon, VoidCallback onTap) => Builder(
+  Widget _stepButton(String icon, VoidCallback onTap) => Builder(
         builder: (context) => Material(
           color: Colors.transparent,
           child: InkWell(
@@ -105,8 +106,10 @@ class _DurationFieldState extends State<DurationField> {
             borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             child: Padding(
               padding: const EdgeInsets.all(14),
-              child: Icon(icon,
-                  size: AppSizes.iconMd, color: context.tokens.brand),
+              child: AppIcon(icon,
+                  fallback: Icons.circle_outlined,
+                  size: AppSizes.iconMd,
+                  color: context.tokens.brand),
             ),
           ),
         ),

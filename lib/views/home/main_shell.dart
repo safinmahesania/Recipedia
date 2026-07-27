@@ -4,6 +4,7 @@ import '../profile/profile_view.dart';
 import '../recipes/recipe_list_view.dart';
 import '../scan/scan_view.dart';
 import 'home_view.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Single bottom-nav shell. Tabs swap the body — no full-screen re-navigation.
 ///
@@ -37,24 +38,24 @@ class _MainShellState extends State<MainShell> {
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: const [
           NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
+              icon: AppIcon('home_outlined', fallback: Icons.home_outlined),
+              selectedIcon: AppIcon('home', fallback: Icons.home),
               label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.menu_book_outlined),
-              selectedIcon: Icon(Icons.menu_book),
+              icon: AppIcon('menu_book_outlined', fallback: Icons.menu_book_outlined),
+              selectedIcon: AppIcon('menu_book', fallback: Icons.menu_book),
               label: 'Recipes'),
           NavigationDestination(
-              icon: Icon(Icons.document_scanner_outlined),
-              selectedIcon: Icon(Icons.document_scanner),
+              icon: AppIcon('document_scanner_outlined', fallback: Icons.document_scanner_outlined),
+              selectedIcon: AppIcon('document_scanner', fallback: Icons.document_scanner),
               label: 'Scan'),
           NavigationDestination(
-              icon: Icon(Icons.bookmark_border),
-              selectedIcon: Icon(Icons.bookmark),
+              icon: AppIcon('bookmark_border', fallback: Icons.bookmark_border),
+              selectedIcon: AppIcon('bookmark', fallback: Icons.bookmark),
               label: 'Saved'),
           NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
+              icon: AppIcon('person_outline', fallback: Icons.person_outline),
+              selectedIcon: AppIcon('person', fallback: Icons.person),
               label: 'Profile'),
         ],
       ),

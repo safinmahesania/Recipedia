@@ -5,6 +5,7 @@ import '../../controllers/preferences_controller.dart';
 import '../../shared/widgets/ingredient_icon.dart';
 import '../../theme/app_tokens.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Editing for the preferences onboarding collected. Every control here
 /// changes what match_recipes_for_user returns on the next scan.
@@ -74,7 +75,7 @@ class _DietAllergiesViewState extends State<DietAllergiesView> {
               onChanged: c.search,
               decoration: const InputDecoration(
                 hintText: 'Search an ingredient',
-                prefixIcon: Icon(Icons.search, size: AppSizes.iconMd),
+                prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
               ),
             ),
             if (c.searchResults.isNotEmpty) ...[
@@ -239,7 +240,7 @@ class _Pill extends StatelessWidget {
                   color: fg, fontWeight: FontWeight.w600)),
           if (danger) ...[
             const SizedBox(width: AppSizes.xs),
-            Icon(Icons.close, size: AppSizes.iconXs + 2, color: fg),
+            AppIcon('close', fallback: Icons.close, size: AppSizes.iconXs + 2, color: fg),
           ],
         ]),
       ),

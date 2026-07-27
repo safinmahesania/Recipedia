@@ -38,7 +38,7 @@ class _UsersViewState extends State<UsersView> {
         }
         if (c.users.isEmpty) {
           return const EmptyState(
-            icon: Icons.people_outline,
+            icon: 'people_outline',
             title: 'No users yet',
             message: 'Accounts appear here as people sign up.',
           );

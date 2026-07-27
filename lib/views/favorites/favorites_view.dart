@@ -6,6 +6,7 @@ import '../../shared/widgets/recipe_card.dart';
 import '../../theme/app_tokens.dart';
 import '../recipes/recipe_details_view.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Saved — an organiser, not a third recipe list.
 class FavoritesView extends StatelessWidget {
@@ -42,7 +43,7 @@ class FavoritesView extends StatelessWidget {
                       onChanged: c.setQuery,
                       decoration: const InputDecoration(
                         hintText: 'Search saved',
-                        prefixIcon: Icon(Icons.search, size: AppSizes.iconMd),
+                        prefixIcon: AppIcon('search', fallback: Icons.search, size: AppSizes.iconMd),
                         isDense: true,
                       ),
                     ),
@@ -92,7 +93,7 @@ class FavoritesView extends StatelessWidget {
                                 onTap: () => Get.to(
                                     () => RecipeDetailsView(recipeId: r['id'])),
                                 trailing: IconButton(
-                                  icon: Icon(Icons.favorite,
+                                  icon: AppIcon('favorite', fallback: Icons.favorite,
                                       color: t.brand, size: AppSizes.iconMd),
                                   tooltip: 'Remove from saved',
                                   onPressed: () =>
@@ -242,7 +243,7 @@ class _SortRow extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.swap_vert,
+              AppIcon('swap_vert', fallback: Icons.swap_vert,
                   size: AppSizes.iconSm, color: t.textSecondary),
               const SizedBox(width: 3),
               Text('Sort',
@@ -271,7 +272,7 @@ class _Empty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.bookmark_border,
+            AppIcon('bookmark_border', fallback: Icons.bookmark_border,
                 size: AppSizes.iconXl, color: t.borderStrong),
             const SizedBox(height: AppSizes.smd),
             Text(hasAny ? 'Nothing here yet' : 'Start your collection',

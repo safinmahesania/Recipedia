@@ -5,6 +5,7 @@ import '../../controllers/auth_controller.dart';
 import '../../controllers/profile_controller.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Email, password and account deletion.
 ///
@@ -44,7 +45,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
           const SizedBox(height: AppSizes.sm),
           _Card(children: [
             _Row(
-              icon: Icons.mail_outline,
+              icon: 'mail_outline',
               title: 'Email',
               subtitle: user?.email ?? '—',
               trailing: Container(
@@ -62,7 +63,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
             ),
             Divider(height: 1, color: t.border),
             _Row(
-              icon: Icons.key_outlined,
+              icon: 'key_outlined',
               title: 'Change password',
               onTap: _busy ? null : _changePassword,
             ),
@@ -73,7 +74,7 @@ class _AccountSecurityViewState extends State<AccountSecurityView> {
           const SizedBox(height: AppSizes.sm),
           _Card(children: [
             _Row(
-              icon: Icons.info_outline,
+              icon: 'info_outline',
               title: 'Version',
               trailing: Text(_version,
                   style: text.labelSmall?.copyWith(color: t.textSecondary)),
@@ -274,7 +275,7 @@ class _Card extends StatelessWidget {
 }
 
 class _Row extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String title;
   final String? subtitle;
   final Widget? trailing;
@@ -297,7 +298,7 @@ class _Row extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.smd),
         child: Row(children: [
-          Icon(icon, size: AppSizes.iconMd, color: t.textSecondary),
+          AppIcon(icon, fallback: Icons.circle_outlined, size: AppSizes.iconMd, color: t.textSecondary),
           const SizedBox(width: AppSizes.smd),
           Expanded(
             child: Column(
@@ -318,7 +319,7 @@ class _Row extends StatelessWidget {
           ),
           if (trailing != null) trailing!,
           if (trailing == null && onTap != null)
-            Icon(Icons.chevron_right, color: t.borderStrong),
+            AppIcon('chevron_right', fallback: Icons.chevron_right, color: t.borderStrong),
         ]),
       ),
     );

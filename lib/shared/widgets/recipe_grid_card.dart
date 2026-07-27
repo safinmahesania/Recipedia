@@ -3,6 +3,7 @@ import '../../constants/app_sizes.dart';
 import '../../theme/app_tokens.dart';
 import 'match_meter.dart';
 import 'recipe_image.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Two-column grid tile.
 ///
@@ -105,7 +106,7 @@ class RecipeGridCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.schedule,
+                            AppIcon('schedule', fallback: Icons.schedule,
                                 size: AppSizes.iconXs, color: t.textSecondary),
                             const SizedBox(width: 3),
                             Text(cookTime,

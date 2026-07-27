@@ -72,6 +72,7 @@ flutter:
   assets:
     - assets/ing/
     - assets/dish/
+    - assets/icons/
 
   # Uncomment when the trained model is added:
   #   - assets/ml/

@@ -4,6 +4,7 @@ import '../../constants/app_sizes.dart';
 import '../../controllers/admin_controller.dart';
 import '../../theme/app_tokens.dart';
 import '../../shared/widgets/skeletons.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Approval queue for user-submitted recipes.
 class PendingRecipesView extends StatefulWidget {
@@ -41,7 +42,7 @@ class _PendingRecipesViewState extends State<PendingRecipesView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.inbox_outlined,
+                  AppIcon('inbox_outlined', fallback: Icons.inbox_outlined,
                       size: AppSizes.iconXl, color: t.borderStrong),
                   const SizedBox(height: AppSizes.smd),
                   Text('Queue is clear',

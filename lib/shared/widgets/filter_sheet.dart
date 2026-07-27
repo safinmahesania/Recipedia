@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../constants/app_sizes.dart';
 import '../../controllers/recipe_controller.dart';
 import '../../theme/app_tokens.dart';
+import '../../shared/widgets/app_icon.dart';
 
 /// Bottom sheet combining category, cuisine and diet.
 /// Counts come from the database so the user can see how much each option holds
@@ -61,7 +62,7 @@ class FilterSheet extends StatelessWidget {
                       )
                     : const SizedBox.shrink()),
                 IconButton(
-                  icon: Icon(Icons.close, color: t.textSecondary),
+                  icon: AppIcon('close', fallback: Icons.close, color: t.textSecondary),
                   tooltip: 'Close',
                   onPressed: () => Navigator.pop(context),
                 ),
