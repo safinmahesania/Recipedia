@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../constants/icon_assets.dart';
 import '../../theme/app_tokens.dart';
+import '../../constants/app_sizes.dart';
 
 /// Tabler icon, falling back to Material.
 ///
@@ -52,4 +53,25 @@ class AppIcon extends StatelessWidget {
       semanticsLabel: semanticLabel,
     );
   }
+}
+
+/// Icon for the inside of a text field.
+///
+/// Exists because every call site was passing its own size and none passed a
+/// colour, so they inherited full text colour and read as heavy as the input
+/// itself. A field icon labels the input; it should sit back from the text,
+/// not compete with it.
+class FieldIcon extends StatelessWidget {
+  final String name;
+  final IconData fallback;
+
+  const FieldIcon(this.name, {super.key, required this.fallback});
+
+  @override
+  Widget build(BuildContext context) => AppIcon(
+        name,
+        fallback: fallback,
+        size: AppSizes.iconInput,
+        color: context.tokens.textTertiary,
+      );
 }

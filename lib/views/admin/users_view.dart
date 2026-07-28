@@ -92,8 +92,7 @@ class _UsersViewState extends State<UsersView> {
                     onChanged: (v) => _query.value = v,
                     decoration: const InputDecoration(
                       hintText: 'Search by name or email',
-                      prefixIcon: AppIcon('search',
-                          fallback: Icons.search, size: AppSizes.iconInput),
+                      prefixIcon: FieldIcon('search', fallback: Icons.search),
                     ),
                   ),
                   const SizedBox(height: AppSizes.smd),

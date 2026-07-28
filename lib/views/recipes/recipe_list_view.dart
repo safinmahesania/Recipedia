@@ -110,8 +110,7 @@ class _RecipeListViewState extends State<RecipeListView> {
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: 'Search recipes',
-                  prefixIcon: const AppIcon('search',
-                      fallback: Icons.search, size: AppSizes.iconInput),
+                  prefixIcon: const FieldIcon('search', fallback: Icons.search),
                   suffixIcon: ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _searchCtrl,
                     builder: (_, value, __) => value.text.isEmpty

@@ -65,9 +65,7 @@ class _AppTextFieldState extends State<AppTextField> {
             errorText: widget.errorText,
             prefixIcon: widget.icon == null
                 ? null
-                : AppIcon(widget.icon!,
-                    fallback: Icons.circle_outlined,
-                    size: AppSizes.iconInput),
+                : FieldIcon(widget.icon!, fallback: Icons.circle_outlined),
             suffixIcon: !widget.obscure
                 ? null
                 : GestureDetector(
@@ -76,12 +74,11 @@ class _AppTextFieldState extends State<AppTextField> {
                     child: Padding(
                       padding:
                           const EdgeInsets.symmetric(horizontal: AppSizes.smd),
-                      child: AppIcon(_hidden ? 'visibility' : 'visibility_off',
+                      child: FieldIcon(
+                          _hidden ? 'visibility' : 'visibility_off',
                           fallback: _hidden
                               ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          size: AppSizes.iconInput,
-                          color: t.textTertiary),
+                              : Icons.visibility_off_outlined),
                     ),
                   ),
           ),

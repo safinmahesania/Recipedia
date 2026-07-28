@@ -45,7 +45,7 @@ class AppSizes {
 
   /// Icons inside a text field. Smaller than iconMd because they sit beside
   /// ~15px text and a 20px glyph competes with it rather than labelling it.
-  static const iconInput = 15.0;
+  static const iconInput = 14.0;
   static const iconLg = 28.0;
   static const iconXl = 40.0;
 
