@@ -152,9 +152,58 @@ QUANTITY = re.compile(
     r"\s*(.*)$", re.I)
 
 DESCRIPTORS = re.compile(
-    r"\b(finely|roughly|freshly|thinly|coarsely|chopped|sliced|diced|minced|"
-    r"grated|ground|crushed|peeled|washed|drained|rinsed|optional|to taste|"
-    r"for garnish|as needed|large|small|medium|ripe|fresh|dried|whole)\b", re.I)
+    r"\b(finely|roughly|freshly|thinly|coarsely|lightly|well|very|extra|"
+    r"chopped|sliced|diced|minced|grated|ground|crushed|peeled|washed|"
+    r"drained|rinsed|beaten|melted|softened|cooled|warmed|toasted|roasted|"
+    r"boiled|cooked|uncooked|raw|frozen|canned|tinned|bottled|packed|"
+    r"optional|to taste|for garnish|for serving|as needed|plus more|divided|"
+    r"large|small|medium|jumbo|ripe|unripe|fresh|dried|whole|halved|quartered|"
+    r"boneless|skinless|trimmed|deveined|shelled|unsalted|salted|low.fat|"
+    r"reduced.fat|full.fat|semi.skimmed|skimmed|plain|pure|good.quality|"
+    r"organic|free.range|room temperature|at room temperature|thawed|"
+    r"approximately|about|roughly|preferably|ideally|store.bought|homemade|"
+    r"squeezed|sifted|shredded|julienned|cubed|quartered|mashed|pureed|"
+    r"strained|separated|whisked|stiff|firm|soft|hot|cold|warm|"
+    r"good|best|quality|any|some)\b",
+    re.I)
+
+# Everything after one of these is a note, not part of the name.
+TRAILING_NOTE = re.compile(
+    r"\s*(?:,|;|\bor\b|\bplus\b|\bfor\b|\bto\b\s+(?:taste|serve|garnish)|"
+    r"\bsuch as\b|\bpreferably\b|\bif\b|\bcut into\b|\bbroken into\b).*$",
+    re.I)
+
+# Wikibooks writes "a can of X", "juice of 2 lemons", "handful of Y".
+OF_PHRASE = re.compile(
+    r"^(?:a |an |the )?(?:can|tin|jar|packet|pack|bottle|box|bag|bunch|"
+    r"handful|pinch|dash|splash|sprig|clove|stick|piece|slice|head|"
+    r"juice|zest|rind|peel)s?\s+of\s+", re.I)
+
+IRREGULAR = {
+    "leaves": "leaf", "loaves": "loaf", "knives": "knife",
+    "potatoes": "potato", "tomatoes": "tomato", "mangoes": "mango",
+    "chillies": "chilli", "berries": "berry", "cherries": "cherry",
+    "anchovies": "anchovy", "peas": "peas", "molasses": "molasses",
+}
+
+
+def singular(word):
+    if word in IRREGULAR:
+        return IRREGULAR[word]
+    # Words that end in s but are not plural.
+    if word.endswith(("ss", "us", "is", "os")) or len(word) < 4:
+        return word
+    if word.endswith("ies"):
+        return word[:-3] + "y"
+    if word.endswith("es") and word[-3:-2] in "sxzo":
+        return word[:-2]
+    if word.endswith("s"):
+        return word[:-1]
+    return word
+
+
+def singularise(name):
+    return " ".join(singular(w) for w in name.split())
 
 
 # "a pinch of saffron", "a handful of coriander" — no digits, still a quantity.
@@ -163,24 +212,71 @@ WORD_QUANTITY = re.compile(
     r"(?:es|s)?\s+(?:of\s+)?(.*)$", re.I)
 
 
+class Canonicaliser:
+    """Maps a cleaned phrase onto an ingredient you already have.
+
+    Cleaning alone is not enough. "coriander leaf" is a perfectly good
+    normalisation and still wrong, because the catalogue calls it "coriander
+    leaves" — a new row would be created for something that already exists.
+
+    So: normalise both sides for comparison, but always emit YOUR name. Falls
+    back to the longest known name appearing as a whole word, which folds
+    "boneless chicken breast" onto "chicken" rather than minting a third
+    variation of it.
+    """
+
+    def __init__(self, known):
+        self.exact = {}
+        for name in known:
+            self.exact.setdefault(name, name)
+            self.exact.setdefault(singularise(name), name)
+        # longest first, so "chicken breast" beats "chicken" when both exist
+        self.by_length = sorted(self.exact, key=len, reverse=True)
+
+    def resolve(self, name):
+        if not name:
+            return None
+        if name in self.exact:
+            return self.exact[name]
+        sing = singularise(name)
+        if sing in self.exact:
+            return self.exact[sing]
+        for known in self.by_length:
+            if len(known) < 4:
+                continue
+            if re.search(rf"\b{re.escape(known)}\b", name):
+                return self.exact[known]
+        return name          # genuinely new
+
+
+def clean_name(rest):
+    """Reduce an ingredient phrase to a name that will collapse with others.
+
+    The previous version produced 3664 distinct names from 1151 recipes —
+    roughly one unique string per line, which defeats the point. Most of that
+    was preparation notes and plurals surviving: "finely chopped tomatoes",
+    "tomatoes, chopped" and "ripe tomato" were three ingredients.
+    """
+    n = rest.lower()
+    n = re.sub(r"\(.*?\)", " ", n)          # parentheticals
+    n = OF_PHRASE.sub("", n)                 # "a can of tomatoes"
+    n = re.sub(r"^of\s+", "", n)              # QUANTITY already ate "1 can"
+    n = TRAILING_NOTE.sub("", n)             # ", finely chopped"
+    n = DESCRIPTORS.sub(" ", n)
+    n = re.sub(r"[^a-z\s-]", " ", n)         # digits, symbols, fractions
+    n = re.sub(r"\s+", " ", n).strip(" -")
+    n = singularise(n)
+    return n.strip()
+
+
 def split_ingredient(line):
     wq = WORD_QUANTITY.match(line)
     if wq:
-        qty = f"a {wq.group(2).lower()}"
-        rest = wq.group(3)
-        name = DESCRIPTORS.sub("", rest)
-        name = re.sub(r"\(.*?\)", "", name)
-        name = re.sub(r"[,;].*$", "", name)
-        name = re.sub(r"\s+", " ", name).strip(" ,.-").lower()
-        return qty, name
+        return f"a {wq.group(2).lower()}", clean_name(wq.group(3))
 
     m = QUANTITY.match(line)
     qty, rest = (m.group(1).strip(), m.group(2).strip()) if m else ("", line)
-    name = DESCRIPTORS.sub("", rest)
-    name = re.sub(r"\(.*?\)", "", name)
-    name = re.sub(r"[,;].*$", "", name)          # drop trailing notes
-    name = re.sub(r"\s+", " ", name).strip(" ,.-").lower()
-    return qty or None, name
+    return qty or None, clean_name(rest)
 
 
 def fetch_pages(category, cap):
@@ -241,7 +337,7 @@ def fetch_batch(titles):
     return out
 
 
-def parse_page(title, wikitext, categories):
+def parse_page(title, wikitext, categories, canon=None):
     raw_ings = bullets(section(wikitext, INGREDIENT_HEADINGS))
     steps = bullets(section(wikitext, METHOD_HEADINGS))
     if len(raw_ings) < MIN_INGREDIENTS:
@@ -252,7 +348,9 @@ def parse_page(title, wikitext, categories):
     parsed = []
     for line in raw_ings:
         qty, name = split_ingredient(line)
-        if name:
+        if canon:
+            name = canon.resolve(name)
+        if name and len(name) > 1:
             parsed.append((name, qty))
     if not parsed:
         return None, "no parseable ingredients"
@@ -316,9 +414,20 @@ def main():
             time.sleep(1.2)
         print()
 
+    known = set()
+    ep = pathlib.Path(args.existing)
+    if ep.exists():
+        known = {l.strip().lower() for l in
+                 ep.read_text(encoding="utf-8").splitlines() if l.strip()}
+        print(f"  resolving against {len(known)} known ingredient names\n")
+    else:
+        print(f"  WARNING: {args.existing} missing — every ingredient will look")
+        print("  new. Run tools/export_ingredients.py first.\n")
+    canon = Canonicaliser(known)
+
     kept, rejected = [], []
     for title, (wikitext, cats) in raw.items():
-        recipe, why = parse_page(title, wikitext, cats)
+        recipe, why = parse_page(title, wikitext, cats, canon)
         (kept if recipe else rejected).append(recipe or (title, why))
 
     by_cuisine = {}
@@ -339,11 +448,6 @@ def main():
     with open(OUT / "wikibooks_rejected.csv", "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerows([("title", "reason"), *rejected])
 
-    known = set()
-    ep = pathlib.Path(args.existing)
-    if ep.exists():
-        known = {l.strip().lower() for l in ep.read_text(encoding="utf-8").splitlines() if l.strip()}
-
     new = {}
     for r in kept:
         for name, _ in r["ingredients"]:
@@ -355,9 +459,31 @@ def main():
         w.writerow(["name", "uses", "action"])
         for name, n in sorted(new.items(), key=lambda x: -x[1]):
             w.writerow([name, n, "create" if n >= 3 else "skip"])
+    total_mentions = sum(len(r["ingredients"]) for r in kept)
+    kept_names = {n for n, _ in ((n, q) for r in kept for n, q in r["ingredients"])}
+    will_create = {n for n, c in new.items() if c >= 3}
+    resolvable = known | will_create
+    covered = sum(1 for r in kept for n, _ in r["ingredients"] if n in resolvable)
+    avg_before = total_mentions / max(len(kept), 1)
+    avg_after = covered / max(len(kept), 1)
+
     print(f"  new ingredients: {len(new)} -> out/new_ingredients.csv")
-    print("    names used fewer than 3 times default to skip; at this volume")
-    print("    they are almost always parser noise, not real ingredients.\n")
+    print(f"    of which used 3+ times (default create): {len(will_create)}")
+    print()
+    print("  COVERAGE — this is the number that decides whether scan works")
+    print(f"    distinct ingredient names used : {len(kept_names)}")
+    print(f"    ingredient mentions            : {total_mentions}")
+    print(f"    mentions that will survive     : {covered} "
+          f"({100*covered/max(total_mentions,1):.1f}%)")
+    print(f"    avg ingredients per recipe     : {avg_before:.1f} parsed, "
+          f"{avg_after:.1f} after skips")
+    if avg_after < 4:
+        print()
+        print("    WARNING: under 4 ingredients per recipe after filtering.")
+        print("    Recipes that thin will not match anything useful in scan.")
+        print("    Lower the skip threshold or improve normalisation before")
+        print("    importing.")
+    print()
 
     with open(OUT / "wikibooks_review.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
