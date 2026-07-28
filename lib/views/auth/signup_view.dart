@@ -109,10 +109,7 @@ class _SignupViewState extends State<SignupView> {
               ),
 
               const SizedBox(height: AppSizes.md),
-              // Shortest of the three: this screen already carries a progress
-              // bar, four inputs and a consent row.
-              const AuthHero(
-                  icon: 'person', badge: 'sparkles', slot: 1, height: 104),
+              const PantryMosaicHero(),
               const SizedBox(height: AppSizes.md),
               Text('Create your account', style: text.headlineMedium),
               const SizedBox(height: AppSizes.lg),
