@@ -44,7 +44,7 @@ class _LoginViewState extends State<LoginView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: AppSizes.smd),
-              const RecipeStackHero(),
+              const PlateHero(),
               const SizedBox(height: AppSizes.lg),
               // Left-aligned like every other screen. A centred wordmark read
               // as a splash rather than the top of a form.

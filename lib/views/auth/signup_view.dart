@@ -109,7 +109,7 @@ class _SignupViewState extends State<SignupView> {
               ),
 
               const SizedBox(height: AppSizes.md),
-              const PantryMosaicHero(),
+              const ColumnsHero(),
               const SizedBox(height: AppSizes.md),
               Text('Create your account', style: text.headlineMedium),
               const SizedBox(height: AppSizes.lg),
