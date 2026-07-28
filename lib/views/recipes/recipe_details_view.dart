@@ -223,6 +223,32 @@ class RecipeDetailsView extends StatelessWidget {
                           ),
                         ),
                       ]),
+                      // CC BY-SA requires the source credited where the work is shown,
+                      // not buried on an About page. Only rendered for imported
+                      // recipes; user submissions have no external source.
+                      if ((r['source_name'] ?? '').toString().isNotEmpty) ...[
+                        const SizedBox(height: AppSizes.md),
+                        Container(
+                          padding: const EdgeInsets.all(AppSizes.smd),
+                          decoration: BoxDecoration(
+                            color: t.surface,
+                            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                          ),
+                          child: Row(children: [
+                            AppIcon('info_outline',
+                                size: AppSizes.iconSm, color: t.textTertiary),
+                            const SizedBox(width: AppSizes.sm),
+                            Expanded(
+                              child: Text(
+                                'Recipe from ${r['source_name']}'
+                                '${(r['license'] ?? '').toString().isEmpty ? '' : ' · '}'
+                                '${r['license'] ?? ''}',
+                                style: text.labelSmall?.copyWith(color: t.textSecondary),
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ],
                       const SizedBox(height: AppSizes.sm),
                       Center(
                         child: TextButton.icon(

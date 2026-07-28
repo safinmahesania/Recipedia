@@ -29,6 +29,17 @@ Doing this properly means extracting ~600 strings first.
 Both columns stay in the schema; they cost nothing and the work is scoped
 above whenever it's wanted.
 
+## Machine learning
+
+| # | Model | Data | Status |
+|---|---|---|---|
+| 1 | Ingredient recognition (scan) | needs an image dataset | Training pipeline ready in `ml/`. Run it, drop the two files into `assets/ml/`, wire `_runModel` |
+| 2 | Instruction cleanup to numbered steps | 1032 recipes, in hand | Next — parse once into a `steps` column instead of at every render |
+| 3 | Ingredient embeddings -> substitutions | 10,307 recipe_ingredients rows | After the cleanup. Unsupervised, no labelling, directly serves "cook what you have" |
+| 4 | Auto-tagging (diet / cuisine / course) | 1032 already-labelled recipes | Parked. Strongest academic story, moderate product value |
+| 5 | Recipe recommendation | needs ~500 active users | Blocked on user volume, not code. Use popularity counts until then |
+| 6 | Cook time estimation | labels exist but are free text and noisy | Not worth it — a rule beats a model on this data |
+
 ## Blocked on external work
 
 | Feature | Blocker |
