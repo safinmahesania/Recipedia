@@ -86,7 +86,8 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [x] Edit profile — name, username, bio, avatar
 - [x] Notification preferences stored
 - [x] Diet and cuisine applied as filter defaults
-- [ ] Automatic ingredient detection — needs TFLite model
+- [ ] Automatic ingredient detection — needs a trained TFLite model
+- [x] Ingredient autocomplete — ranked, alias-aware, debounced
 - [ ] Push delivery — needs Firebase
 - [ ] Units metric/imperial — needs quantity parsing, see BACKLOG
 - [ ] Language — needs i18n extraction, see BACKLOG

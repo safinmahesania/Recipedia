@@ -108,18 +108,26 @@ class _ScanViewState extends State<ScanView> {
                         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                       ),
                       child: Column(
-                        children: c.suggestions
-                            .map((name) => ListTile(
-                                  dense: true,
-                                  visualDensity: VisualDensity.compact,
-                                  leading: IngredientIcon(name: name, size: 20),
-                                  title: Text(name, style: text.bodyMedium),
-                                  trailing: AppIcon('add',
-                                      size: AppSizes.iconMd,
-                                      color: t.onBrandTint),
-                                  onTap: () => _add(name),
-                                ))
-                            .toList(),
+                        children: c.suggestions.map((row) {
+                          final name = (row['name'] ?? '') as String;
+                          final alias = row['matched_alias'] as String?;
+                          return ListTile(
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            leading: IngredientIconFromRow(row: row, size: 20),
+                            title: Text(name, style: text.bodyMedium),
+                            // Explain an alias hit rather than silently substituting:
+                            // typing "pyaz" and getting "onion" with no reason looks
+                            // like a bug.
+                            subtitle: alias == null
+                                ? null
+                                : Text('also called $alias',
+                                    style: text.labelSmall?.copyWith(color: t.textTertiary)),
+                            trailing: AppIcon('add',
+                                size: AppSizes.iconMd, color: t.onBrandTint),
+                            onTap: () => _add(name),
+                          );
+                        }).toList(),
                       ),
                     );
                   }),

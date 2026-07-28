@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'profile_controller.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,13 +27,25 @@ class ScanController extends GetxController {
   final ingredients = <String>[].obs;
   final results = <Map<String, dynamic>>[].obs;
   final searched = false.obs;
-  final suggestions = <String>[].obs;
+  final suggestions = <Map<String, dynamic>>[].obs;
+
+  /// Every keystroke used to fire a query. On a phone keyboard that is one
+  /// round trip per character, and results arriving out of order meant the
+  /// list could settle on a stale prefix.
+  Timer? _debounce;
+  int _requestId = 0;
 
   /// Pantry staples, shown separately so it is obvious why a recipe matched
   /// without them being entered.
   final staples = <Map<String, dynamic>>[].obs;
 
   bool get modelReady => _scan.isModelAvailable;
+
+  @override
+  void onClose() {
+    _debounce?.cancel();
+    super.onClose();
+  }
 
   @override
   void onInit() {
@@ -76,13 +90,27 @@ class ScanController extends GetxController {
   }
 
   /// Autocomplete against real ingredient names in the database.
-  Future<void> suggest(String query) async {
+  void suggest(String query) {
+    _debounce?.cancel();
     if (query.trim().length < 2) {
       suggestions.clear();
       return;
     }
-    suggestions.value = await _scan.suggestIngredients(query);
+    _debounce = Timer(const Duration(milliseconds: 220), () => _run(query));
   }
+
+  Future<void> _run(String query) async {
+    final id = ++_requestId;
+    try {
+      final rows = await _scan.suggestIngredients(query);
+      // Drop anything that came back after a newer keystroke.
+      if (id != _requestId) return;
+      suggestions.value = rows;
+    } catch (_) {
+      if (id == _requestId) suggestions.clear();
+    }
+  }
+
 
   void clearSuggestions() => suggestions.clear();
 

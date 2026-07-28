@@ -92,8 +92,8 @@ class ProfileView extends StatelessWidget {
                             right: -2,
                             bottom: -2,
                             child: Container(
-                              width: 22,
-                              height: 22,
+                              width: 30,
+                              height: 30,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: t.brandFill,
@@ -102,7 +102,7 @@ class ProfileView extends StatelessWidget {
                                     Border.all(color: t.canvas, width: 2),
                               ),
                               child: AppIcon('camera_alt',
-                                  size: 11,
+                                  size: 17,
                                   color: t.onBrandFill),
                             ),
                           ),

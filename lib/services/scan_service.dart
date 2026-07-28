@@ -38,19 +38,30 @@ class ScanService {
   /// Ingredient names that actually exist in the database, for autocomplete.
   /// Typing free text is unreliable — "potato" vs "aloo" — so the user picks
   /// from real names instead of guessing.
-  Future<List<String>> suggestIngredients(String query) async {
+  /// Ranked suggestions.
+  ///
+  /// Returns rows, not bare strings, so the UI can show the illustration and
+  /// explain an alias hit — typing "pyaz" should visibly resolve to "onion"
+  /// rather than silently substituting it.
+  Future<List<Map<String, dynamic>>> suggestIngredients(String query) async {
     final q = query.toLowerCase().trim();
     if (q.length < 2) return [];
-    final rows = await supabase
-        .from('ingredients')
-        .select('name')
-        .ilike('name', '%$q%')
-        .eq('is_pantry', false)
-        .limit(10);
-    return List<Map<String, dynamic>>.from(rows)
-        .map((r) => r['name'] as String)
-        .toList();
+    try {
+      final rows = await supabase
+          .rpc('search_ingredients', params: {'term': q, 'max_results': 10});
+      return List<Map<String, dynamic>>.from(rows as List);
+    } catch (_) {
+      // Falling back keeps typing usable if the RPC is missing on an older
+      // database rather than leaving the field dead.
+      final rows = await supabase
+          .from('ingredients')
+          .select('id, name, icon_key, category, is_pantry')
+          .ilike('name', '%$q%')
+          .limit(10);
+      return List<Map<String, dynamic>>.from(rows as List);
+    }
   }
+
 
   Future<List<String>> _runModel(File image) async {
     // TODO: load assets/ml/model.tflite via tflite_flutter, resize the image to

@@ -62,16 +62,24 @@ class OnboardingService {
     return found;
   }
 
+  /// Same ranked search the scan field uses, so "pyaz" finds onion here too.
   Future<List<Map<String, dynamic>>> searchIngredients(String q) async {
     final term = q.toLowerCase().trim();
     if (term.length < 2) return [];
-    final rows = await supabase
-        .from('ingredients')
-        .select('id, name, icon_key, category')
-        .ilike('name', '%$term%')
-        .limit(12);
-    return List<Map<String, dynamic>>.from(rows as List);
+    try {
+      final rows = await supabase
+          .rpc('search_ingredients', params: {'term': term, 'max_results': 12});
+      return List<Map<String, dynamic>>.from(rows as List);
+    } catch (_) {
+      final rows = await supabase
+          .from('ingredients')
+          .select('id, name, icon_key, category')
+          .ilike('name', '%$term%')
+          .limit(12);
+      return List<Map<String, dynamic>>.from(rows as List);
+    }
   }
+
 
   Future<void> saveDiet(String uid, String diet, bool hideUnsafe) async {
     await supabase.from('profiles').update({
