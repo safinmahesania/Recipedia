@@ -86,7 +86,7 @@ class _RecipeListViewState extends State<RecipeListView> {
               elevation: 2,
               tooltip: 'Back to top',
               child:
-                  const AppIcon('arrow_upward', fallback: Icons.arrow_upward),
+                  const AppIcon('arrow_upward'),
             )
           : const SizedBox.shrink()),
       body: SafeArea(
@@ -110,14 +110,13 @@ class _RecipeListViewState extends State<RecipeListView> {
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: 'Search recipes',
-                  prefixIcon: const FieldIcon('search', fallback: Icons.search),
+                  prefixIcon: const FieldIcon('search'),
                   suffixIcon: ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _searchCtrl,
                     builder: (_, value, __) => value.text.isEmpty
                         ? const SizedBox.shrink()
                         : IconButton(
-                            icon: const AppIcon('close',
-                                fallback: Icons.close, size: AppSizes.iconMd),
+                            icon: const AppIcon('close', size: AppSizes.iconMd),
                             tooltip: 'Clear search',
                             onPressed: _clearSearch,
                           ),
@@ -345,7 +344,6 @@ class _Empty extends StatelessWidget {
         children: [
           const SizedBox(height: AppSizes.xl),
           AppIcon('search_off',
-              fallback: Icons.search_off,
               size: AppSizes.iconXl,
               color: t.borderStrong),
           const SizedBox(height: AppSizes.smd),

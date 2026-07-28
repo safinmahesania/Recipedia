@@ -107,7 +107,6 @@ class _DurationFieldState extends State<DurationField> {
             child: Padding(
               padding: const EdgeInsets.all(14),
               child: AppIcon(icon,
-                  fallback: Icons.circle_outlined,
                   size: AppSizes.iconMd,
                   color: context.tokens.brand),
             ),

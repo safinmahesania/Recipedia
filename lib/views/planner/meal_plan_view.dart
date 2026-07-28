@@ -50,7 +50,7 @@ class _MealPlanViewState extends State<MealPlanView> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const AppIcon('chevron_left', fallback: Icons.chevron_left),
+                    icon: const AppIcon('chevron_left'),
                     tooltip: 'Previous week',
                     onPressed: () => c.shiftWeek(-1),
                   ),
@@ -63,7 +63,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                     ),
                   ),
                   IconButton(
-                    icon: const AppIcon('chevron_right', fallback: Icons.chevron_right),
+                    icon: const AppIcon('chevron_right'),
                     tooltip: 'Next week',
                     onPressed: () => c.shiftWeek(1),
                   ),
@@ -151,7 +151,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                                 ),
                               );
                             },
-                            icon: const AppIcon('shopping_basket_outlined', fallback: Icons.shopping_basket_outlined,
+                            icon: const AppIcon('shopping_basket_outlined',
                                 size: AppSizes.iconSm),
                             label: const Text("Shop for this week"),
                           ),
@@ -197,7 +197,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                       onChanged: c.search,
                       decoration: const InputDecoration(
                         hintText: 'Search all recipes',
-                        prefixIcon: FieldIcon('search', fallback: Icons.search),
+                        prefixIcon: FieldIcon('search'),
                       ),
                     ),
                     const SizedBox(height: AppSizes.sm),
@@ -309,7 +309,7 @@ class _Slot extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                   ),
                   child: Row(children: [
-                    AppIcon('add', fallback: Icons.add, size: AppSizes.iconMd, color: t.textTertiary),
+                    AppIcon('add', size: AppSizes.iconMd, color: t.textTertiary),
                     const SizedBox(width: AppSizes.sm),
                     Text('Add a recipe',
                         style: text.bodyMedium
@@ -358,7 +358,7 @@ class _Slot extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: AppIcon('close', fallback: Icons.close,
+                    icon: AppIcon('close',
                         size: AppSizes.iconMd, color: t.textSecondary),
                     tooltip: 'Remove',
                     onPressed: () => controller.remove(entry!),

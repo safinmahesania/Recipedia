@@ -15,7 +15,7 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [x] `ThemeExtension` wired via `context.tokens`
 - [x] Light and dark themes, WCAG AA text contrast
 - [x] Bundled fonts — Plus Jakarta Sans + Inter
-- [x] Tabler icon set as SVG with Material fallback
+- [x] Phosphor icon font with real fill weights for selected states
 - [x] 140 ingredient and dish illustrations, three-tier fallback
 - [x] Skeletons, empty states, haptics, page transitions
 - [x] All `AppColors` references converted to tokens (10 legitimate left)

@@ -227,7 +227,7 @@ class _PantryCard extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          AppIcon('add', fallback: Icons.add,
+                          AppIcon('add',
                               size: AppSizes.iconSm, color: t.onBrandFill),
                           const SizedBox(width: 3),
                           Text('Scan',
@@ -272,7 +272,7 @@ class _Chip extends StatelessWidget {
           const SizedBox(width: AppSizes.xs),
           GestureDetector(
             onTap: onRemove,
-            child: AppIcon('close', fallback: Icons.close,
+            child: AppIcon('close',
                 size: AppSizes.iconSm, color: t.textSecondary),
           ),
         ],
@@ -455,7 +455,6 @@ class _ToBuy extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
                 child: AppIcon('shopping_cart',
-                    fallback: Icons.shopping_cart,
                     size: AppSizes.iconMd,
                     color: t.onWarningTint),
               ),
@@ -477,8 +476,7 @@ class _ToBuy extends StatelessWidget {
                   ],
                 ),
               ),
-              AppIcon('chevron_right',
-                  fallback: Icons.chevron_right, color: t.borderStrong),
+              AppIcon('chevron_right', color: t.borderStrong),
             ]),
           ),
         ),

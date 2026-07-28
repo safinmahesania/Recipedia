@@ -53,7 +53,7 @@ class ActiveFiltersBar extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AppIcon('tune', fallback: Icons.tune, size: AppSizes.iconSm, color: fg),
+                    AppIcon('tune', size: AppSizes.iconSm, color: fg),
                     const SizedBox(width: AppSizes.xs + 2),
                     Text(
                       active ? 'Filters (${c.activeFilterCount})' : 'Filters',
@@ -104,7 +104,7 @@ class _FilterChip extends StatelessWidget {
           IconButton(
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-            icon: AppIcon('close', fallback: Icons.close,
+            icon: AppIcon('close',
                 size: AppSizes.iconXs + 2, color: t.onAccentTint),
             tooltip: 'Remove $label filter',
             onPressed: onRemove,

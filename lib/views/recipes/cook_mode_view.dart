@@ -143,12 +143,12 @@ class _CookModeViewState extends State<CookModeView> {
                   Row(children: [
                     if (widget.ingredients.isNotEmpty)
                       IconButton(
-                        icon: const AppIcon('list_alt', fallback: Icons.list_alt, color: _muted),
+                        icon: const AppIcon('list_alt', color: _muted),
                         tooltip: 'Ingredients',
                         onPressed: _showIngredients,
                       ),
                     IconButton(
-                      icon: const AppIcon('close', fallback: Icons.close, color: _muted),
+                      icon: const AppIcon('close', color: _muted),
                       tooltip: 'Exit cook mode',
                       onPressed: Get.back,
                     ),
@@ -390,7 +390,7 @@ class _CircleButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: primary ? AppColors.primary : const Color(0x1FFFFFFF),
         ),
-        child: AppIcon(icon, fallback: Icons.circle_outlined,
+        child: AppIcon(icon,
             color: primary ? Colors.white : muted, size: primary ? 26 : 20),
       ),
     );

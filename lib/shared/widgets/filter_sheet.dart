@@ -62,7 +62,7 @@ class FilterSheet extends StatelessWidget {
                       )
                     : const SizedBox.shrink()),
                 IconButton(
-                  icon: AppIcon('close', fallback: Icons.close, color: t.textSecondary),
+                  icon: AppIcon('close', color: t.textSecondary),
                   tooltip: 'Close',
                   onPressed: () => Navigator.pop(context),
                 ),

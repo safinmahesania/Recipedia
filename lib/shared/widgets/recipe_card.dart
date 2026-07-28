@@ -120,7 +120,7 @@ class RecipeCard extends StatelessWidget {
                     const SizedBox(height: AppSizes.xs + 1),
                     Row(
                       children: [
-                        AppIcon('schedule', fallback: Icons.schedule,
+                        AppIcon('schedule',
                             size: AppSizes.iconXs + 1,
                             color: t.textSecondary),
                         const SizedBox(width: 4),
@@ -168,7 +168,7 @@ class RecipeCard extends StatelessWidget {
                                     AppSizes.radiusPill),
                               ),
                               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                AppIcon('add', fallback: Icons.add,
+                                AppIcon('add',
                                     size: AppSizes.iconXs + 2,
                                     color: t.textSecondary),
                                 const SizedBox(width: 3),
@@ -319,7 +319,7 @@ class _AllergenFlag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppIcon('warning_amber_rounded', fallback: Icons.warning_amber_rounded,
+          AppIcon('warning_amber_rounded',
               size: AppSizes.iconXs, color: t.onErrorTint),
           const SizedBox(width: 3),
           Text('Allergen',

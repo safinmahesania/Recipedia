@@ -53,18 +53,18 @@ class _ScanViewState extends State<ScanView> {
         title: const Text('Scan'),
         actions: [
           IconButton(
-            icon: const AppIcon('camera_alt', fallback: Icons.camera_alt),
+            icon: const AppIcon('camera_alt'),
             tooltip: 'Take a photo',
             onPressed: () => c.pickImage(ImageSource.camera),
           ),
           IconButton(
             icon:
-                const AppIcon('image_outlined', fallback: Icons.image_outlined),
+                const AppIcon('image_outlined'),
             tooltip: 'Pick a photo',
             onPressed: () => c.pickImage(ImageSource.gallery),
           ),
           IconButton(
-            icon: const AppIcon('refresh', fallback: Icons.refresh),
+            icon: const AppIcon('refresh'),
             tooltip: 'Start over',
             onPressed: c.reset,
           ),
@@ -92,7 +92,7 @@ class _ScanViewState extends State<ScanView> {
                     textInputAction: TextInputAction.done,
                     decoration: const InputDecoration(
                       hintText: 'Type an ingredient…',
-                      prefixIcon: FieldIcon('search', fallback: Icons.search),
+                      prefixIcon: FieldIcon('search'),
                       isDense: true,
                     ),
                   ),
@@ -115,7 +115,6 @@ class _ScanViewState extends State<ScanView> {
                                   leading: IngredientIcon(name: name, size: 20),
                                   title: Text(name, style: text.bodyMedium),
                                   trailing: AppIcon('add',
-                                      fallback: Icons.add,
                                       size: AppSizes.iconMd,
                                       color: t.onBrandTint),
                                   onTap: () => _add(name),
@@ -190,7 +189,6 @@ class _ScanViewState extends State<ScanView> {
                       ),
                       child: Row(children: [
                         AppIcon('info_outline',
-                            fallback: Icons.info_outline,
                             size: AppSizes.iconMd,
                             color: t.onBrandTint),
                         const SizedBox(width: AppSizes.sm),
@@ -279,7 +277,6 @@ class _Chip extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
               child: AppIcon('close',
-                  fallback: Icons.close,
                   size: AppSizes.iconSm,
                   color: t.onBrandTint),
             ),

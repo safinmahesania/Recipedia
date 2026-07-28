@@ -188,7 +188,7 @@ class EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AppIcon(icon, fallback: Icons.circle_outlined, size: AppSizes.iconXl, color: t.borderStrong),
+            AppIcon(icon, size: AppSizes.iconXl, color: t.borderStrong),
             const SizedBox(height: AppSizes.smd),
             Text(title,
                 textAlign: TextAlign.center,

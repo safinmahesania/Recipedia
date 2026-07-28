@@ -97,7 +97,7 @@ class _Header extends StatelessWidget {
                       color: t.surface,
                       borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
-                    child: const AppIcon('arrow_back', fallback: Icons.arrow_back, size: AppSizes.iconMd),
+                    child: const AppIcon('arrow_back', size: AppSizes.iconMd),
                   ),
                 )
               else
@@ -251,7 +251,7 @@ class _Choice extends StatelessWidget {
                       : Border.all(color: t.borderStrong, width: 2),
                 ),
                 child: selected
-                    ? AppIcon('check', fallback: Icons.check, size: 14, color: t.onBrandFill)
+                    ? AppIcon('check', size: 14, color: t.onBrandFill)
                     : null,
               ),
             ],
@@ -287,7 +287,7 @@ class _AllergyStep extends StatelessWidget {
           onChanged: controller.search,
           decoration: const InputDecoration(
             hintText: 'Search an ingredient',
-            prefixIcon: FieldIcon('search', fallback: Icons.search),
+            prefixIcon: FieldIcon('search'),
           ),
         ),
         if (controller.searchResults.isNotEmpty) ...[
@@ -463,7 +463,7 @@ class _StapleStep extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppSizes.radiusLg),
             ),
             child: Row(children: [
-              AppIcon('auto_awesome', fallback: Icons.auto_awesome,
+              AppIcon('auto_awesome',
                   size: AppSizes.iconLg, color: t.onAccentTint),
               const SizedBox(width: AppSizes.smd),
               Expanded(
@@ -510,7 +510,7 @@ class _Done extends StatelessWidget {
                 color: t.accentTint,
                 borderRadius: BorderRadius.circular(AppSizes.radiusXl),
               ),
-              child: AppIcon('check_rounded', fallback: Icons.check_rounded, size: 52, color: t.onAccentTint),
+              child: AppIcon('check_rounded', size: 52, color: t.onAccentTint),
             ),
           ),
           const SizedBox(height: AppSizes.lg),

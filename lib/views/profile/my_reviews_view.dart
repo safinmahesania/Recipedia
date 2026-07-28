@@ -40,7 +40,7 @@ class _MyReviewsViewState extends State<MyReviewsView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppIcon('rate_review_outlined', fallback: Icons.rate_review_outlined,
+                  AppIcon('rate_review_outlined',
                       size: AppSizes.iconXl, color: t.borderStrong),
                   const SizedBox(height: AppSizes.smd),
                   Text('No reviews yet',
@@ -90,7 +90,7 @@ class _MyReviewsViewState extends State<MyReviewsView> {
                     color: t.errorTint,
                     borderRadius: BorderRadius.circular(AppSizes.radiusLg),
                   ),
-                  child: AppIcon('delete_outline', fallback: Icons.delete_outline, color: t.onErrorTint),
+                  child: AppIcon('delete_outline', color: t.onErrorTint),
                 ),
                 onDismissed: (_) => c.remove(r),
                 child: InkWell(
@@ -143,7 +143,7 @@ class _MyReviewsViewState extends State<MyReviewsView> {
                           ),
                           if (id.isNotEmpty)
                             IconButton(
-                              icon: AppIcon('edit_outlined', fallback: Icons.edit_outlined,
+                              icon: AppIcon('edit_outlined',
                                   size: AppSizes.iconMd, color: t.textSecondary),
                               tooltip: 'Edit review',
                               onPressed: () async {

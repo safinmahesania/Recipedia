@@ -37,7 +37,6 @@ class NotificationsView extends StatelessWidget {
               ),
               child: Row(children: [
                 AppIcon('info_outline',
-                    fallback: Icons.info_outline,
                     size: AppSizes.iconMd,
                     color: t.onBrandTint),
                 const SizedBox(width: AppSizes.sm),
@@ -129,7 +128,6 @@ class _Toggle extends StatelessWidget {
       padding: const EdgeInsets.all(AppSizes.smd),
       child: Row(children: [
         AppIcon(icon,
-            fallback: Icons.notifications_none,
             size: AppSizes.iconMd,
             color: t.textSecondary),
         const SizedBox(width: AppSizes.smd),

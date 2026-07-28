@@ -98,7 +98,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
       // clear confirmation the user cannot miss
       Get.dialog(
         AlertDialog(
-          icon: AppIcon('check_circle', fallback: Icons.check_circle,
+          icon: AppIcon('check_circle',
               color: context.tokens.onSuccessTint, size: 40),
           title: const Text('Submitted for review'),
           content: const Text(
@@ -148,7 +148,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                 ),
                 child: Row(children: [
-                  AppIcon('info_outline', fallback: Icons.info_outline,
+                  AppIcon('info_outline',
                       size: AppSizes.iconMd, color: t.onBrandTint),
                   const SizedBox(width: AppSizes.sm),
                   Expanded(
@@ -297,7 +297,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
                 _pickedImage = null;
                 imageUrl.clear();
               }),
-              icon: const AppIcon('close', fallback: Icons.close, size: 16),
+              icon: const AppIcon('close', size: 16),
               label: const Text('Remove photo'),
             ),
           ),
@@ -396,7 +396,7 @@ class _SubmitRecipeViewState extends State<SubmitRecipeView> {
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
           ),
           child: Center(
-            child: AppIcon('add_a_photo_outlined', fallback: Icons.add_a_photo_outlined,
+            child: AppIcon('add_a_photo_outlined',
                 size: 32, color: context.tokens.textTertiary),
           ),
         ),
@@ -444,7 +444,6 @@ class _Source extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSizes.radiusSm),
               ),
               child: AppIcon(icon,
-                  fallback: Icons.image_outlined,
                   size: AppSizes.iconSm + 1,
                   color: onTint),
             ),

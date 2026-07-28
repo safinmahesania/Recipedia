@@ -61,7 +61,6 @@ class ProfileView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
                     child: AppIcon('edit_outlined',
-                        fallback: Icons.edit_outlined,
                         size: AppSizes.iconMd,
                         color: t.textSecondary),
                   ),
@@ -103,7 +102,6 @@ class ProfileView extends StatelessWidget {
                                     Border.all(color: t.canvas, width: 2),
                               ),
                               child: AppIcon('camera_alt',
-                                  fallback: Icons.camera_alt,
                                   size: 11,
                                   color: t.onBrandFill),
                             ),
@@ -302,7 +300,7 @@ class ProfileView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const AppIcon('photo_library_outlined', fallback: Icons.photo_library_outlined),
+              leading: const AppIcon('photo_library_outlined'),
               title: const Text('Choose from gallery'),
               onTap: () {
                 Get.back();
@@ -310,7 +308,7 @@ class ProfileView extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const AppIcon('photo_camera_outlined', fallback: Icons.photo_camera_outlined),
+              leading: const AppIcon('photo_camera_outlined'),
               title: const Text('Take a photo'),
               onTap: () {
                 Get.back();
@@ -334,7 +332,7 @@ class ProfileView extends StatelessWidget {
               ListTile(
                 title: Text(_themeLabel(mode)),
                 trailing: c.profile.value?.themeMode == mode
-                    ? const AppIcon('check', fallback: Icons.check)
+                    ? const AppIcon('check')
                     : null,
                 onTap: () {
                   Get.back();
@@ -452,7 +450,6 @@ class _Tile extends StatelessWidget {
         child: Row(
           children: [
             AppIcon(icon,
-                fallback: Icons.circle_outlined,
                 size: AppSizes.iconMd,
                 color: danger ? t.error : t.textSecondary),
             const SizedBox(width: AppSizes.smd),
@@ -467,7 +464,6 @@ class _Tile extends StatelessWidget {
             if (!danger) ...[
               const SizedBox(width: AppSizes.xs),
               AppIcon('chevron_right',
-                  fallback: Icons.chevron_right,
                   size: AppSizes.iconMd,
                   color: t.borderStrong),
             ],

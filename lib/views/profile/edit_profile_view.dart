@@ -97,7 +97,7 @@ class _EditProfileViewState extends State<EditProfileView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const AppIcon('camera_alt', fallback: Icons.camera_alt),
+              leading: const AppIcon('camera_alt'),
               title: const Text('Take a photo'),
               onTap: () {
                 Navigator.pop(sheetCtx);
@@ -105,7 +105,7 @@ class _EditProfileViewState extends State<EditProfileView> {
               },
             ),
             ListTile(
-              leading: const AppIcon('photo', fallback: Icons.photo),
+              leading: const AppIcon('photo'),
               title: const Text('Choose from gallery'),
               onTap: () {
                 Navigator.pop(sheetCtx);
@@ -168,7 +168,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                           border: Border.all(color: t.canvas, width: 2),
                         ),
                         child: AppIcon('camera_alt',
-                            fallback: Icons.camera_alt,
                             size: 12,
                             color: t.onBrandFill),
                       ),

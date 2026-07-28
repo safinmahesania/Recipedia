@@ -106,7 +106,7 @@ class RecipeGridCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AppIcon('schedule', fallback: Icons.schedule,
+                            AppIcon('schedule',
                                 size: AppSizes.iconXs, color: t.textSecondary),
                             const SizedBox(width: 3),
                             Text(cookTime,

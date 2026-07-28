@@ -54,7 +54,7 @@ class _SplashViewState extends State<SplashView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const AppIcon('restaurant_menu', fallback: Icons.restaurant_menu,
+            const AppIcon('restaurant_menu',
                 size: 72, color: Colors.white),
             const SizedBox(height: AppSizes.md),
             Text(

@@ -103,7 +103,7 @@ class _DietAllergiesViewState extends State<DietAllergiesView> {
               onChanged: c.search,
               decoration: const InputDecoration(
                 hintText: 'Search an ingredient',
-                prefixIcon: FieldIcon('search', fallback: Icons.search),
+                prefixIcon: FieldIcon('search'),
               ),
             ),
             if (c.searchResults.isNotEmpty) ...[
@@ -268,7 +268,7 @@ class _Pill extends StatelessWidget {
                   color: fg, fontWeight: FontWeight.w600)),
           if (danger) ...[
             const SizedBox(width: AppSizes.xs),
-            AppIcon('close', fallback: Icons.close, size: AppSizes.iconXs + 2, color: fg),
+            AppIcon('close', size: AppSizes.iconXs + 2, color: fg),
           ],
         ]),
       ),

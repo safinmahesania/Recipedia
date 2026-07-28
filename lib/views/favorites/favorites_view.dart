@@ -43,7 +43,7 @@ class FavoritesView extends StatelessWidget {
                       onChanged: c.setQuery,
                       decoration: const InputDecoration(
                         hintText: 'Search saved',
-                        prefixIcon: FieldIcon('search', fallback: Icons.search),
+                        prefixIcon: FieldIcon('search'),
                         isDense: true,
                       ),
                     ),
@@ -95,7 +95,7 @@ class FavoritesView extends StatelessWidget {
                                 onLongPress: () =>
                                     _collectionSheet(context, c, r),
                                 trailing: IconButton(
-                                  icon: AppIcon('favorite', fallback: Icons.favorite,
+                                  icon: AppIcon('favorite',
                                       color: t.brand, size: AppSizes.iconMd),
                                   tooltip: 'Remove from saved',
                                   onPressed: () =>
@@ -151,7 +151,6 @@ class FavoritesView extends StatelessWidget {
                   if (current != null)
                     ListTile(
                       leading: AppIcon('close',
-                          fallback: Icons.close,
                           size: AppSizes.iconMd,
                           color: t.textSecondary),
                       title: const Text('Remove from collection'),
@@ -165,13 +164,11 @@ class FavoritesView extends StatelessWidget {
                     final selected = current == id;
                     return ListTile(
                       leading: AppIcon(selected ? 'check' : 'bookmark_border',
-                          fallback: selected ? Icons.check : Icons.bookmark_border,
                           size: AppSizes.iconMd,
                           color: selected ? t.onBrandTint : t.textSecondary),
                       title: Text((col['name'] ?? '') as String),
                       trailing: IconButton(
                         icon: AppIcon('dots_vertical',
-                            fallback: Icons.more_vert,
                             size: AppSizes.iconMd,
                             color: t.textTertiary),
                         tooltip: 'Rename or delete',
@@ -188,7 +185,6 @@ class FavoritesView extends StatelessWidget {
                   }),
                   ListTile(
                     leading: AppIcon('add',
-                        fallback: Icons.add,
                         size: AppSizes.iconMd,
                         color: t.onBrandTint),
                     title: Text('New collection',
@@ -347,7 +343,7 @@ class _SortRow extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AppIcon('swap_vert', fallback: Icons.swap_vert,
+              AppIcon('swap_vert',
                   size: AppSizes.iconSm, color: t.textSecondary),
               const SizedBox(width: 3),
               Text('Sort',
@@ -376,7 +372,7 @@ class _Empty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AppIcon('bookmark_border', fallback: Icons.bookmark_border,
+            AppIcon('bookmark_border',
                 size: AppSizes.iconXl, color: t.borderStrong),
             const SizedBox(height: AppSizes.smd),
             Text(hasAny ? 'Nothing here yet' : 'Start your collection',

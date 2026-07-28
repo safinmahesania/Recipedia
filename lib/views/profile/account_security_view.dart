@@ -298,7 +298,7 @@ class _Row extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.smd),
         child: Row(children: [
-          AppIcon(icon, fallback: Icons.circle_outlined, size: AppSizes.iconMd, color: t.textSecondary),
+          AppIcon(icon, size: AppSizes.iconMd, color: t.textSecondary),
           const SizedBox(width: AppSizes.smd),
           Expanded(
             child: Column(
@@ -319,7 +319,7 @@ class _Row extends StatelessWidget {
           ),
           if (trailing != null) trailing!,
           if (trailing == null && onTap != null)
-            AppIcon('chevron_right', fallback: Icons.chevron_right, color: t.borderStrong),
+            AppIcon('chevron_right', color: t.borderStrong),
         ]),
       ),
     );

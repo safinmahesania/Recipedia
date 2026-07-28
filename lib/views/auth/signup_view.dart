@@ -198,7 +198,6 @@ class _SignupViewState extends State<SignupView> {
                       ),
                       child: _agreed
                           ? AppIcon('check',
-                              fallback: Icons.check,
                               size: 13,
                               color: t.onBrandFill)
                           : null,

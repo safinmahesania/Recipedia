@@ -198,7 +198,6 @@ class _Stat extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1)),
                 AppIcon(icon,
-                    fallback: Icons.circle_outlined,
                     size: AppSizes.iconSm,
                     color: onTint),
               ],
@@ -248,7 +247,6 @@ class _Row extends StatelessWidget {
         ),
         child: Row(children: [
           AppIcon(icon,
-              fallback: Icons.circle_outlined,
               size: AppSizes.iconMd,
               color: t.textSecondary),
           const SizedBox(width: AppSizes.smd),
@@ -266,8 +264,7 @@ class _Row extends StatelessWidget {
                       color: badgeOn, fontWeight: FontWeight.w700)),
             )
           else
-            AppIcon('chevron_right',
-                fallback: Icons.chevron_right, color: t.borderStrong),
+            AppIcon('chevron_right', color: t.borderStrong),
         ]),
       ),
     );

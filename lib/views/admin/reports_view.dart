@@ -65,7 +65,7 @@ class _ReportsViewState extends State<ReportsView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppIcon('flag_outlined', fallback: Icons.flag_outlined,
+                AppIcon('flag_outlined',
                     size: AppSizes.iconXl, color: t.borderStrong),
                 const SizedBox(height: AppSizes.smd),
                 Text('Nothing reported',

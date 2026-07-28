@@ -38,24 +38,24 @@ class _MainShellState extends State<MainShell> {
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: const [
           NavigationDestination(
-              icon: AppIcon('home_outlined', fallback: Icons.home_outlined),
-              selectedIcon: AppIcon('home', fallback: Icons.home),
+              icon: AppIcon('home_outlined'),
+              selectedIcon: AppIcon('home', filled: true),
               label: 'Home'),
           NavigationDestination(
-              icon: AppIcon('menu_book_outlined', fallback: Icons.menu_book_outlined),
-              selectedIcon: AppIcon('menu_book', fallback: Icons.menu_book),
+              icon: AppIcon('menu_book_outlined'),
+              selectedIcon: AppIcon('menu_book', filled: true),
               label: 'Recipes'),
           NavigationDestination(
-              icon: AppIcon('document_scanner_outlined', fallback: Icons.document_scanner_outlined),
-              selectedIcon: AppIcon('document_scanner', fallback: Icons.document_scanner),
+              icon: AppIcon('document_scanner_outlined'),
+              selectedIcon: AppIcon('document_scanner', filled: true),
               label: 'Scan'),
           NavigationDestination(
-              icon: AppIcon('bookmark_border', fallback: Icons.bookmark_border),
-              selectedIcon: AppIcon('bookmark', fallback: Icons.bookmark),
+              icon: AppIcon('bookmark_border'),
+              selectedIcon: AppIcon('bookmark', filled: true),
               label: 'Saved'),
           NavigationDestination(
-              icon: AppIcon('person_outline', fallback: Icons.person_outline),
-              selectedIcon: AppIcon('person', fallback: Icons.person),
+              icon: AppIcon('person_outline'),
+              selectedIcon: AppIcon('person', filled: true),
               label: 'Profile'),
         ],
       ),

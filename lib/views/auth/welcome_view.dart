@@ -179,7 +179,6 @@ class _Point extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           ),
           child: AppIcon(icon,
-              fallback: Icons.check,
               size: AppSizes.iconSm,
               color: t.onBrandTint),
         ),

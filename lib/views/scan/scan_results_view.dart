@@ -70,7 +70,6 @@ class _ScanResultsViewState extends State<ScanResultsView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AppIcon('search_off',
-                      fallback: Icons.search_off,
                       size: AppSizes.iconXl,
                       color: t.borderStrong),
                   const SizedBox(height: AppSizes.smd),

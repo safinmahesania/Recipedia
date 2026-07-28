@@ -80,27 +80,33 @@ void main() {
 
   // ------------------------------------------------------------------ assets
 
-  test('every AppIcon name has a matching SVG', () {
-    // A missing name silently falls back to a Material glyph, which is how
-    // the Google and Apple buttons nearly shipped as blank circles.
-    final available = Directory('assets/icons')
-        .listSync()
-        .whereType<File>()
-        .map((f) => f.uri.pathSegments.last.replaceAll('.svg', ''))
-        .toSet();
+  test('every AppIcon name resolves to a real glyph', () {
+    // Icons come from Phosphor now, so a name cannot be a missing file — but it
+    // can be a name nobody mapped, which falls through to a circle. Catch that
+    // instead.
+    final resolver = File('lib/shared/widgets/app_icon.dart').readAsStringSync();
+    final mapped = <String>{};
+    for (final m in RegExp(r"'([a-z_0-9]+)'(?:\s*\|\|\s*'([a-z_0-9]+)')?\s*=>")
+        .allMatches(resolver)) {
+      mapped.add(m.group(1)!);
+      if (m.group(2) != null) mapped.add(m.group(2)!);
+    }
 
-    final missing = <String>{};
+    final used = <String>{};
     for (final f in dartFiles) {
       final src = read(f);
-      for (final m in RegExp(r"AppIcon\(\s*'([a-z_0-9]+)'").allMatches(src)) {
-        if (!available.contains(m.group(1))) missing.add(m.group(1)!);
+      for (final m
+          in RegExp(r"(?:App|Field)Icon\(\s*'([a-z_0-9]+)'").allMatches(src)) {
+        used.add(m.group(1)!);
       }
       for (final m in RegExp(r"icon: '([a-z_0-9]+)'").allMatches(src)) {
-        if (!available.contains(m.group(1))) missing.add(m.group(1)!);
+        used.add(m.group(1)!);
       }
     }
-    expect(missing, isEmpty,
-        reason: 'Icon names with no asset: ${missing.join(', ')}');
+
+    expect(used.difference(mapped), isEmpty,
+        reason: 'Unmapped icon names fall through to a circle: '
+            '${used.difference(mapped).join(', ')}');
   });
 
   // -------------------------------------------------------------- PostgREST

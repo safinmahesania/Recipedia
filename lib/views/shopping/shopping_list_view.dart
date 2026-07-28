@@ -31,7 +31,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
         title: const Text('Shopping list'),
         actions: [
           IconButton(
-            icon: const AppIcon('add', fallback: Icons.add),
+            icon: const AppIcon('add'),
             tooltip: 'Add item',
             onPressed: () => _addSheet(context),
           ),
@@ -91,7 +91,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                       ));
                     }
                   },
-                  icon: const AppIcon('shopping_basket_outlined', fallback: Icons.shopping_basket_outlined,
+                  icon: const AppIcon('shopping_basket_outlined',
                       size: AppSizes.iconSm),
                   label: const Text('Move checked to pantry'),
                 ),
@@ -169,7 +169,7 @@ class _Row extends StatelessWidget {
           color: t.errorTint,
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         ),
-        child: AppIcon('delete_outline', fallback: Icons.delete_outline, color: t.onErrorTint),
+        child: AppIcon('delete_outline', color: t.onErrorTint),
       ),
       onDismissed: (_) => controller.remove(item),
       child: InkWell(
@@ -192,7 +192,7 @@ class _Row extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSizes.radiusXs),
                 ),
                 child: checked
-                    ? AppIcon('check', fallback: Icons.check, size: 14, color: t.onBrandFill)
+                    ? AppIcon('check', size: 14, color: t.onBrandFill)
                     : null,
               ),
               const SizedBox(width: AppSizes.smd),
@@ -234,7 +234,7 @@ class _Empty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AppIcon('shopping_basket_outlined', fallback: Icons.shopping_basket_outlined,
+            AppIcon('shopping_basket_outlined',
                 size: AppSizes.iconXl, color: t.borderStrong),
             const SizedBox(height: AppSizes.smd),
             Text('Nothing to buy',

@@ -125,7 +125,6 @@ class _MailSentViewState extends State<MailSentView> {
                         boxShadow: t.cardShadow,
                       ),
                       child: AppIcon('mail_outline',
-                          fallback: Icons.mail_outline,
                           size: 34,
                           color: t.categoryGlyphs[1]),
                     ),
@@ -142,7 +141,6 @@ class _MailSentViewState extends State<MailSentView> {
                           boxShadow: t.cardShadow,
                         ),
                         child: AppIcon('check',
-                            fallback: Icons.check,
                             size: 18,
                             color: t.onSuccessTint),
                       ),
@@ -178,7 +176,6 @@ class _MailSentViewState extends State<MailSentView> {
                 ),
                 child: Row(children: [
                   AppIcon('info_outline',
-                      fallback: Icons.info_outline,
                       size: AppSizes.iconMd,
                       color: t.onWarningTint),
                   const SizedBox(width: AppSizes.sm),

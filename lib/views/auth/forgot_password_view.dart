@@ -88,7 +88,6 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 ),
                 child: Row(children: [
                   AppIcon('shield_outlined',
-                      fallback: Icons.shield_outlined,
                       size: AppSizes.iconMd,
                       color: t.onAccentTint),
                   const SizedBox(width: AppSizes.sm),
