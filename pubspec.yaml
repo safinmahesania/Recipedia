@@ -13,7 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # icons
-  phosphor_flutter: ^2.1.0
+  material_symbols_icons: ^4.2.7
 
   # backend
   flutter_svg: ^2.0.0
