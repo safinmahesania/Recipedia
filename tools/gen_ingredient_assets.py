@@ -2,7 +2,7 @@ import re, os, json
 
 # ---- pull the drawings out of the sprite files ----
 def symbols(path):
-    src = open(path).read()
+    src = open(path, encoding="utf-8").read()
     out = {}
     for m in re.finditer(r'<symbol id="([^"]+)" viewBox="([^"]+)"[^>]*>(.*?)</symbol>', src, re.S):
         out[m.group(1)] = (m.group(2), m.group(3).strip())
@@ -84,7 +84,7 @@ os.makedirs(OUT, exist_ok=True)
 written = set()
 
 def emit(key, vb, body):
-    open(f'{OUT}/{key}.svg', 'w').write(
+    open(f'{OUT}/{key}.svg', 'w', encoding='utf-8').write(
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">{body}</svg>')
     written.add(key)
 
@@ -107,4 +107,4 @@ for key, sym in DIRECT.items():
     emit(key, vb, body)
 
 print("assets written:", len(written))
-json.dump(sorted(written), open('written_keys.json','w'))
+json.dump(sorted(written), open('written_keys.json','w',encoding='utf-8'))

@@ -236,13 +236,13 @@ def main():
     print("  Rejections are mostly stubs and prose pages with no ingredient")
     print("  list. That filter is doing its job.\n")
 
-    with open(OUT / "wikibooks_rejected.csv", "w", newline="") as f:
+    with open(OUT / "wikibooks_rejected.csv", "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerows([("title", "cuisine", "reason"), *rejected])
 
     known = set()
     p = pathlib.Path(args.existing)
     if p.exists():
-        known = {l.strip().lower() for l in p.read_text().splitlines() if l.strip()}
+        known = {l.strip().lower() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()}
 
     new = {}
     for r in kept:
@@ -250,7 +250,7 @@ def main():
             if name not in known:
                 new[name] = new.get(name, 0) + 1
 
-    with open(OUT / "new_ingredients.csv", "w", newline="") as f:
+    with open(OUT / "new_ingredients.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["name", "uses", "action"])
         for name, n in sorted(new.items(), key=lambda x: -x[1]):
@@ -259,13 +259,13 @@ def main():
     print("    single-use names default to skip — they are usually parser noise")
     print("    ('and', 'to serve') rather than real ingredients.\n")
 
-    with open(OUT / "wikibooks_review.csv", "w", newline="") as f:
+    with open(OUT / "wikibooks_review.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["title", "cuisine", "ingredients", "steps", "url"])
         for r in kept:
             w.writerow([r["title"], r["cuisine"], len(r["ingredients"]),
                         len(r["steps"]), r["source_url"]])
-    (OUT / "wikibooks_recipes.json").write_text(json.dumps(kept, indent=2))
+    (OUT / "wikibooks_recipes.json").write_text(json.dumps(kept, indent=2), encoding="utf-8")
     print(f"  review -> out/wikibooks_review.csv")
 
     if not args.emit_sql:
@@ -273,7 +273,7 @@ def main():
         return
 
     keep_ing = set()
-    with open(OUT / "new_ingredients.csv") as f:
+    with open(OUT / "new_ingredients.csv", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             if row["action"].strip().lower() != "skip":
                 keep_ing.add(row["name"])
@@ -315,7 +315,15 @@ join public.ingredients i on lower(i.name) = v.name
 on conflict (recipe_id, ingredient_id) do nothing;""")
 
     lines += ["", "commit;"]
-    (OUT / "import_wikibooks.sql").write_text("\n".join(lines))
+    sql = "\n".join(lines)
+    (OUT / "import_wikibooks.sql").write_text(sql, encoding="utf-8")
+
+    # Also written as a migration, because psql is not installed on Windows by
+    # default and `supabase db push` already works. Move this file into
+    # supabase/migrations/ and push it.
+    from datetime import datetime
+    stamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    (OUT / f"{stamp}_import_wikibooks.sql").write_text(sql, encoding="utf-8")
     print(f"\n  SQL -> out/import_wikibooks.sql  ({len(kept)} recipes)")
 
 

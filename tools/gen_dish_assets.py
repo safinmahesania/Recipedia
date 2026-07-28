@@ -1,7 +1,7 @@
 import re, os
 
 def symbols(path):
-    src = open(path).read()
+    src = open(path, encoding="utf-8").read()
     return {m.group(1): (m.group(2), m.group(3).strip())
             for m in re.finditer(r'<symbol id="([^"]+)" viewBox="([^"]+)"[^>]*>(.*?)</symbol>', src, re.S)}
 
@@ -25,7 +25,7 @@ for i, sym in enumerate(SLOTS):
     for suffix, main, second in (('l', LIGHT[i], LIGHT2[i]), ('d', DARK[i], DARK2[i])):
         b = re.sub(r'var\(--ill2,[^)]*\)', second, body)
         b = b.replace('currentColor', main)
-        open(f'{OUT}/d{i}_{suffix}.svg','w').write(
+        open(f'{OUT}/d{i}_{suffix}.svg','w',encoding='utf-8').write(
             f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}">{b}</svg>')
         n += 1
 print("dish assets:", n, "| bytes:", sum(os.path.getsize(f'{OUT}/{f}') for f in os.listdir(OUT)))

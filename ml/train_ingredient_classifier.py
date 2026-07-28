@@ -57,8 +57,9 @@ MIN_IMAGES_PER_CLASS = 50
 
 
 def load_class_map():
+    """Folder name is already the canonical ingredient after prepare_dataset."""
     cfg = json.loads(pathlib.Path("classes.json").read_text())
-    return cfg["classes"]
+    return {n: n for n in cfg["ingredients"]} | {cfg["negative_class"]: cfg["negative_class"]}
 
 
 def build_datasets():
@@ -138,8 +139,10 @@ def main():
     model, base = build_model(len(names))
 
     # ---- phase 1: head only ----
+    metrics = ["accuracy",
+               tf.keras.metrics.TopKCategoricalAccuracy(k=3, name="top3")]
     model.compile(optimizer=tf.keras.optimizers.Adam(1e-3),
-                  loss="categorical_crossentropy", metrics=["accuracy"])
+                  loss="categorical_crossentropy", metrics=metrics)
     model.fit(train, validation_data=val, epochs=8,
               class_weight=class_weights(counts, names),
               callbacks=[tf.keras.callbacks.EarlyStopping(
@@ -151,21 +154,29 @@ def main():
         layer.trainable = False
     # An order of magnitude lower: fine-tuning at 1e-3 undoes the pretraining.
     model.compile(optimizer=tf.keras.optimizers.Adam(1e-5),
-                  loss="categorical_crossentropy", metrics=["accuracy"])
+                  loss="categorical_crossentropy", metrics=metrics)
     model.fit(train, validation_data=val, epochs=12,
               class_weight=class_weights(counts, names),
               callbacks=[tf.keras.callbacks.EarlyStopping(
                   patience=4, restore_best_weights=True)])
 
     # ---- evaluate ----
-    y_true, y_pred = [], []
+    y_true, y_pred, y_top3 = [], [], []
     for images, labels in val:
         probs = model.predict(images, verbose=0)
         y_true.extend(np.argmax(labels, axis=1))
         y_pred.extend(np.argmax(probs, axis=1))
+        # The scan screen shows the three best guesses as tappable chips, so
+        # top-3 is the accuracy the user actually experiences.
+        y_top3.extend(np.argsort(probs, axis=1)[:, -3:].tolist())
+
+    top1 = float(np.mean(np.array(y_true) == np.array(y_pred)))
+    top3 = float(np.mean([t in p3 for t, p3 in zip(y_true, y_top3)]))
+    print(f"\n  top-1 accuracy  {top1:.4f}")
+    print(f"  top-3 accuracy  {top3:.4f}   <- the number that matches the UI")
 
     report = classification_report(y_true, y_pred, target_names=names, digits=3)
-    (OUT / "report.txt").write_text(report)
+    (OUT / "report.txt").write_text(report, encoding="utf-8")
     print("\n" + report)
 
     try:
@@ -185,7 +196,7 @@ def main():
     # Labels are written as the CANONICAL ingredient name, so the app never has
     # to know what the dataset called things.
     labels = [class_map.get(n, n) for n in names]
-    (OUT / "labels.txt").write_text("\n".join(labels))
+    (OUT / "labels.txt").write_text("\n".join(labels), encoding="utf-8")
 
     conv = tf.lite.TFLiteConverter.from_keras_model(model)
     conv.optimizations = [tf.lite.Optimize.DEFAULT]
