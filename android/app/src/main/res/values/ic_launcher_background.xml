@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AppColors.primary -->
+    <color name="ic_launcher_background">#FF4F5A</color>
+    <!-- AppColors.canvas / canvasDark, for the launch window -->
+    <color name="splash_background">#FDFCFB</color>
+</resources>

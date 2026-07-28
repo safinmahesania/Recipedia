@@ -107,7 +107,7 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [ ] `wakelock_plus` so cook mode stays awake
 - [ ] `url_launcher` for policy links and "Open mail app"
 - [ ] Privacy policy and terms hosted
-- [ ] App icon and splash assets
+- [x] App icon and splash assets — Android; iOS pending the `ios/` target
 - [ ] `ios/` target
 - [ ] `web/` target
 - [ ] Play Store listing
