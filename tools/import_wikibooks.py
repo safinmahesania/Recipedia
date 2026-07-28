@@ -43,16 +43,26 @@ API = "https://en.wikibooks.org/w/api.php"
 UA = "Recipedia-Importer/1.0 (student project; contact via GitHub)"
 OUT = pathlib.Path("out")
 
-# Wikibooks category -> the cuisine string stored on recipes.cuisine
-CATEGORIES = {
-    "Category:American recipes": "American",
-    "Category:Canadian recipes": "Canadian",
-    "Category:French recipes": "French",
-    "Category:Indian recipes": "Indian",
-    "Category:Pakistani recipes": "Pakistani",
-    "Category:Bangladeshi recipes": "Bangladeshi",
-    "Category:Sri Lankan recipes": "Sri Lankan",
-}
+# The cuisine categories exist but are nearly empty — "American recipes" holds
+# two pages. The actual corpus is Category:Recipes, thousands of entries with no
+# cuisine label. So: take everything, then infer cuisine from each page's own
+# categories, and leave it null when there is no signal rather than guessing.
+ROOT_CATEGORY = "Category:Recipes"
+
+# Substring -> cuisine. Matched against every category a page belongs to.
+CUISINE_SIGNALS = [
+    ("american", "American"), ("united states", "American"),
+    ("canadian", "Canadian"),
+    ("french", "French"),
+    ("indian", "Indian"), ("india", "Indian"),
+    ("pakistani", "Pakistani"),
+    ("bangladeshi", "Bangladeshi"),
+    ("sri lankan", "Sri Lankan"),
+    ("british", "British"), ("english", "British"),
+    ("italian", "Italian"), ("mexican", "Mexican"), ("chinese", "Chinese"),
+    ("japanese", "Japanese"), ("thai", "Thai"), ("greek", "Greek"),
+    ("spanish", "Spanish"), ("german", "German"),
+]
 
 INGREDIENT_HEADINGS = ("ingredients", "ingredient")
 METHOD_HEADINGS = ("procedure", "directions", "method", "preparation",
@@ -62,12 +72,33 @@ MIN_INGREDIENTS = 3
 MIN_STEPS = 2
 
 
-def api(params):
+def api(params, tries=4):
+    """One call, with backoff that actually waits.
+
+    Wikimedia returns 429 and expects you to slow down. The previous version
+    made one request per page and got blocked; this one batches 50 titles per
+    request, which is a 50x reduction and the difference between working and
+    being rate limited.
+    """
     params = {**params, "format": "json", "formatversion": "2"}
     url = f"{API}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read().decode())
+    for attempt in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=45) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < tries - 1:
+                wait = 10 * (attempt + 1)
+                print(f"    429 — waiting {wait}s")
+                time.sleep(wait)
+                continue
+            raise
+        except Exception:
+            if attempt == tries - 1:
+                raise
+            time.sleep(3 * (attempt + 1))
+    return {}
 
 
 def strip_markup(text):
@@ -153,6 +184,7 @@ def split_ingredient(line):
 
 
 def fetch_pages(category, cap):
+    """Page titles in a category, following continuation."""
     pages, cont = [], None
     while len(pages) < cap:
         params = {"action": "query", "list": "categorymembers",
@@ -164,32 +196,70 @@ def fetch_pages(category, cap):
         cont = data.get("continue", {}).get("cmcontinue")
         if not cont:
             break
+        time.sleep(1)
     return pages[:cap]
 
 
-def fetch_recipe(title, cuisine):
-    data = api({"action": "parse", "page": title, "prop": "wikitext"})
-    wt = data.get("parse", {}).get("wikitext", "")
-    if not wt:
-        return None, "no wikitext"
+def fetch_subcategories(category):
+    data = api({"action": "query", "list": "categorymembers",
+                "cmtitle": category, "cmlimit": "500", "cmtype": "subcat"})
+    return [m["title"] for m in data.get("query", {}).get("categorymembers", [])]
 
-    raw_ings = bullets(section(wt, INGREDIENT_HEADINGS))
-    steps = bullets(section(wt, METHOD_HEADINGS))
+
+def cuisine_from_categories(cats):
+    joined = " | ".join(c.lower() for c in cats)
+    for needle, cuisine in CUISINE_SIGNALS:
+        if needle in joined:
+            return cuisine
+    return None
+
+
+def fetch_batch(titles):
+    """Content AND categories for up to 50 pages in a single request.
+
+    The old version made one call per page. That is what triggered the 429s,
+    and it is also just slow: 2000 pages went from 2000 requests to 40.
+    """
+    data = api({
+        "action": "query",
+        "titles": "|".join(titles),
+        "prop": "revisions|categories",
+        "rvprop": "content",
+        "rvslots": "main",
+        "cllimit": "max",
+    })
+    out = {}
+    for page in data.get("query", {}).get("pages", []):
+        if page.get("missing"):
+            continue
+        revs = page.get("revisions") or []
+        content = ""
+        if revs:
+            content = revs[0].get("slots", {}).get("main", {}).get("content", "")
+        cats = [c["title"] for c in (page.get("categories") or [])]
+        out[page["title"]] = (content, cats)
+    return out
+
+
+def parse_page(title, wikitext, categories):
+    raw_ings = bullets(section(wikitext, INGREDIENT_HEADINGS))
+    steps = bullets(section(wikitext, METHOD_HEADINGS))
     if len(raw_ings) < MIN_INGREDIENTS:
-        return None, f"only {len(raw_ings)} ingredients"
+        return None, f"{len(raw_ings)} ingredients"
     if len(steps) < MIN_STEPS:
-        return None, f"only {len(steps)} steps"
+        return None, f"{len(steps)} steps"
 
     parsed = []
     for line in raw_ings:
         qty, name = split_ingredient(line)
         if name:
             parsed.append((name, qty))
+    if not parsed:
+        return None, "no parseable ingredients"
 
-    display = re.sub(r"^Cookbook:", "", title)
     return {
-        "title": display,
-        "cuisine": cuisine,
+        "title": re.sub(r"^Cookbook:", "", title),
+        "cuisine": cuisine_from_categories(categories),
         "ingredients": parsed,
         "steps": steps,
         "source_name": "Wikibooks Cookbook",
@@ -205,44 +275,74 @@ def sql_str(v):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--limit", type=int, default=200,
-                    help="max pages to try PER CUISINE")
+    ap.add_argument("--limit", type=int, default=1500,
+                    help="max recipe pages to fetch in total")
     ap.add_argument("--emit-sql", action="store_true")
     ap.add_argument("--existing", default="out/existing_ingredients.txt")
+    ap.add_argument("--resume", action="store_true",
+                    help="reuse out/wikibooks_raw.json instead of refetching")
     args = ap.parse_args()
     OUT.mkdir(exist_ok=True)
 
-    kept, rejected = [], []
-    for category, cuisine in CATEGORIES.items():
-        try:
-            titles = fetch_pages(category, args.limit)
-        except Exception as e:
-            print(f"  {cuisine:12s} category unavailable ({e})")
-            continue
-        ok = 0
-        for t in titles:
-            try:
-                recipe, why = fetch_recipe(t, cuisine)
-            except Exception as e:
-                recipe, why = None, str(e)[:40]
-            if recipe:
-                kept.append(recipe); ok += 1
-            else:
-                rejected.append((t, cuisine, why))
-            time.sleep(0.12)          # Wikimedia asks for courteous rates
-        print(f"  {cuisine:12s} {ok:3d} kept / {len(titles):3d} pages")
+    raw_path = OUT / "wikibooks_raw.json"
 
-    print(f"\n  kept {len(kept)}, rejected {len(rejected)}")
-    print("  Rejections are mostly stubs and prose pages with no ingredient")
-    print("  list. That filter is doing its job.\n")
+    if args.resume and raw_path.exists():
+        raw = json.loads(raw_path.read_text(encoding="utf-8"))
+        print(f"  resumed {len(raw)} pages from {raw_path}")
+    else:
+        print(f"  listing {ROOT_CATEGORY} ...")
+        titles = fetch_pages(ROOT_CATEGORY, args.limit)
+        # The root holds recipes directly and also groups them by course.
+        for sub in fetch_subcategories(ROOT_CATEGORY):
+            if len(titles) >= args.limit:
+                break
+            titles += fetch_pages(sub, args.limit - len(titles))
+            time.sleep(1)
+        titles = list(dict.fromkeys(titles))[:args.limit]
+        print(f"  {len(titles)} recipe pages found\n")
+
+        raw = {}
+        for i in range(0, len(titles), 50):
+            chunk = titles[i:i + 50]
+            try:
+                raw.update(fetch_batch(chunk))
+            except Exception as e:
+                print(f"    batch {i//50 + 1} failed: {e}")
+            done = min(i + 50, len(titles))
+            print(f"    fetched {done}/{len(titles)}")
+            # Fetching is the expensive part and 429s cost ten seconds each.
+            # Saving as we go means a failure never means starting over.
+            raw_path.write_text(json.dumps(raw), encoding="utf-8")
+            time.sleep(1.2)
+        print()
+
+    kept, rejected = [], []
+    for title, (wikitext, cats) in raw.items():
+        recipe, why = parse_page(title, wikitext, cats)
+        (kept if recipe else rejected).append(recipe or (title, why))
+
+    by_cuisine = {}
+    for r in kept:
+        by_cuisine[r["cuisine"] or "(unlabelled)"] = \
+            by_cuisine.get(r["cuisine"] or "(unlabelled)", 0) + 1
+
+    print(f"  kept {len(kept)} / rejected {len(rejected)}\n")
+    for c, n in sorted(by_cuisine.items(), key=lambda x: -x[1]):
+        print(f"    {c:16s} {n:4d}")
+    unlabelled = by_cuisine.get("(unlabelled)", 0)
+    if unlabelled:
+        print(f"\n  {unlabelled} have no cuisine signal in their categories.")
+        print("  They still import — cuisine is nullable — and this is exactly")
+        print("  what the auto-tagging classifier (backlog #4) is for.")
+    print()
 
     with open(OUT / "wikibooks_rejected.csv", "w", newline="", encoding="utf-8") as f:
-        csv.writer(f).writerows([("title", "cuisine", "reason"), *rejected])
+        csv.writer(f).writerows([("title", "reason"), *rejected])
 
     known = set()
-    p = pathlib.Path(args.existing)
-    if p.exists():
-        known = {l.strip().lower() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()}
+    ep = pathlib.Path(args.existing)
+    if ep.exists():
+        known = {l.strip().lower() for l in ep.read_text(encoding="utf-8").splitlines() if l.strip()}
 
     new = {}
     for r in kept:
@@ -254,22 +354,23 @@ def main():
         w = csv.writer(f)
         w.writerow(["name", "uses", "action"])
         for name, n in sorted(new.items(), key=lambda x: -x[1]):
-            w.writerow([name, n, "create" if n >= 2 else "skip"])
+            w.writerow([name, n, "create" if n >= 3 else "skip"])
     print(f"  new ingredients: {len(new)} -> out/new_ingredients.csv")
-    print("    single-use names default to skip — they are usually parser noise")
-    print("    ('and', 'to serve') rather than real ingredients.\n")
+    print("    names used fewer than 3 times default to skip; at this volume")
+    print("    they are almost always parser noise, not real ingredients.\n")
 
     with open(OUT / "wikibooks_review.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["title", "cuisine", "ingredients", "steps", "url"])
         for r in kept:
-            w.writerow([r["title"], r["cuisine"], len(r["ingredients"]),
+            w.writerow([r["title"], r["cuisine"] or "", len(r["ingredients"]),
                         len(r["steps"]), r["source_url"]])
     (OUT / "wikibooks_recipes.json").write_text(json.dumps(kept, indent=2), encoding="utf-8")
     print(f"  review -> out/wikibooks_review.csv")
 
     if not args.emit_sql:
-        print("\n  Dry run. Re-run with --emit-sql once the CSVs look right.")
+        print("\n  Dry run. Re-run with --emit-sql --resume once the CSVs look right")
+        print("  (--resume avoids refetching everything).")
         return
 
     keep_ing = set()
@@ -286,7 +387,7 @@ def main():
 
     lines += ["", "-- 2. recipes, with attribution as CC BY-SA requires"]
     for r in kept:
-        pairs = [(n, q) for n, q in r["ingredients"]]
+        pairs = [(n, q) for n, q in r["ingredients"] if n in keep_ing or n in known]
         if not pairs:
             continue
         values = ",\n".join(f"  ({sql_str(n)}, {sql_str(q)})" for n, q in pairs)
@@ -317,10 +418,6 @@ on conflict (recipe_id, ingredient_id) do nothing;""")
     lines += ["", "commit;"]
     sql = "\n".join(lines)
     (OUT / "import_wikibooks.sql").write_text(sql, encoding="utf-8")
-
-    # Also written as a migration, because psql is not installed on Windows by
-    # default and `supabase db push` already works. Move this file into
-    # supabase/migrations/ and push it.
     from datetime import datetime
     stamp = datetime.now().strftime("%Y%m%d%H%M%S")
     (OUT / f"{stamp}_import_wikibooks.sql").write_text(sql, encoding="utf-8")
