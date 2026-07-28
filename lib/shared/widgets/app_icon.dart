@@ -149,7 +149,7 @@ class FieldIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppIcon(
         name,
-        size: AppSizes.iconInput,
+        size: AppSizes.iconMd,
         color: context.tokens.textTertiary,
       );
 }

@@ -96,9 +96,11 @@ Legend: `[x]` done · `[ ]` not started · `[~]` partial, see note
 - [x] CI: analyze + test on every branch
 - [x] `design_system_test`
 - [x] `getx_reactivity_test`
-- [x] `static_safety_test` — paint asserts, escaped interpolation, icon manifest, PostgREST embeds, layering rules
+- [x] `static_safety_test` — paint asserts, escaped interpolation, icon mapping, PostgREST embeds, layering rules
+- [x] `recipe_steps_test` — step splitting, timer detection, cook-time parsing
+- [x] `widgets_test` — RecipeCard, AppTextField, IngredientIcon, AppIcon, skeletons
 - [x] `flutter analyze` clean
-- [~] Widget tests for critical flows — static safety suite added; interactive widget tests still open
+- [x] Widget and unit tests — shared widgets, and the parsing that drives timers, steps and sorting
 - [ ] Integration test: scan → shopping list → pantry
 
 ## 8. Release
